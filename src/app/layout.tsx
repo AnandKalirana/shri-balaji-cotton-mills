@@ -41,7 +41,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`h-full ${playfair.variable} ${jakarta.variable}`}>
-      <body className="min-h-full flex flex-col bg-[#fcf9f4] text-[#1c1c19] antialiased overflow-x-hidden">
+      <body className="min-h-full flex flex-col bg-[#fcf9f4] text-[#1c1c19] antialiased overflow-x-clip">
         {children}
       </body>
     </html>
