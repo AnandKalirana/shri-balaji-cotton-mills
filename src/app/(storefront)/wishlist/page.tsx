@@ -28,11 +28,14 @@ export default function WishlistPage() {
 
       {mounted && saved.length === 0 ? (
         <div className="flex flex-col items-center text-center py-20">
-          <Heart className="w-10 h-10 text-[#c5a880] mb-4" />
-          <p className="text-[#534343] mb-6">Nothing saved yet. Tap the heart on any fabric to keep it here.</p>
+          <span className="w-24 h-24 rounded-full bg-[#f0ede9] flex items-center justify-center mb-6">
+            <Heart className="w-10 h-10 text-[#c5a880]" />
+          </span>
+          <h2 className="font-[family-name:var(--font-playfair)] text-2xl text-[#2b1e1a] mb-2">Nothing saved yet</h2>
+          <p className="text-[#534343] mb-8 max-w-sm">Tap the heart on any fabric to keep it here for later.</p>
           <Link
             href="/category/silk-sarees"
-            className="px-8 py-3.5 bg-[#5c1d24] text-white text-xs tracking-[0.14em] uppercase font-semibold hover:bg-[#2b1e1a] transition-colors"
+            className="px-8 py-3.5 rounded-full bg-[#5c1d24] text-white text-xs tracking-[0.14em] uppercase font-semibold hover:bg-[#2b1e1a] transition-colors"
           >
             Browse Silk Sarees
           </Link>

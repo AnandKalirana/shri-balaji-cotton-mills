@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { ChevronRight, Package, Heart, LayoutDashboard } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 
@@ -74,21 +75,40 @@ export default function AccountPage() {
   if (checking) return <div className="py-32 text-center text-[#867273]">Loading…</div>;
 
   if (user) {
+    const firstName = user.fullName.split(" ")[0];
+    const rows = [
+      { href: "/orders", label: "My Orders", icon: Package },
+      { href: "/wishlist", label: "Wishlist", icon: Heart },
+      ...(user.role !== "CUSTOMER"
+        ? [{ href: "/admin", label: "Admin Dashboard", icon: LayoutDashboard }]
+        : []),
+    ];
     return (
       <div className="max-w-xl mx-auto px-4 py-16 sm:py-24">
         <span className="text-[11px] tracking-[0.2em] uppercase font-semibold text-[#5c1d24]">My Account</span>
-        <h1 className="font-[family-name:var(--font-playfair)] text-3xl sm:text-4xl text-[#2b1e1a] mt-1 mb-2">
-          Welcome, {user.fullName}
+        <h1 className="font-[family-name:var(--font-playfair)] text-3xl sm:text-4xl text-[#2b1e1a] mt-1">
+          Welcome back, {firstName}
         </h1>
-        <p className="text-sm text-[#534343] mb-8">{user.email}</p>
-        <div className="flex flex-col gap-3">
-          <Link href="/orders" className="px-6 py-4 border border-[#ebe3d5] hover:border-[#c5a880] text-sm text-[#2b1e1a] transition-colors">My Orders</Link>
-          <Link href="/wishlist" className="px-6 py-4 border border-[#ebe3d5] hover:border-[#c5a880] text-sm text-[#2b1e1a] transition-colors">Wishlist</Link>
-          {user.role !== "CUSTOMER" && (
-            <Link href="/admin" className="px-6 py-4 border border-[#c5a880] text-sm text-[#5c1d24] font-semibold transition-colors hover:bg-[#f0ede9]">Admin Dashboard</Link>
-          )}
-        </div>
-        <Button variant="secondary" className="mt-8" onClick={logout}>Sign out</Button>
+        <p className="text-sm text-[#534343] mt-2 mb-8 break-all">{user.email}</p>
+
+        <ul className="rounded-2xl bg-white border border-[#ebe3d5]/70 shadow-[0_1px_2px_rgba(43,30,26,0.04)] overflow-hidden divide-y divide-[#ebe3d5]/70">
+          {rows.map(({ href, label, icon: Icon }) => (
+            <li key={href}>
+              <Link
+                href={href}
+                className="flex items-center gap-4 px-5 py-4 min-h-[56px] text-[#2b1e1a] hover:bg-[#f6f3ee] active:bg-[#f0ede9] transition-colors"
+              >
+                <span className="w-9 h-9 rounded-full bg-[#f0ede9] text-[#5c1d24] flex items-center justify-center shrink-0">
+                  <Icon className="w-4 h-4" />
+                </span>
+                <span className="flex-1 text-sm font-medium">{label}</span>
+                <ChevronRight className="w-4 h-4 text-[#867273]" />
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        <Button variant="secondary" className="mt-8 rounded-full" onClick={logout}>Sign out</Button>
       </div>
     );
   }
@@ -108,7 +128,7 @@ export default function AccountPage() {
         <Input label="Email" type="email" value={form.email} onChange={set("email")} required />
         <Input label="Password" type="password" value={form.password} onChange={set("password")} required />
         {error && <p role="alert" className="text-sm text-[#ba1a1a]">{error}</p>}
-        <Button type="submit" loading={loading} fullWidth>
+        <Button type="submit" loading={loading} fullWidth className="rounded-full">
           {mode === "login" ? "Sign in" : "Create account"}
         </Button>
       </form>

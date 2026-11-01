@@ -20,21 +20,21 @@ export function StoreFooter() {
             <div className="flex gap-3 mt-6">
               <a
                 href="#"
-                className="w-10 h-10 flex items-center justify-center border border-[#53433e] text-[#d8c2bb] hover:border-[#c5a880] hover:text-[#c5a880] transition-colors"
+                className="w-10 h-10 rounded-full flex items-center justify-center border border-[#53433e] text-[#d8c2bb] hover:border-[#c5a880] hover:text-[#c5a880] transition-colors"
                 aria-label="Atelier Global"
               >
                 <Globe className="w-4 h-4" />
               </a>
               <a
                 href="#"
-                className="w-10 h-10 flex items-center justify-center border border-[#53433e] text-[#d8c2bb] hover:border-[#c5a880] hover:text-[#c5a880] transition-colors"
+                className="w-10 h-10 rounded-full flex items-center justify-center border border-[#53433e] text-[#d8c2bb] hover:border-[#c5a880] hover:text-[#c5a880] transition-colors"
                 aria-label="Share Collection"
               >
                 <Share2 className="w-4 h-4" />
               </a>
               <a
                 href="#"
-                className="w-10 h-10 flex items-center justify-center border border-[#53433e] text-[#d8c2bb] hover:border-[#c5a880] hover:text-[#c5a880] transition-colors"
+                className="w-10 h-10 rounded-full flex items-center justify-center border border-[#53433e] text-[#d8c2bb] hover:border-[#c5a880] hover:text-[#c5a880] transition-colors"
                 aria-label="Loom Origin"
               >
                 <Compass className="w-4 h-4" />

@@ -30,7 +30,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
     "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800";
 
   return (
-    <div className="group relative flex flex-col bg-white border border-[#ebe3d5] hover:border-[#c5a880] transition-colors duration-300">
+    <div className="group relative flex flex-col overflow-hidden rounded-2xl bg-white border border-[#ebe3d5]/70 shadow-[0_1px_2px_rgba(43,30,26,0.04)] hover:shadow-[0_24px_48px_-24px_rgba(43,30,26,0.35)] hover:-translate-y-1 transition-all duration-500 ease-out">
       {/* Image Container with 4:5 aspect ratio */}
       <Link
         href={`/product/${product.slug}`}
@@ -61,7 +61,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           }}
           aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
           aria-pressed={wishlisted}
-          className="absolute top-3 right-3 z-10 w-9 h-9 bg-white/90 flex items-center justify-center text-[#5c1d24] hover:bg-white transition-colors"
+          className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center text-[#5c1d24] hover:bg-white active:scale-90 transition-all"
         >
           <Heart className={wishlisted ? "w-4 h-4 fill-[#5c1d24]" : "w-4 h-4"} />
         </button>
@@ -69,7 +69,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
         {/* Out of Stock Overlay */}
         {!product.inStock && (
           <div className="absolute inset-0 bg-[#2b1e1a]/60 flex items-center justify-center">
-            <span className="text-[11px] tracking-[0.14em] uppercase font-semibold text-white px-3 py-1 border border-white">
+            <span className="text-[11px] tracking-[0.14em] uppercase font-semibold text-white px-3 py-1 rounded-full border border-white">
               Archive Only
             </span>
           </div>
@@ -80,7 +80,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           <button
             onClick={handleQuickAdd}
             aria-label={`Quick add ${product.name} to cart`}
-            className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 w-11 h-11 bg-[#5c1d24] text-white flex items-center justify-center hover:bg-[#2b1e1a] transition-all duration-300 shadow-md sm:opacity-0 sm:group-hover:opacity-100 touch-manipulation"
+            className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 w-11 h-11 rounded-full bg-[#5c1d24] text-white flex items-center justify-center hover:bg-[#2b1e1a] active:scale-90 transition-all duration-300 shadow-lg sm:opacity-0 sm:group-hover:opacity-100 touch-manipulation"
           >
             <ShoppingBag className="w-4 h-4" />
           </button>
