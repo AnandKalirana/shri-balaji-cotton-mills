@@ -1,0 +1,334 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ── Auth & Users ─────────────────────────────────────────────────────────────
+enum Role {
+  CUSTOMER
+  ADMIN
+  STAFF
+}
+
+model User {
+  id            String         @id @default(cuid())
+  email         String         @unique
+  phone         String?        @unique
+  passwordHash  String
+  fullName      String
+  role          Role           @default(CUSTOMER)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  addresses     Address[]
+  orders        Order[]
+  cart          Cart?
+  reviews       Review[]
+  auditLogs     InventoryLog[]
+}
+
+model Address {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label        String   @default("Home")
+  street       String
+  landmark     String?
+  city         String
+  state        String
+  pincode      String
+  phone        String
+  isDefault    Boolean  @default(false)
+  orders       Order[]
+}
+
+// ── Catalog & Products ───────────────────────────────────────────────────────
+enum ProductType {
+  STANDARD_PRODUCT // Garments, Sarees, Ready-to-wear, Accessories
+  FABRIC_BY_METRE  // Sold per fractional metre and whole thaan
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  imageUrl    String?
+  sortOrder   Int       @default(0)
+  isActive    Boolean   @default(true)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Product {
+  id             String          @id @default(cuid())
+  name           String
+  slug           String          @unique
+  description    String          @db.Text
+  shortDesc      String?
+  type           ProductType     @default(STANDARD_PRODUCT)
+  categoryId     String
+  category       Category        @relation(fields: [categoryId], references: [id])
+  
+  // Pricing & Tax
+  basePrice      Decimal         @db.Decimal(10, 2)
+  salePrice      Decimal?        @db.Decimal(10, 2)
+  hsnCode        String?
+  gstRate        Decimal         @default(5.0) @db.Decimal(4, 2)
+  
+  // Media & Badges
+  images         String[]
+  badge          String?
+  isActive       Boolean         @default(true)
+  isFeatured     Boolean         @default(false)
+
+  // Textile Attributes
+  weaveType      String?
+  composition    String?
+  careInstructions String?      @db.Text
+  origin         String?
+  weightGsm      Int?
+
+  // Relations
+  fabricDetail   FabricDetail?
+  variants       ProductVariant[]
+  cartItems      CartItem[]
+  orderItems     OrderItem[]
+  reviews        Review[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+// ── Fabric Specific Detail & Roll/Thaan Tracking ────────────────────────────
+model FabricDetail {
+  id                String       @id @default(cuid())
+  productId         String       @unique
+  product           Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  widthInches       Decimal      @db.Decimal(5, 2)
+  minMetreOrder     Decimal      @default(1.0) @db.Decimal(6, 2)
+  metreIncrement    Decimal      @default(0.5) @db.Decimal(4, 2)
+  pricePerMetre     Decimal      @db.Decimal(10, 2)
+  
+  // Thaan (Full Roll) configuration
+  standardThaanMetres Decimal    @default(25.0) @db.Decimal(6, 2)
+  thaanDiscountPct  Decimal      @default(12.0) @db.Decimal(4, 2)
+  
+  // Stock availability
+  totalMetresInStock Decimal     @default(0.0) @db.Decimal(10, 2)
+  cutMetresAvailable Decimal     @default(0.0) @db.Decimal(10, 2)
+  intactThaansCount  Int         @default(0)
+  lowStockThreshold  Decimal     @default(10.0) @db.Decimal(6, 2)
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+}
+
+// ── Standard Variant System (Sizes, Colors, SKUs) ───────────────────────────
+model ProductVariant {
+  id          String      @id @default(cuid())
+  productId   String
+  product     Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sku         String      @unique
+  size        String?
+  colorName   String?
+  colorHex    String?
+  stockQty    Int         @default(0)
+  priceAdjustment Decimal @default(0.0) @db.Decimal(10, 2)
+  isActive    Boolean     @default(true)
+  cartItems   CartItem[]
+  orderItems  OrderItem[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+// ── Inventory Transaction Ledger ───────────────────────────────────────────
+enum InventoryAction {
+  PURCHASE_DEDUCTION
+  ORDER_CANCEL_RESTOCK
+  MANUAL_ADJUSTMENT
+  NEW_STOCK_RECEIPT
+  DAMAGE_WRITE_OFF
+  THAAN_BREAKDOWN_TO_CUTS
+}
+
+model InventoryLog {
+  id              String          @id @default(cuid())
+  productId       String
+  variantId       String?
+  action          InventoryAction
+  quantityChanged Decimal         @db.Decimal(10, 2)
+  balanceAfter    Decimal         @db.Decimal(10, 2)
+  reason          String?
+  referenceOrderId String?
+  performedById   String?
+  performedBy     User?           @relation(fields: [performedById], references: [id])
+  createdAt       DateTime        @default(now())
+}
+
+// ── Shopping Cart & Persistence ─────────────────────────────────────────────
+model Cart {
+  id        String     @id @default(cuid())
+  userId    String?    @unique
+  user      User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionId String?    @unique
+  items     CartItem[]
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id          String          @id @default(cuid())
+  cartId      String
+  cart        Cart            @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product         @relation(fields: [productId], references: [id])
+  variantId   String?
+  variant     ProductVariant? @relation(fields: [variantId], references: [id])
+  
+  quantity    Int             @default(1)
+  metres      Decimal?        @db.Decimal(6, 2)
+  isFullThaan Boolean         @default(false)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+}
+
+// ── Orders & Payments ───────────────────────────────────────────────────────
+enum OrderStatus {
+  PENDING_PAYMENT
+  PAYMENT_FAILED
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  RETURN_REQUESTED
+  RETURNED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  RAZORPAY
+  COD
+}
+
+enum PaymentStatus {
+  UNPAID
+  AUTHORIZED
+  PAID
+  FAILED
+  REFUNDED
+}
+
+model Order {
+  id               String          @id @default(cuid())
+  orderNumber      String          @unique
+  userId           String?
+  user             User?           @relation(fields: [userId], references: [id])
+  customerName     String
+  customerEmail    String
+  customerPhone    String
+  
+  subtotal         Decimal         @db.Decimal(10, 2)
+  discountTotal    Decimal         @default(0.0) @db.Decimal(10, 2)
+  couponCode       String?
+  gstTotal         Decimal         @default(0.0) @db.Decimal(10, 2)
+  shippingFee      Decimal         @default(0.0) @db.Decimal(10, 2)
+  total            Decimal         @db.Decimal(10, 2)
+  
+  orderStatus      OrderStatus     @default(CONFIRMED)
+  paymentMethod    PaymentMethod   @default(RAZORPAY)
+  paymentStatus    PaymentStatus   @default(UNPAID)
+  
+  razorpayOrderId  String?         @unique
+  razorpayPaymentId String?
+  razorpaySignature String?
+  
+  shippingAddressId String?
+  shippingAddress   Address?       @relation(fields: [shippingAddressId], references: [id])
+  shippingAddressSnapshot Json
+  trackingNumber    String?
+  courierPartner    String?
+  cancelledReason   String?
+  
+  items            OrderItem[]
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+}
+
+model OrderItem {
+  id               String          @id @default(cuid())
+  orderId          String
+  order            Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId        String
+  product          Product         @relation(fields: [productId], references: [id])
+  variantId        String?
+  variant          ProductVariant? @relation(fields: [variantId], references: [id])
+  
+  productName      String
+  sku              String?
+  unitPrice        Decimal         @db.Decimal(10, 2)
+  quantity         Int             @default(1)
+  metres           Decimal?        @db.Decimal(6, 2)
+  isFullThaan      Boolean         @default(false)
+  lineTotal        Decimal         @db.Decimal(10, 2)
+}
+
+// ── Marketing, Promotions & CMS ─────────────────────────────────────────────
+model Coupon {
+  id              String      @id @default(cuid())
+  code            String      @unique
+  description     String?
+  discountPercent Decimal?    @db.Decimal(4, 2)
+  discountAmount  Decimal?    @db.Decimal(10, 2)
+  minOrderValue   Decimal?    @db.Decimal(10, 2)
+  maxDiscount     Decimal?    @db.Decimal(10, 2)
+  validFrom       DateTime
+  validUntil      DateTime
+  usageLimit      Int?
+  usageCount      Int         @default(0)
+  isActive        Boolean     @default(true)
+}
+
+model Banner {
+  id          String   @id @default(cuid())
+  title       String
+  subtitle    String?
+  eyebrow     String?
+  ctaText     String   @default("Explore Collection")
+  ctaLink     String   @default("/category/silk-sarees")
+  desktopImg  String
+  mobileImg   String
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  updatedAt   DateTime @updatedAt
+}
+
+model StoreSettings {
+  id                    String   @id @default("default")
+  storeName             String   @default("Shri Balaji Cotton Mills")
+  supportEmail          String   @default("contact@shribalajicottonmills.in")
+  supportPhone          String   @default("+91 98765 43210")
+  freeShippingThreshold Decimal  @default(2000.0) @db.Decimal(10, 2)
+  standardShippingFee   Decimal  @default(150.0)  @db.Decimal(10, 2)
+  enableCod             Boolean  @default(true)
+  codMaxOrderLimit      Decimal  @default(15000.0) @db.Decimal(10, 2)
+  announcementText      String   @default("Complimentary Insured Shipping Across India on Orders Above ₹2,000")
+  enableAnnouncement    Boolean  @default(true)
+  updatedAt             DateTime @updatedAt
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  rating    Int      @default(5)
+  title     String?
+  comment   String   @db.Text
+  isVerified Boolean @default(true)
+  createdAt DateTime @default(now())
+}
+
