@@ -104,7 +104,7 @@ export default function AdminInventoryPage() {
       </div>
 
       {/* Desktop Table (>= 768px) */}
-      <div className="hidden md:block bg-white border border-[#ebe3d5] overflow-x-auto">
+      <div className="hidden md:block bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] overflow-x-auto">
         <table className="w-full text-left text-xs">
           <thead className="bg-[#fcf9f4] text-[10px] tracking-wider uppercase font-semibold text-[#867273] border-b border-[#ebe3d5]">
             <tr>

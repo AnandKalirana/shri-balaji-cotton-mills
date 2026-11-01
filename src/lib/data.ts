@@ -106,7 +106,7 @@ export const products: Product[] = [
 
 export const orders: Order[] = [
   {
-    id: "o1", orderNumber: "HA-2026-00128",
+    id: "o1", orderNumber: "SB-2026-00128",
     customer: { name: "Priya Sharma", email: "priya@email.com", phone: "+91 98765 43210" },
     items: [{ product: products[0], quantity: 1 }],
     total: 18500, status: "confirmed",
@@ -114,7 +114,7 @@ export const orders: Order[] = [
     shippingAddress: { street: "42, Lajpat Nagar II", city: "New Delhi", state: "Delhi", pincode: "110024" },
   },
   {
-    id: "o2", orderNumber: "HA-2026-00127",
+    id: "o2", orderNumber: "SB-2026-00127",
     customer: { name: "Meena Rao", email: "meena@email.com", phone: "+91 87654 32109" },
     items: [{ product: products[2], quantity: 3, metres: 3 }, { product: products[4], quantity: 2, metres: 2 }],
     total: 9200, status: "shipped",
@@ -122,7 +122,7 @@ export const orders: Order[] = [
     shippingAddress: { street: "15, MG Road", city: "Bangalore", state: "Karnataka", pincode: "560001" },
   },
   {
-    id: "o3", orderNumber: "HA-2026-00126",
+    id: "o3", orderNumber: "SB-2026-00126",
     customer: { name: "Anjali Verma", email: "anjali@email.com", phone: "+91 76543 21098" },
     items: [{ product: products[5], quantity: 1 }],
     total: 42000, status: "processing",
@@ -130,7 +130,7 @@ export const orders: Order[] = [
     shippingAddress: { street: "8, Park Street", city: "Kolkata", state: "West Bengal", pincode: "700016" },
   },
   {
-    id: "o4", orderNumber: "HA-2026-00125",
+    id: "o4", orderNumber: "SB-2026-00125",
     customer: { name: "Sunita Patel", email: "sunita@email.com", phone: "+91 65432 10987" },
     items: [{ product: products[3], quantity: 1, metres: 2 }],
     total: 13600, status: "delivered",
@@ -138,7 +138,7 @@ export const orders: Order[] = [
     shippingAddress: { street: "22, CG Road", city: "Ahmedabad", state: "Gujarat", pincode: "380006" },
   },
   {
-    id: "o5", orderNumber: "HA-2026-00124",
+    id: "o5", orderNumber: "SB-2026-00124",
     customer: { name: "Kavya Nair", email: "kavya@email.com", phone: "+91 54321 09876" },
     items: [{ product: products[1], quantity: 1 }],
     total: 24000, status: "pending",

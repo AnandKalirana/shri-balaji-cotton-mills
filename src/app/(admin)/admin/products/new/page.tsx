@@ -71,7 +71,7 @@ export default function AdminNewProductPage() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Mobile Camera Upload & Drag Zone */}
-        <div className="bg-white border border-[#ebe3d5] p-5 sm:p-6">
+        <div className="bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-5 sm:p-6">
           <label className="block text-[11px] tracking-[0.14em] uppercase font-semibold text-[#534343] mb-3">
             Product Photography (Mobile Camera or Upload)
           </label>
@@ -116,7 +116,7 @@ export default function AdminNewProductPage() {
         </div>
 
         {/* Basic Details */}
-        <div className="bg-white border border-[#ebe3d5] p-5 sm:p-6 space-y-4">
+        <div className="bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-5 sm:p-6 space-y-4">
           <Input
             label="Creation Title *"
             value={formData.name}

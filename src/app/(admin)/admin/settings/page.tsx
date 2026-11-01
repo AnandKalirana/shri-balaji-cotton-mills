@@ -32,7 +32,7 @@ export default function AdminSettingsPage() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Contact Info */}
-        <div className="bg-white border border-[#ebe3d5] p-5 sm:p-6 space-y-4">
+        <div className="bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-5 sm:p-6 space-y-4">
           <div className="flex items-center gap-2">
             <Store className="w-4 h-4 text-[#c5a880]" />
             <h3 className="text-xs tracking-[0.14em] uppercase font-semibold text-[#5c1d24]">
@@ -62,7 +62,7 @@ export default function AdminSettingsPage() {
         </div>
 
         {/* Taxation & Compliance */}
-        <div className="bg-white border border-[#ebe3d5] p-5 sm:p-6 space-y-4">
+        <div className="bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-5 sm:p-6 space-y-4">
           <div className="flex items-center gap-2">
             <Shield className="w-4 h-4 text-[#c5a880]" />
             <h3 className="text-xs tracking-[0.14em] uppercase font-semibold text-[#5c1d24]">
