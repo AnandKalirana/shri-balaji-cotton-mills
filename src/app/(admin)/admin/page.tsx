@@ -56,7 +56,7 @@ export default function AdminOverviewPage() {
 
         <Link
           href="/admin/orders"
-          className="px-4 py-2.5 bg-white border border-[#ebe3d5] text-[#534343] text-xs tracking-wider uppercase font-semibold flex items-center gap-2 whitespace-nowrap hover:border-[#c5a880] shrink-0 min-h-[44px]"
+          className="px-4 py-2.5 bg-white border border-[#ebe3d5]/70 rounded-full text-[#534343] text-xs tracking-wider uppercase font-semibold flex items-center gap-2 whitespace-nowrap hover:border-[#c5a880] shrink-0 min-h-[44px]"
         >
           <ShoppingBag className="w-4 h-4" />
           <span>Process Orders</span>
@@ -96,7 +96,7 @@ export default function AdminOverviewPage() {
       </div>
 
       {/* 3. Recent Orders Section: Mobile Cards vs Desktop Table */}
-      <div className="bg-white border border-[#ebe3d5]">
+      <div className="bg-white border border-[#ebe3d5]/70 rounded-2xl overflow-hidden shadow-[0_1px_2px_rgba(43,30,26,0.04)]">
         <div className="p-4 sm:p-6 border-b border-[#ebe3d5] flex items-center justify-between">
           <div>
             <h2 className="font-[family-name:var(--font-playfair)] text-lg sm:text-xl font-medium text-[#2b1e1a]">
@@ -176,7 +176,7 @@ export default function AdminOverviewPage() {
       </div>
 
       {/* 4. Fabric Inventory Quick Balance Ledger */}
-      <div className="bg-white border border-[#ebe3d5] p-4 sm:p-6">
+      <div className="bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-4 sm:p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="font-[family-name:var(--font-playfair)] text-base sm:text-lg font-medium text-[#2b1e1a]">

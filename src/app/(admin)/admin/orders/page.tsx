@@ -3,8 +3,27 @@ import { useState, useEffect } from "react";
 import { orders as fallbackOrders } from "@/lib/data";
 import { formatPrice } from "@/lib/utils";
 import { StatusBadge } from "@/components/ui/StatusBadge";
-import { ChevronRight, Phone, Mail, MapPin } from "lucide-react";
+import { SegmentedControl } from "@/components/ui/SegmentedControl";
+import { StatusMenu } from "@/components/ui/StatusMenu";
+import { Phone, MapPin } from "lucide-react";
 import type { Order } from "@/lib/types";
+
+const filterOptions = [
+  { value: "all", label: "All" },
+  { value: "confirmed", label: "Confirmed" },
+  { value: "processing", label: "Processing" },
+  { value: "shipped", label: "Shipped" },
+  { value: "delivered", label: "Delivered" },
+];
+
+const statusOptions = [
+  { value: "pending", label: "Pending" },
+  { value: "confirmed", label: "Confirmed" },
+  { value: "processing", label: "Processing" },
+  { value: "shipped", label: "Shipped" },
+  { value: "delivered", label: "Delivered" },
+  { value: "cancelled", label: "Cancelled" },
+];
 
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>(fallbackOrders);
@@ -30,7 +49,7 @@ export default function AdminOrdersPage() {
       });
 
       setOrders((prev) =>
-        prev.map((o) => (o.id === orderId ? { ...o, status: nextStatus as any } : o))
+        prev.map((o) => (o.id === orderId ? { ...o, status: nextStatus as Order["status"] } : o))
       );
     } catch {
       // Fallback
@@ -45,32 +64,23 @@ export default function AdminOrdersPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#ebe3d5]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
         <div>
           <h2 className="font-[family-name:var(--font-playfair)] text-xl sm:text-2xl font-medium text-[#2b1e1a]">
-            Showroom Orders ({filteredOrders.length})
+            Showroom orders ({filteredOrders.length})
           </h2>
           <p className="text-xs text-[#867273]">
-            Track patron fulfillment, courier dispatches, and doorstep deliveries
+            Track fulfilment, courier dispatches and deliveries
           </p>
         </div>
 
-        {/* Filter Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-1">
-          {["all", "confirmed", "processing", "shipped", "delivered"].map((st) => (
-            <button
-              key={st}
-              onClick={() => setFilter(st)}
-              className={`px-3 py-1.5 text-xs font-semibold uppercase tracking-wider whitespace-nowrap transition-colors border ${
-                filter === st
-                  ? "bg-[#5c1d24] text-white border-[#5c1d24]"
-                  : "bg-white border-[#ebe3d5] text-[#534343] hover:border-[#c5a880]"
-              }`}
-            >
-              {st}
-            </button>
-          ))}
-        </div>
+        {/* Filter */}
+        <SegmentedControl
+          ariaLabel="Filter orders by status"
+          options={filterOptions}
+          value={filter}
+          onChange={setFilter}
+        />
       </div>
 
       {/* Mobile Card Feed (< 768px) */}
@@ -78,7 +88,7 @@ export default function AdminOrdersPage() {
         {filteredOrders.map((order) => (
           <div
             key={order.id}
-            className="bg-white border border-[#ebe3d5] p-4 space-y-3"
+            className="bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-4 space-y-3"
           >
             <div className="flex items-start justify-between">
               <div>
@@ -93,7 +103,7 @@ export default function AdminOrdersPage() {
             </div>
 
             {/* Customer Details */}
-            <div className="text-xs text-[#534343] space-y-1 bg-[#fcf9f4] p-2.5 border border-[#ebe3d5]">
+            <div className="text-xs text-[#534343] space-y-1 bg-[#fcf9f4] p-3 rounded-xl">
               <div className="flex items-center gap-2">
                 <Phone className="w-3.5 h-3.5 text-[#867273]" />
                 <a href={`tel:${order.customer?.phone}`} className="hover:underline">
@@ -109,7 +119,7 @@ export default function AdminOrdersPage() {
             </div>
 
             {/* Items Summary & Quick Status Switcher */}
-            <div className="flex items-center justify-between pt-2 border-t border-[#ebe3d5]">
+            <div className="flex items-center justify-between pt-3 border-t border-[#ebe3d5]/70">
               <div>
                 <span className="text-xs text-[#867273]">Total: </span>
                 <span className="text-sm font-bold text-[#2b1e1a]">
@@ -123,7 +133,7 @@ export default function AdminOrdersPage() {
                   <button
                     disabled={updatingId === order.id}
                     onClick={() => handleQuickStatusChange(order.id, "processing")}
-                    className="px-2.5 py-1 text-[11px] bg-[#f0ede9] border border-[#c5a880] text-[#2b1e1a] font-semibold uppercase hover:bg-[#5c1d24] hover:text-white transition-colors"
+                    className="px-4 py-2 rounded-full text-xs bg-[#f0ede9] text-[#2b1e1a] font-semibold hover:bg-[#5c1d24] hover:text-white active:scale-95 transition-all disabled:opacity-50"
                   >
                     Pack
                   </button>
@@ -132,7 +142,7 @@ export default function AdminOrdersPage() {
                   <button
                     disabled={updatingId === order.id}
                     onClick={() => handleQuickStatusChange(order.id, "shipped")}
-                    className="px-2.5 py-1 text-[11px] bg-[#5c1d24] text-white font-semibold uppercase hover:bg-[#2b1e1a] transition-colors"
+                    className="px-4 py-2 rounded-full text-xs bg-[#5c1d24] text-white font-semibold hover:bg-[#2b1e1a] active:scale-95 transition-all disabled:opacity-50"
                   >
                     Ship
                   </button>
@@ -141,7 +151,7 @@ export default function AdminOrdersPage() {
                   <button
                     disabled={updatingId === order.id}
                     onClick={() => handleQuickStatusChange(order.id, "delivered")}
-                    className="px-2.5 py-1 text-[11px] bg-emerald-800 text-white font-semibold uppercase transition-colors"
+                    className="px-4 py-2 rounded-full text-xs bg-emerald-800 text-white font-semibold hover:bg-emerald-900 active:scale-95 transition-all disabled:opacity-50"
                   >
                     Deliver
                   </button>
@@ -153,50 +163,45 @@ export default function AdminOrdersPage() {
       </div>
 
       {/* Desktop Data Table (>= 768px) */}
-      <div className="hidden md:block bg-white border border-[#ebe3d5] overflow-x-auto">
+      <div className="hidden md:block bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] overflow-x-auto">
         <table className="w-full text-left text-xs">
-          <thead className="bg-[#fcf9f4] text-[10px] tracking-wider uppercase font-semibold text-[#867273] border-b border-[#ebe3d5]">
+          <thead className="bg-[#fcf9f4] text-xs font-medium text-[#867273] border-b border-[#ebe3d5]/70">
             <tr>
-              <th className="py-3 px-6">Order</th>
-              <th className="py-3 px-6">Customer</th>
-              <th className="py-3 px-6">Destination</th>
-              <th className="py-3 px-6">Status</th>
-              <th className="py-3 px-6">Amount</th>
-              <th className="py-3 px-6 text-right">Update Status</th>
+              <th className="py-3.5 px-6">Order</th>
+              <th className="py-3.5 px-6">Customer</th>
+              <th className="py-3.5 px-6">Destination</th>
+              <th className="py-3.5 px-6">Status</th>
+              <th className="py-3.5 px-6">Amount</th>
+              <th className="py-3.5 px-6 text-right">Update status</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#ebe3d5] text-sm text-[#2b1e1a]">
+          <tbody className="divide-y divide-[#ebe3d5]/70 text-sm text-[#2b1e1a]">
             {filteredOrders.map((order) => (
               <tr key={order.id} className="hover:bg-[#faf7f2] transition-colors">
-                <td className="py-4 px-6 font-semibold text-[#5c1d24]">
+                <td className="py-5 px-6 font-semibold text-[#5c1d24]">
                   {order.orderNumber}
                 </td>
-                <td className="py-4 px-6">
+                <td className="py-5 px-6">
                   <p className="font-medium">{order.customer?.name || "Patron"}</p>
                   <p className="text-xs text-[#867273]">{order.customer?.email}</p>
                 </td>
-                <td className="py-4 px-6 text-xs text-[#534343]">
+                <td className="py-5 px-6 text-xs text-[#534343]">
                   {order.shippingAddress?.city}, {order.shippingAddress?.state}
                 </td>
-                <td className="py-4 px-6">
+                <td className="py-5 px-6">
                   <StatusBadge status={order.status} />
                 </td>
-                <td className="py-4 px-6 font-bold">
+                <td className="py-5 px-6 font-bold">
                   {formatPrice(order.total)}
                 </td>
-                <td className="py-4 px-6 text-right space-x-2">
-                  <select
+                <td className="py-5 px-6 text-right space-x-2">
+                  <StatusMenu
+                    ariaLabel={`Update status for ${order.orderNumber}`}
                     value={order.status}
-                    onChange={(e) => handleQuickStatusChange(order.id, e.target.value)}
-                    className="bg-white border border-[#c5a880] text-xs py-1 px-2 focus:outline-none"
-                  >
-                    <option value="pending">Pending</option>
-                    <option value="confirmed">Confirmed</option>
-                    <option value="processing">Processing</option>
-                    <option value="shipped">Shipped</option>
-                    <option value="delivered">Delivered</option>
-                    <option value="cancelled">Cancelled</option>
-                  </select>
+                    options={statusOptions}
+                    disabled={updatingId === order.id}
+                    onChange={(next) => handleQuickStatusChange(order.id, next)}
+                  />
                 </td>
               </tr>
             ))}

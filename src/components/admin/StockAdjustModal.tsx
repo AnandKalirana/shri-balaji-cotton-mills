@@ -122,7 +122,7 @@ export function StockAdjustModal({
         </div>
 
         {/* Large Mobile Stepper */}
-        <div className="flex flex-col items-center justify-center py-4 bg-white border border-[#ebe3d5] mb-4">
+        <div className="flex flex-col items-center justify-center py-4 bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] mb-4">
           <p className="text-xs text-[#867273] mb-2 font-medium uppercase tracking-wider">
             Target Stock
           </p>

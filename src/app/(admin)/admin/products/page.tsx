@@ -51,7 +51,7 @@ export default function AdminProductsPage() {
         {productsList.map((product) => (
           <div
             key={product.id}
-            className="bg-white border border-[#ebe3d5] p-4 flex gap-4 items-start"
+            className="bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-4 flex gap-4 items-start"
           >
             {/* Thumbnail */}
             <div className="relative w-20 h-24 shrink-0 bg-[#f6f3ee] border border-[#ebe3d5]">
@@ -122,7 +122,7 @@ export default function AdminProductsPage() {
       </div>
 
       {/* Desktop Table (>= 768px) */}
-      <div className="hidden md:block bg-white border border-[#ebe3d5] overflow-x-auto">
+      <div className="hidden md:block bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] overflow-x-auto">
         <table className="w-full text-left text-xs">
           <thead className="bg-[#fcf9f4] text-[10px] tracking-wider uppercase font-semibold text-[#867273] border-b border-[#ebe3d5]">
             <tr>

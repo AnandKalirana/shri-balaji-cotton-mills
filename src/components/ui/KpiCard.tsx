@@ -21,12 +21,12 @@ export function KpiCard({
   const isPositive = change !== undefined && change >= 0;
 
   return (
-    <div className={cn("bg-white border border-[#ebe3d5] p-4 sm:p-5 flex flex-col justify-between gap-3 min-w-0", className)}>
+    <div className={cn("bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-4 sm:p-5 flex flex-col justify-between gap-3 min-w-0", className)}>
       <div className="flex items-center justify-between gap-2">
-        <p className="text-[11px] tracking-[0.14em] uppercase font-semibold text-[#534343] truncate">
+        <p className="text-xs font-medium text-[#534343] truncate">
           {title}
         </p>
-        <div className={cn("w-9 h-9 shrink-0 flex items-center justify-center bg-[#f0ede9]", iconColor)}>
+        <div className={cn("w-9 h-9 shrink-0 rounded-full flex items-center justify-center bg-[#f0ede9]", iconColor)}>
           <Icon className="w-4 h-4" />
         </div>
       </div>

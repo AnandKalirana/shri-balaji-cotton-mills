@@ -53,7 +53,7 @@ export default function AdminCouponsPage() {
       </div>
 
       {/* Add New Coupon Mini-form */}
-      <form onSubmit={handleAddCoupon} className="bg-white border border-[#ebe3d5] p-5 sm:p-6 space-y-4">
+      <form onSubmit={handleAddCoupon} className="bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-5 sm:p-6 space-y-4">
         <h3 className="text-xs tracking-[0.14em] uppercase font-semibold text-[#5c1d24]">
           Generate New Coupon
         </h3>
@@ -87,7 +87,7 @@ export default function AdminCouponsPage() {
       </form>
 
       {/* Coupon List */}
-      <div className="bg-white border border-[#ebe3d5] divide-y divide-[#ebe3d5]">
+      <div className="bg-white border border-[#ebe3d5]/70 rounded-2xl overflow-hidden shadow-[0_1px_2px_rgba(43,30,26,0.04)] divide-y divide-[#ebe3d5]">
         {coupons.map((c) => (
           <div key={c.id} className="p-4 sm:p-5 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">

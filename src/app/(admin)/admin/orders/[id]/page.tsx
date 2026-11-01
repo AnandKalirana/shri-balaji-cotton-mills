@@ -87,7 +87,7 @@ export default function AdminOrderDetailPage({
         {/* Left Column (Items & Pricing) */}
         <div className="md:col-span-7 space-y-6">
           {/* Items card */}
-          <div className="bg-white border border-[#ebe3d5] p-5 sm:p-6">
+          <div className="bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-5 sm:p-6">
             <h3 className="text-xs tracking-[0.14em] uppercase font-semibold text-[#5c1d24] mb-4 pb-2 border-b border-[#ebe3d5]">
               Fabric & Textile Items ({order.items.length})
             </h3>
@@ -127,7 +127,7 @@ export default function AdminOrderDetailPage({
           </div>
 
           {/* Customer Details */}
-          <div className="bg-white border border-[#ebe3d5] p-5 sm:p-6 space-y-3">
+          <div className="bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-5 sm:p-6 space-y-3">
             <h3 className="text-xs tracking-[0.14em] uppercase font-semibold text-[#5c1d24] pb-2 border-b border-[#ebe3d5]">
               Patron & Delivery Information
             </h3>
@@ -172,7 +172,7 @@ export default function AdminOrderDetailPage({
         <div className="md:col-span-5 space-y-6">
           <form
             onSubmit={handleUpdate}
-            className="bg-white border border-[#ebe3d5] p-5 sm:p-6 space-y-4"
+            className="bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-5 sm:p-6 space-y-4"
           >
             <h3 className="text-xs tracking-[0.14em] uppercase font-semibold text-[#5c1d24] pb-2 border-b border-[#ebe3d5]">
               Fulfillment Controls
