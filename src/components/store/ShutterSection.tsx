@@ -162,7 +162,7 @@ export function ShutterSection() {
           <div className="flex items-center gap-4 flex-wrap">
             <Link
               href={`/category/${activeDept.slug}`}
-              className="px-8 py-3.5 bg-[#5c1d24] text-white text-xs tracking-[0.14em] uppercase font-semibold hover:bg-white hover:text-[#2b1e1a] transition-colors border border-transparent min-h-[48px] flex items-center justify-center"
+              className="px-8 py-3.5 rounded-full bg-[#5c1d24] text-white text-xs tracking-[0.14em] uppercase font-semibold hover:bg-white hover:text-[#2b1e1a] transition-colors border border-transparent min-h-[48px] flex items-center justify-center"
             >
               Explore Collection
             </Link>
@@ -185,10 +185,10 @@ export function ShutterSection() {
                   setCurrentIndex(idx);
                 }}
                 className={cn(
-                  "px-3 py-1.5 text-[10px] tracking-wider uppercase font-semibold whitespace-nowrap transition-colors touch-target",
+                  "px-4 py-1.5 rounded-full text-[10px] tracking-wider uppercase font-semibold whitespace-nowrap transition-colors touch-target",
                   currentIndex === idx
                     ? "bg-[#c5a880] text-[#2b1e1a]"
-                    : "text-[#d8c2bb] hover:text-white bg-white/5"
+                    : "text-[#d8c2bb] hover:text-white bg-white/10 backdrop-blur-md"
                 )}
               >
                 {dept.name}
@@ -201,14 +201,14 @@ export function ShutterSection() {
             <button
               onClick={handlePrev}
               aria-label="Previous Department"
-              className="w-12 h-12 flex items-center justify-center border border-[#c5a880]/40 hover:border-[#c5a880] text-white hover:bg-white/10 transition-colors touch-target"
+              className="w-12 h-12 rounded-full flex items-center justify-center border border-[#c5a880]/40 hover:border-[#c5a880] text-white hover:bg-white/10 transition-colors touch-target"
             >
               <ChevronUp className="w-5 h-5" />
             </button>
             <button
               onClick={handleNext}
               aria-label="Next Department"
-              className="w-12 h-12 flex items-center justify-center border border-[#c5a880]/40 hover:border-[#c5a880] text-white hover:bg-white/10 transition-colors touch-target"
+              className="w-12 h-12 rounded-full flex items-center justify-center border border-[#c5a880]/40 hover:border-[#c5a880] text-white hover:bg-white/10 transition-colors touch-target"
             >
               <ChevronDown className="w-5 h-5" />
             </button>

@@ -23,12 +23,12 @@ export default function HomePage() {
             priority
             className="object-cover object-center opacity-45 scale-105"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#2b1e1a] via-[#2b1e1a]/60 to-[#2b1e1a]/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#2b1e1a] via-[#2b1e1a]/70 to-[#2b1e1a]/35" />
         </div>
 
         {/* Hero Content */}
         <Reveal y={32} className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center py-16 sm:py-24">
-          <span className="inline-flex items-center gap-2 px-3 py-1 bg-[#c5a880]/20 border border-[#c5a880]/50 text-[#c5a880] text-[10px] sm:text-[11px] tracking-[0.2em] uppercase font-semibold mb-6">
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/25 text-[#f0dcb8] text-[10px] sm:text-[11px] tracking-[0.2em] uppercase font-semibold mb-6">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Shri Balaji Cotton Mills</span>
           </span>
@@ -38,26 +38,32 @@ export default function HomePage() {
             Architectural Luxury.
           </h1>
 
-          <p className="text-sm sm:text-base md:text-lg text-[#d8c2bb] font-normal max-w-2xl mx-auto leading-relaxed mb-8 sm:mb-10">
+          <p className="text-sm sm:text-base md:text-lg text-[#f3e8e3] font-normal max-w-2xl mx-auto leading-relaxed mb-8 sm:mb-10">
             Curating India's finest Banarasi brocades, pure Katan silks, and artisanal handloom yardage directly from the master looms of Varanasi.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/category/silk-sarees"
-              className="w-full sm:w-auto px-8 py-4 bg-[#5c1d24] text-white text-xs tracking-[0.16em] uppercase font-semibold hover:bg-white hover:text-[#2b1e1a] transition-all min-h-[50px] flex items-center justify-center border border-transparent shadow-lg"
+              className="w-full sm:w-auto sm:min-w-[240px] px-8 py-4 rounded-full bg-[#5c1d24] text-white text-xs tracking-[0.16em] uppercase font-semibold hover:bg-white hover:text-[#2b1e1a] active:scale-[0.98] transition-all min-h-[52px] flex items-center justify-center border border-transparent shadow-[0_10px_30px_-10px_rgba(92,29,36,0.8)]"
             >
               Explore Silk Sarees
             </Link>
 
             <Link
               href="/category/handloom-fabrics"
-              className="w-full sm:w-auto px-8 py-4 bg-transparent text-[#faf7f2] text-xs tracking-[0.16em] uppercase font-semibold border border-[#c5a880] hover:bg-[#faf7f2] hover:text-[#2b1e1a] transition-all min-h-[50px] flex items-center justify-center"
+              className="w-full sm:w-auto sm:min-w-[240px] px-8 py-4 rounded-full bg-white/10 backdrop-blur-md text-[#faf7f2] text-xs tracking-[0.16em] uppercase font-semibold border border-white/30 hover:bg-[#faf7f2] hover:text-[#2b1e1a] active:scale-[0.98] transition-all min-h-[52px] flex items-center justify-center"
             >
               Order Fabric by Metre
             </Link>
           </div>
         </Reveal>
+
+        {/* Scroll cue */}
+        <div aria-hidden className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 text-white/60">
+          <span className="text-[10px] tracking-[0.2em] uppercase">Scroll</span>
+          <span className="block w-px h-8 bg-gradient-to-b from-white/60 to-transparent" />
+        </div>
       </section>
 
       {/* 2. Signature Upward Shutter Section */}
@@ -127,7 +133,7 @@ export default function HomePage() {
 
               <Link
                 href="/category/handloom-fabrics"
-                className="inline-flex px-8 py-3.5 bg-[#2b1e1a] text-white text-xs tracking-[0.14em] uppercase font-semibold hover:bg-[#5c1d24] transition-colors min-h-[48px] items-center justify-center"
+                className="inline-flex px-8 py-3.5 rounded-full bg-[#2b1e1a] text-white text-xs tracking-[0.14em] uppercase font-semibold hover:bg-[#5c1d24] transition-colors min-h-[48px] items-center justify-center"
               >
                 Browse Fabrics by Metre
               </Link>

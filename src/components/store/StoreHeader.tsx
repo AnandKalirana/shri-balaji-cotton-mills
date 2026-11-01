@@ -35,18 +35,18 @@ export function StoreHeader() {
       {/* Main Header */}
       <header
         className={cn(
-          "sticky top-0 z-30 bg-[#fcf9f4] transition-shadow duration-300",
-          scrolled && "shadow-sm"
+          "sticky top-0 z-30 bg-[#fcf9f4]/75 backdrop-blur-xl backdrop-saturate-150 transition-shadow duration-300",
+          scrolled && "shadow-[0_1px_0_rgba(43,30,26,0.08),0_8px_24px_-12px_rgba(43,30,26,0.18)]"
         )}
       >
-        <div className="border-b border-[#ebe3d5]">
+        <div className={cn("border-b transition-colors duration-300", scrolled ? "border-transparent" : "border-[#ebe3d5]/70")}>
           <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10">
             <div className="flex items-center justify-between h-16 md:h-20">
 
               {/* Mobile: Hamburger */}
               <button
                 onClick={toggleMobileMenu}
-                className="lg:hidden w-10 h-10 flex items-center justify-center text-[#2b1e1a] hover:bg-[#f0ede9] transition-colors"
+                className="lg:hidden w-10 h-10 rounded-full flex items-center justify-center text-[#2b1e1a] hover:bg-[#f0ede9] transition-colors"
                 aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
                 aria-expanded={mobileMenuOpen}
               >
@@ -65,15 +65,39 @@ export function StoreHeader() {
 
               {/* Desktop: Category Nav */}
               <nav className="hidden lg:flex items-center gap-0 flex-1 justify-center" aria-label="Main navigation">
-                {categories.map((cat) => (
+                {categories.slice(0, 4).map((cat) => (
                   <Link
                     key={cat.id}
                     href={`/category/${cat.slug}`}
-                    className="px-4 py-2 text-[11px] tracking-[0.12em] uppercase font-semibold text-[#534343] hover:text-[#2b1e1a] hover:bg-[#f0ede9] transition-colors whitespace-nowrap"
+                    className="px-3.5 py-2 rounded-full text-[11px] tracking-[0.12em] uppercase font-semibold text-[#534343] hover:text-[#2b1e1a] hover:bg-[#2b1e1a]/5 transition-colors whitespace-nowrap"
                   >
                     {cat.name}
                   </Link>
                 ))}
+                {categories.length > 4 && (
+                  <div className="relative group">
+                    <button
+                      type="button"
+                      className="px-3.5 py-2 rounded-full text-[11px] tracking-[0.12em] uppercase font-semibold text-[#534343] group-hover:text-[#2b1e1a] group-hover:bg-[#2b1e1a]/5 group-focus-within:bg-[#2b1e1a]/5 transition-colors"
+                      aria-haspopup="true"
+                    >
+                      More
+                    </button>
+                    <div className="invisible opacity-0 translate-y-1 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:visible group-focus-within:opacity-100 group-focus-within:translate-y-0 transition-all duration-200 absolute left-1/2 -translate-x-1/2 top-full pt-2 z-40">
+                      <div className="min-w-[220px] rounded-2xl bg-[#fcf9f4]/95 backdrop-blur-xl border border-[#ebe3d5] shadow-[0_20px_50px_-20px_rgba(43,30,26,0.35)] p-2">
+                        {categories.slice(4).map((cat) => (
+                          <Link
+                            key={cat.id}
+                            href={`/category/${cat.slug}`}
+                            className="block px-4 py-2.5 rounded-xl text-sm text-[#2b1e1a] hover:bg-[#2b1e1a]/5 transition-colors"
+                          >
+                            {cat.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </nav>
 
               {/* Icons */}
@@ -81,7 +105,7 @@ export function StoreHeader() {
                 {/* Search */}
                 <button
                   onClick={() => setSearchOpen(true)}
-                  className="w-10 h-10 flex items-center justify-center text-[#2b1e1a] hover:bg-[#f0ede9] transition-colors"
+                  className="w-10 h-10 rounded-full flex items-center justify-center text-[#2b1e1a] hover:bg-[#2b1e1a]/5 active:scale-95 transition-all"
                   aria-label="Search"
                 >
                   <Search className="w-5 h-5" />
@@ -90,7 +114,7 @@ export function StoreHeader() {
                 {/* Wishlist — hidden on smallest mobile */}
                 <Link
                   href="/wishlist"
-                  className="hidden sm:flex w-10 h-10 items-center justify-center text-[#2b1e1a] hover:bg-[#f0ede9] transition-colors"
+                  className="hidden sm:flex w-10 h-10 rounded-full items-center justify-center text-[#2b1e1a] hover:bg-[#f0ede9] transition-colors"
                   aria-label="Wishlist"
                 >
                   <Heart className="w-5 h-5" />
@@ -99,7 +123,7 @@ export function StoreHeader() {
                 {/* Account */}
                 <Link
                   href="/account"
-                  className="hidden sm:flex w-10 h-10 items-center justify-center text-[#2b1e1a] hover:bg-[#f0ede9] transition-colors"
+                  className="hidden sm:flex w-10 h-10 rounded-full items-center justify-center text-[#2b1e1a] hover:bg-[#f0ede9] transition-colors"
                   aria-label="My account"
                 >
                   <User className="w-5 h-5" />
@@ -108,12 +132,12 @@ export function StoreHeader() {
                 {/* Cart */}
                 <button
                   onClick={toggleCart}
-                  className="relative w-10 h-10 flex items-center justify-center text-[#2b1e1a] hover:bg-[#f0ede9] transition-colors"
+                  className="relative w-10 h-10 rounded-full flex items-center justify-center text-[#2b1e1a] hover:bg-[#f0ede9] transition-colors"
                   aria-label={`Shopping cart, ${count} item${count !== 1 ? "s" : ""}`}
                 >
                   <ShoppingBag className="w-5 h-5" />
                   {count > 0 && (
-                    <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-[#5c1d24] text-white text-[9px] font-bold flex items-center justify-center rounded-full">
+                    <span className="absolute top-1 right-1 w-4 h-4 bg-[#5c1d24] text-white text-[9px] font-bold flex items-center justify-center rounded-full">
                       {count > 9 ? "9+" : count}
                     </span>
                   )}
@@ -249,7 +273,7 @@ export function StoreHeader() {
               {["Banarasi Silk", "Kantha Cotton", "Bridal Lehenga", "Zari Dupatta", "Handloom"].map((term) => (
                 <button
                   key={term}
-                  className="px-4 py-2 text-xs border border-[#c5a880] text-[#2b1e1a] hover:bg-[#f0ede9] transition-colors"
+                  className="px-4 py-2 text-xs rounded-full border border-[#c5a880] text-[#2b1e1a] hover:bg-[#f0ede9] transition-colors"
                 >
                   {term}
                 </button>
