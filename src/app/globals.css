@@ -14,12 +14,11 @@
   box-sizing: border-box;
 }
 
+/* overflow-x: clip hides horizontal overflow without turning html/body into scroll
+   containers, which would break position: sticky (sidebar, headers). */
 html {
-  overflow-x: hidden;
+  overflow-x: clip;
   scroll-behavior: smooth;
-}
-
-html, body {
   height: 100%;
 }
 
