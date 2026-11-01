@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Reveal } from "@/components/ui/Reveal";
 import { ShutterSection } from "@/components/store/ShutterSection";
 import { ProductCard } from "@/components/store/ProductCard";
 import { products, categories } from "@/lib/data";
@@ -26,7 +27,7 @@ export default function HomePage() {
         </div>
 
         {/* Hero Content */}
-        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center py-16 sm:py-24">
+        <Reveal y={32} className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center py-16 sm:py-24">
           <span className="inline-flex items-center gap-2 px-3 py-1 bg-[#c5a880]/20 border border-[#c5a880]/50 text-[#c5a880] text-[10px] sm:text-[11px] tracking-[0.2em] uppercase font-semibold mb-6">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Shri Balaji Cotton Mills</span>
@@ -56,7 +57,7 @@ export default function HomePage() {
               Order Fabric by Metre
             </Link>
           </div>
-        </div>
+        </Reveal>
       </section>
 
       {/* 2. Signature Upward Shutter Section */}
@@ -86,7 +87,9 @@ export default function HomePage() {
         {/* Responsive Grid: 1 col (360-430px) -> 2 col (sm/md) -> 4 col (lg/xl) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
           {featuredProducts.map((product, index) => (
-            <ProductCard key={product.id} product={product} priority={index === 0} />
+            <Reveal key={product.id} delay={index * 0.1}>
+              <ProductCard product={product} priority={index === 0} />
+            </Reveal>
           ))}
         </div>
       </section>
@@ -132,8 +135,10 @@ export default function HomePage() {
 
             {/* Product vitrines */}
             <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {fabricProducts.slice(0, 2).map((product) => (
-                <ProductCard key={product.id} product={product} />
+              {fabricProducts.slice(0, 2).map((product, index) => (
+                <Reveal key={product.id} delay={index * 0.12}>
+                  <ProductCard product={product} />
+                </Reveal>
               ))}
             </div>
           </div>

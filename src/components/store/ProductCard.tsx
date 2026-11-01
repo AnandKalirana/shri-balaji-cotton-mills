@@ -4,7 +4,8 @@ import Image from "next/image";
 import { formatPrice } from "@/lib/utils";
 import { Badge } from "@/components/ui/Badge";
 import { useCartStore } from "@/store";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingBag, Heart } from "lucide-react";
+import { useWishlistStore } from "@/store/wishlist";
 import type { Product } from "@/lib/types";
 
 interface ProductCardProps {
@@ -14,6 +15,8 @@ interface ProductCardProps {
 
 export function ProductCard({ product, priority = false }: ProductCardProps) {
   const { addItem, toggleCart } = useCartStore();
+  const wishlisted = useWishlistStore((st) => st.ids.includes(product.id));
+  const toggleWishlist = useWishlistStore((st) => st.toggle);
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -48,6 +51,20 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             <Badge variant="gold">{product.badge}</Badge>
           </div>
         )}
+
+        {/* Wishlist heart */}
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleWishlist(product.id);
+          }}
+          aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+          aria-pressed={wishlisted}
+          className="absolute top-3 right-3 z-10 w-9 h-9 bg-white/90 flex items-center justify-center text-[#5c1d24] hover:bg-white transition-colors"
+        >
+          <Heart className={wishlisted ? "w-4 h-4 fill-[#5c1d24]" : "w-4 h-4"} />
+        </button>
 
         {/* Out of Stock Overlay */}
         {!product.inStock && (
