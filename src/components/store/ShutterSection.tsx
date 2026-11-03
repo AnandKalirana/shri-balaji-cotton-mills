@@ -18,39 +18,48 @@ interface DepartmentData {
 const departments: DepartmentData[] = [
   {
     id: "d1",
-    name: "Silk Sarees",
-    slug: "silk-sarees",
-    headline: "Varanasi Heritage Katan & Zari",
-    subheadline: "Hand-spun mulberry silk drapes with hand-beaten gold and silver filaments.",
-    accentQuote: "Where royal courts once held audience, our master weavers preserve the loom.",
-    bgImage: "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=1920",
-  },
-  {
-    id: "d2",
-    name: "Banarasi Brocade",
-    slug: "banarasi-brocade",
-    headline: "Architectural Meenakari Brocades",
-    subheadline: "Intricate floral buta and jall patterns woven with architectural discipline.",
-    accentQuote: "Each metre represents over eighty hours of deliberate shuttle choreography.",
-    bgImage: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1920",
-  },
-  {
-    id: "d3",
-    name: "Handloom Fabrics",
-    slug: "handloom-fabrics",
-    headline: "Pure Tussar & Hand-spun Cottons",
-    subheadline: "Sold by the fractional metre for tailored silhouettes, kurtas, and luxury ensembles.",
-    accentQuote: "Untreated raw textures that breathe with organic grace and natural luster.",
+    name: "Fabrics",
+    slug: "fabrics",
+    headline: "Quality Fabrics by the Metre",
+    subheadline: "Cotton, silk and blended fabrics, cut to the length you need.",
+    accentQuote: "Soft, breathable and made to be stitched your way.",
     bgImage: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920",
   },
   {
+    id: "d2",
+    name: "Kurta Set",
+    slug: "kurta-set",
+    headline: "Ready-to-Wear Kurta Sets",
+    subheadline: "Kurta, bottoms and dupatta together, in designs for every day and every festival.",
+    accentQuote: "Put it on and you are ready to go.",
+    bgImage: "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=1920",
+  },
+  {
+    id: "d3",
+    name: "Kurti",
+    slug: "kurti",
+    headline: "Comfortable Everyday Kurtis",
+    subheadline: "Easy cuts in soft cottons, from office days to weekend plans.",
+    accentQuote: "Simple, comfortable and easy to style.",
+    bgImage: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1920",
+  },
+  {
     id: "d4",
-    name: "Bridal Collection",
-    slug: "bridal-collection",
-    headline: "Bespoke Bridal Sets & Lehengas",
-    subheadline: "Complete heirloom trousseau fabrics, dupattas, and handcrafted lehenga panels.",
-    accentQuote: "Heirloom textiles crafted to pass down across generations with timeless reverence.",
-    bgImage: "https://images.unsplash.com/photo-1519657831219-0571f74f3c3c?w=1920",
+    name: "Stretchy Blouse",
+    slug: "stretchy-blouse",
+    headline: "Stretchy Ready-Made Blouses",
+    subheadline: "A comfortable, flexible fit that goes with all your sarees.",
+    accentQuote: "No tailor visits, no fitting trouble.",
+    bgImage: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1920",
+  },
+  {
+    id: "d5",
+    name: "Saree Shapewear",
+    slug: "saree-shapewear",
+    headline: "Saree Shapewear",
+    subheadline: "Smooth shaping that keeps your saree in place all day.",
+    accentQuote: "Drape with confidence.",
+    bgImage: "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=1920",
   },
 ];
 
@@ -138,7 +147,7 @@ export function ShutterSection() {
         {/* Top Header & Department Counter */}
         <div className="flex items-center justify-between border-b border-[#c5a880]/30 pb-4">
           <span className="text-[10px] sm:text-[11px] tracking-[0.2em] uppercase font-semibold text-[#c5a880]">
-            Curated Department Salon
+            Shop by Category
           </span>
           <span className="text-xs tracking-widest text-[#d8c2bb]">
             0{currentIndex + 1} / 0{departments.length}

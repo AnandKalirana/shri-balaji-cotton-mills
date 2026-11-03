@@ -1,42 +1,41 @@
 import type { Category, Product, Order, DashboardStats } from "./types";
 
 export const categories: Category[] = [
-  { id: "1", name: "Silk Sarees", slug: "silk-sarees", description: "Pure silk weaves from Varanasi and Kanchipuram", image: "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800", productCount: 48 },
-  { id: "2", name: "Banarasi Brocade", slug: "banarasi-brocade", description: "Exquisite zari brocade from the looms of Varanasi", image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800", productCount: 32 },
-  { id: "3", name: "Handloom Fabrics", slug: "handloom-fabrics", description: "Artisan handloom in cotton, linen and blended fibres", image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800", productCount: 64 },
-  { id: "4", name: "Bridal Collection", slug: "bridal-collection", description: "Bespoke bridal couture and lehenga fabrics", image: "https://images.unsplash.com/photo-1519657831219-0571f74f3c3c?w=800", productCount: 24 },
-  { id: "5", name: "Dress Materials", slug: "dress-materials", description: "Ready-to-stitch fabrics for salwar suits and kurtis", image: "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=800", productCount: 56 },
-  { id: "6", name: "Zari & Embroidery", slug: "zari-embroidery", description: "Embroidered panels, borders and zari work", image: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800", productCount: 18 },
+  { id: "1", name: "Fabrics", slug: "fabrics", description: "Cotton, silk and blended fabrics sold by the metre", image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800", productCount: 0 },
+  { id: "2", name: "Kurta Set", slug: "kurta-set", description: "Ready-to-wear kurta sets with bottoms and dupatta", image: "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800", productCount: 0 },
+  { id: "3", name: "Kurti", slug: "kurti", description: "Everyday and festive kurtis in soft, comfortable cottons", image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800", productCount: 0 },
+  { id: "4", name: "Stretchy Blouse", slug: "stretchy-blouse", description: "Ready-made stretchy saree blouses that fit comfortably", image: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800", productCount: 0 },
+  { id: "5", name: "Saree Shapewear", slug: "saree-shapewear", description: "Saree shapewear and petticoats for a smooth, secure drape", image: "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=800", productCount: 0 },
 ];
 
 export const products: Product[] = [
   {
-    id: "p1", name: "Royal Maroon Banarasi Silk Saree", slug: "royal-maroon-banarasi-silk",
-    category: "silk-sarees", department: "Silk Sarees", price: 18500, pricePerMetre: 3700,
+    id: "p1", name: "Maroon Cotton Silk Kurta Set", slug: "maroon-cotton-silk-kurta-set",
+    category: "kurta-set", department: "Kurta Set", price: 18500, pricePerMetre: 3700,
     images: [
       "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800",
       "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800",
     ],
-    description: "A masterpiece of Banarasi craftsmanship. Woven with pure Katan silk and real zari, this saree features intricate floral buti motifs across the body and a dramatic pallav with architectural temple borders.",
-    fabricType: "Banarasi Silk", composition: "100% Pure Katan Silk with Real Zari",
+    description: "Kurta, straight pants and dupatta in a soft cotton silk with a rich maroon finish and fine woven buti. Easy to wear for festive days and family functions.",
+    fabricType: "Cotton Silk", composition: "Cotton silk blend",
     width: "46 inches", care: "Dry clean only", inStock: true, stockQty: 8,
-    tags: ["silk", "banarasi", "zari", "bridal"], badge: "Bestseller",
+    tags: ["kurta set", "cotton silk", "maroon", "festive"], badge: "Bestseller",
   },
   {
-    id: "p2", name: "Champagne Gold Tissue Silk", slug: "champagne-gold-tissue-silk",
-    category: "silk-sarees", department: "Silk Sarees", price: 24000, pricePerMetre: 4800,
+    id: "p2", name: "Champagne Gold Tissue Silk Fabric", slug: "champagne-gold-tissue-silk",
+    category: "fabrics", department: "Fabrics", price: 24000, pricePerMetre: 4800,
     images: [
       "https://images.unsplash.com/photo-1519657831219-0571f74f3c3c?w=800",
       "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800",
     ],
-    description: "Luminous tissue silk saree with a warm champagne gold base. The transparent weave creates a gossamer-light drape perfect for evening occasions and reception wear.",
+    description: "Luminous tissue silk fabric with a warm champagne gold base. The sheer weave drapes lightly and suits blouses, dupattas and evening wear.",
     fabricType: "Tissue Silk", composition: "80% Silk, 20% Zari",
     width: "44 inches", care: "Dry clean only", inStock: true, stockQty: 4,
     tags: ["tissue", "silk", "gold", "reception"], badge: "New",
   },
   {
     id: "p3", name: "Ivory Handloom Cotton Fabric", slug: "ivory-handloom-cotton",
-    category: "handloom-fabrics", department: "Handloom Fabrics", price: 1200, pricePerMetre: 240,
+    category: "fabrics", department: "Fabrics", price: 1200, pricePerMetre: 240,
     images: [
       "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800",
     ],
@@ -46,8 +45,8 @@ export const products: Product[] = [
     tags: ["cotton", "handloom", "bengal", "everyday"],
   },
   {
-    id: "p4", name: "Deep Burgundy Brocade Panel", slug: "deep-burgundy-brocade-panel",
-    category: "banarasi-brocade", department: "Banarasi Brocade", price: 6800, pricePerMetre: 1360,
+    id: "p4", name: "Deep Burgundy Brocade Fabric", slug: "deep-burgundy-brocade-panel",
+    category: "fabrics", department: "Fabrics", price: 6800, pricePerMetre: 1360,
     images: [
       "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800",
       "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800",
@@ -58,8 +57,8 @@ export const products: Product[] = [
     tags: ["brocade", "burgundy", "blouse piece", "meenakari"],
   },
   {
-    id: "p5", name: "Emerald Raw Silk Yardage", slug: "emerald-raw-silk-yardage",
-    category: "handloom-fabrics", department: "Handloom Fabrics", price: 2800, pricePerMetre: 560,
+    id: "p5", name: "Emerald Raw Silk Fabric", slug: "emerald-raw-silk-yardage",
+    category: "fabrics", department: "Fabrics", price: 2800, pricePerMetre: 560,
     images: [
       "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=800",
     ],
@@ -69,38 +68,49 @@ export const products: Product[] = [
     tags: ["raw silk", "green", "dupioni"],
   },
   {
-    id: "p6", name: "Ivory Bridal Lehenga Fabric Set", slug: "ivory-bridal-lehenga-set",
-    category: "bridal-collection", department: "Bridal Collection", price: 42000,
+    id: "p6", name: "Ivory Chikankari Kurta Set", slug: "ivory-chikankari-kurta-set",
+    category: "kurta-set", department: "Kurta Set", price: 42000,
     images: [
       "https://images.unsplash.com/photo-1519657831219-0571f74f3c3c?w=800",
       "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800",
     ],
-    description: "Complete bridal fabric set in ivory with gold embroidery. Includes lehenga panel (5m), blouse fabric (1m), and dupatta.",
-    fabricType: "Embroidered Silk", composition: "Silk base with zari and sequin embroidery",
+    description: "Three-piece ivory kurta set with gold embroidery. Includes kurta, pants and dupatta.",
+    fabricType: "Embroidered Cotton", composition: "Cotton with thread embroidery",
     care: "Professional dry clean only", inStock: true, stockQty: 6,
-    tags: ["bridal", "lehenga", "ivory", "embroidered", "set"], badge: "Limited",
+    tags: ["kurta set", "ivory", "embroidered", "set"], badge: "Limited",
   },
   {
-    id: "p7", name: "Navy Kantha Stitch Cotton", slug: "navy-kantha-stitch-cotton",
-    category: "handloom-fabrics", department: "Handloom Fabrics", price: 1800, pricePerMetre: 360,
+    id: "p7", name: "Navy Kantha Cotton Kurti", slug: "navy-kantha-cotton-kurti",
+    category: "kurti", department: "Kurti", price: 1800, pricePerMetre: 360,
     images: [
       "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800",
     ],
-    description: "Traditional Kantha stitch running thread embroidery on soft cotton. Artisanal and slow-fashion.",
+    description: "Soft cotton kurti with traditional Kantha running-stitch embroidery. Light, breathable and easy to style every day.",
     fabricType: "Kantha Cotton", composition: "100% Cotton with Kantha embroidery",
     width: "44 inches", care: "Hand wash cold", inStock: true, stockQty: 15,
-    tags: ["kantha", "cotton", "embroidery", "artisan"],
+    tags: ["kurti", "kantha", "cotton", "everyday"],
   },
   {
-    id: "p8", name: "Gold Zari Border Dupatta", slug: "gold-zari-border-dupatta",
-    category: "zari-embroidery", department: "Zari & Embroidery", price: 3200,
+    id: "p8", name: "Gold Border Stretchy Saree Blouse", slug: "gold-border-stretchy-blouse",
+    category: "stretchy-blouse", department: "Stretchy Blouse", price: 3200,
     images: [
       "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800",
     ],
-    description: "Sheer organza dupatta with a broad gold zari border and delicate scattered butti motifs.",
-    fabricType: "Organza with Zari", composition: "Organza with real gold zari border",
-    care: "Dry clean only", inStock: false, stockQty: 0,
-    tags: ["dupatta", "zari", "organza", "gold"],
+    description: "Ready-made stretchy blouse with a gold border on the sleeves and neckline. Fits comfortably and goes with most sarees.",
+    fabricType: "Stretch Lycra Blend", composition: "Cotton lycra blend with gold border trim",
+    care: "Hand wash cold", inStock: true, stockQty: 25,
+    tags: ["blouse", "stretchy", "gold", "ready-made"],
+  },
+  {
+    id: "p9", name: "Nude Saree Shapewear", slug: "nude-saree-shapewear",
+    category: "saree-shapewear", department: "Saree Shapewear", price: 899,
+    images: [
+      "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=800",
+    ],
+    description: "High-waist saree shapewear in a stretchy, breathable fabric. Smooths the silhouette, keeps the saree pleats in place and stays comfortable all day.",
+    fabricType: "Stretch Nylon Blend", composition: "Nylon and spandex blend",
+    care: "Hand wash cold", inStock: true, stockQty: 40,
+    tags: ["shapewear", "saree", "stretchy", "nude"], badge: "New",
   },
 ];
 

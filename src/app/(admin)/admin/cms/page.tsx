@@ -198,7 +198,7 @@ export default function AdminCmsPage() {
           <Input label="Subtitle" value={subtitle} onChange={(e) => setSubtitle(e.target.value)} />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input label="Button text" value={ctaText} onChange={(e) => setCtaText(e.target.value)} />
-            <Input label="Button link" value={ctaLink} onChange={(e) => setCtaLink(e.target.value)} helperText="e.g. /category/banarasi-brocade" />
+            <Input label="Button link" value={ctaLink} onChange={(e) => setCtaLink(e.target.value)} helperText="e.g. /category/kurti" />
           </div>
         </div>
 

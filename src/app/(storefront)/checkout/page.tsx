@@ -139,7 +139,7 @@ export default function CheckoutPage() {
             href="/"
             className="inline-flex w-full py-3.5 bg-[#5c1d24] text-white text-xs tracking-widest uppercase font-semibold justify-center hover:bg-[#2b1e1a]"
           >
-            Return to Atelier
+            Back to Home
           </Link>
         </div>
       </div>
@@ -169,7 +169,7 @@ export default function CheckoutPage() {
     <div className="min-h-screen bg-[#fcf9f4] py-8 sm:py-12">
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-10">
         <h1 className="font-[family-name:var(--font-playfair)] text-2xl sm:text-3xl font-medium text-[#2b1e1a] mb-8 pb-4 border-b border-[#ebe3d5]">
-          Atelier Checkout & Dispatch
+          Checkout & Delivery
         </h1>
 
         {error && (
@@ -366,7 +366,7 @@ export default function CheckoutPage() {
                   <span>{formatPrice(cartTotal)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>GST (5% Indian Handloom)</span>
+                  <span>GST (5%)</span>
                   <span className="text-emerald-700">Included ({formatPrice(gstAmount)})</span>
                 </div>
                 <div className="flex justify-between">

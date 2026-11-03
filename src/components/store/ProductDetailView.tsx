@@ -12,7 +12,6 @@ import {
   ShieldCheck,
   Truck,
   RotateCcw,
-  Sparkles,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -236,7 +235,7 @@ export function ProductDetailView({ product }: { product: Product }) {
                 ) : (
                   <div className="text-xs text-[#534343] space-y-1">
                     <p>• Standard wholesale bolt length: <strong>25.0 metres</strong></p>
-                    <p>• Suitable for bridal lehengas, boutiques, and multi-piece tailoring.</p>
+                    <p>• Suitable for stitching kurtas, blouses and suits, and for boutique use.</p>
                   </div>
                 )}
               </div>
@@ -305,7 +304,7 @@ export function ProductDetailView({ product }: { product: Product }) {
             <div className="mt-6 border-t border-[#ebe3d5] pt-4 space-y-2 text-xs text-[#534343]">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-emerald-700" />
-                <span>100% Certified Authentic Varanasi Handloom</span>
+                <span>Quality checked before dispatch</span>
               </div>
               <div className="flex items-center gap-2">
                 <Truck className="w-4 h-4 text-[#5c1d24]" />
@@ -313,7 +312,7 @@ export function ProductDetailView({ product }: { product: Product }) {
               </div>
               <div className="flex items-center gap-2">
                 <RotateCcw className="w-4 h-4 text-[#725b38]" />
-                <span>Easy 7-day atelier exchange policy on uncut textiles</span>
+                <span>Easy 7-day exchange on uncut fabric</span>
               </div>
             </div>
           </div>

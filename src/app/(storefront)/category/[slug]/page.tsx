@@ -94,7 +94,7 @@ export default async function CategoryPage({
               href="/"
               className="inline-flex px-6 py-3 border border-[#c5a880] text-xs uppercase tracking-widest font-semibold hover:bg-[#faf7f2]"
             >
-              Return to Atelier
+              Back to Home
             </Link>
           </div>
         ) : (

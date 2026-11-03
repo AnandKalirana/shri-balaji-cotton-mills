@@ -5,7 +5,7 @@ import { ShutterSection } from "@/components/store/ShutterSection";
 import { ProductCard } from "@/components/store/ProductCard";
 import { getProducts, getActiveBanner } from "@/lib/catalog";
 import { DEFAULT_HERO } from "@/lib/hero";
-import { ArrowRight, Sparkles, Shield, Compass, Truck } from "lucide-react";
+import { ArrowRight, MessageCircle, Shield, Compass, Truck } from "lucide-react";
 
 export default async function HomePage() {
   const [{ products }, banner] = await Promise.all([getProducts(), getActiveBanner()]);
@@ -53,10 +53,11 @@ export default async function HomePage() {
 
         {/* Hero Content */}
         <Reveal y={32} className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center py-16 sm:py-24">
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/25 text-[#f0dcb8] text-[10px] sm:text-[11px] tracking-[0.2em] uppercase font-semibold mb-6">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>{hero.eyebrow}</span>
-          </span>
+          {hero.eyebrow.trim() && (
+            <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/25 text-[#f0dcb8] text-[10px] sm:text-[11px] tracking-[0.2em] uppercase font-semibold mb-6">
+              {hero.eyebrow}
+            </span>
+          )}
 
           <h1 className="font-[family-name:var(--font-playfair)] text-4xl sm:text-5xl md:text-7xl font-normal text-[#faf7f2] tracking-tight leading-[1.1] mb-6">
             {heroLines.map((line, i) => (
@@ -81,7 +82,7 @@ export default async function HomePage() {
             </Link>
 
             <Link
-              href="/category/handloom-fabrics"
+              href="/category/fabrics"
               className="w-full sm:w-auto sm:min-w-[240px] px-8 py-4 rounded-full bg-white/10 backdrop-blur-md text-[#faf7f2] text-xs tracking-[0.16em] uppercase font-semibold border border-white/30 hover:bg-[#faf7f2] hover:text-[#2b1e1a] active:scale-[0.98] transition-all min-h-[52px] flex items-center justify-center"
             >
               Order Fabric by Metre
@@ -104,18 +105,18 @@ export default async function HomePage() {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 sm:mb-14 border-b border-[#ebe3d5] pb-6">
           <div>
             <span className="text-[10px] sm:text-[11px] tracking-[0.2em] uppercase font-semibold text-[#5c1d24]">
-              Curated Selection
+              Handpicked for You
             </span>
             <h2 className="font-[family-name:var(--font-playfair)] text-2xl sm:text-4xl font-normal text-[#2b1e1a] mt-1">
-              Atelier Masterpieces
+              Featured Products
             </h2>
           </div>
 
           <Link
-            href="/category/silk-sarees"
+            href="/category/fabrics"
             className="inline-flex items-center gap-2 text-xs tracking-[0.12em] uppercase font-semibold text-[#5c1d24] hover:text-[#2b1e1a] transition-colors"
           >
-            <span>View All Weaves</span>
+            <span>View All Products</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -137,19 +138,19 @@ export default async function HomePage() {
             {/* Text column */}
             <div className="lg:col-span-5">
               <span className="text-[11px] tracking-[0.18em] uppercase font-semibold text-[#5c1d24]">
-                Custom Couture Yardage
+                Fabric by the Metre
               </span>
               <h2 className="font-[family-name:var(--font-playfair)] text-3xl sm:text-4xl font-normal text-[#2b1e1a] mt-2 mb-4 leading-tight">
                 Order by the Metre or Complete Thaan
               </h2>
               <p className="text-sm sm:text-base text-[#534343] leading-relaxed mb-6">
-                Tailor your vision with precision cuts down to 0.5m. Boutiques and designers can also order intact rolls (thaans) of 25m or 50m with exclusive wholesale tier benefits.
+                Order fabric in cuts as small as 0.5m. Boutiques and tailors can also order full rolls (thaans) of 25m or 50m at wholesale rates.
               </p>
 
               <div className="space-y-3 mb-8">
                 <div className="flex items-center gap-3 text-xs sm:text-sm text-[#2b1e1a]">
                   <span className="w-5 h-5 bg-[#5c1d24] text-white flex items-center justify-center rounded-none text-xs font-bold">✓</span>
-                  <span>Fractional 0.5-metre precision cut with pinking shear finish</span>
+                  <span>Cut to length from 0.5 metre, with a neat pinked edge</span>
                 </div>
                 <div className="flex items-center gap-3 text-xs sm:text-sm text-[#2b1e1a]">
                   <span className="w-5 h-5 bg-[#5c1d24] text-white flex items-center justify-center rounded-none text-xs font-bold">✓</span>
@@ -157,12 +158,12 @@ export default async function HomePage() {
                 </div>
                 <div className="flex items-center gap-3 text-xs sm:text-sm text-[#2b1e1a]">
                   <span className="w-5 h-5 bg-[#5c1d24] text-white flex items-center justify-center rounded-none text-xs font-bold">✓</span>
-                  <span>Silk Mark certified handloom purity guarantee</span>
+                  <span>Quality-checked fabric, cut fresh for every order</span>
                 </div>
               </div>
 
               <Link
-                href="/category/handloom-fabrics"
+                href="/category/fabrics"
                 className="inline-flex px-8 py-3.5 rounded-full bg-[#2b1e1a] text-white text-xs tracking-[0.14em] uppercase font-semibold hover:bg-[#5c1d24] transition-colors min-h-[48px] items-center justify-center"
               >
                 Browse Fabrics by Metre
@@ -189,8 +190,8 @@ export default async function HomePage() {
               <Shield className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="font-semibold text-sm text-[#2b1e1a]">Authentic Handloom</h4>
-              <p className="text-xs text-[#867273] mt-1">100% verified artisan silk with genuine zari threadwork.</p>
+              <h4 className="font-semibold text-sm text-[#2b1e1a]">Quality You Can Trust</h4>
+              <p className="text-xs text-[#867273] mt-1">Carefully checked cotton, silk and stretch fabrics in every order.</p>
             </div>
           </div>
 
@@ -199,7 +200,7 @@ export default async function HomePage() {
               <Truck className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="font-semibold text-sm text-[#2b1e1a]">Insured Pan-India Transit</h4>
+              <h4 className="font-semibold text-sm text-[#2b1e1a]">Pan-India Delivery</h4>
               <p className="text-xs text-[#867273] mt-1">Free delivery above ₹2,000 via trusted couriers with live tracking.</p>
             </div>
           </div>
@@ -209,18 +210,18 @@ export default async function HomePage() {
               <Compass className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="font-semibold text-sm text-[#2b1e1a]">Bespoke Metre Cuts</h4>
-              <p className="text-xs text-[#867273] mt-1">Order exact yardage needed for blouses, lehengas or kurtas.</p>
+              <h4 className="font-semibold text-sm text-[#2b1e1a]">Cut to Your Length</h4>
+              <p className="text-xs text-[#867273] mt-1">Order the exact metres you need for kurtas, blouses or suits.</p>
             </div>
           </div>
 
           <div className="flex items-start gap-4">
             <div className="w-10 h-10 shrink-0 bg-[#f0ede9] border border-[#c5a880] flex items-center justify-center text-[#5c1d24]">
-              <Sparkles className="w-5 h-5" />
+              <MessageCircle className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="font-semibold text-sm text-[#2b1e1a]">Atelier Concierge</h4>
-              <p className="text-xs text-[#867273] mt-1">Expert stylists available on WhatsApp for custom consultation.</p>
+              <h4 className="font-semibold text-sm text-[#2b1e1a]">WhatsApp Support</h4>
+              <p className="text-xs text-[#867273] mt-1">Ask us about sizes, fabrics and orders on WhatsApp.</p>
             </div>
           </div>
         </div>
