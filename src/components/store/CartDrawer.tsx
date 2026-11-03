@@ -52,10 +52,10 @@ export function CartDrawer() {
           {items.length === 0 ? (
             <div className="py-16 text-center">
               <p className="font-[family-name:var(--font-playfair)] text-xl text-[#2b1e1a] mb-2">
-                Your Atelier Bag is Empty
+                Your Bag is Empty
               </p>
               <p className="text-xs text-[#867273] max-w-xs mx-auto mb-6">
-                Explore hand-curated Banarasi brocades, raw silks, and bespoke bridal couture.
+                Browse fabrics, kurta sets, kurtis, stretchy blouses and saree shapewear.
               </p>
               <button
                 onClick={toggleCart}

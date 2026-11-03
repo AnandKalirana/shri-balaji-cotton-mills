@@ -44,10 +44,10 @@ export default function WishlistPage() {
           <h2 className="font-[family-name:var(--font-playfair)] text-2xl text-[#2b1e1a] mb-2">Nothing saved yet</h2>
           <p className="text-[#534343] mb-8 max-w-sm">Tap the heart on any fabric to keep it here for later.</p>
           <Link
-            href="/category/silk-sarees"
+            href="/category/fabrics"
             className="px-8 py-3.5 rounded-full bg-[#5c1d24] text-white text-xs tracking-[0.14em] uppercase font-semibold hover:bg-[#2b1e1a] transition-colors"
           >
-            Browse Silk Sarees
+            Browse Fabrics
           </Link>
         </div>
       ) : (

@@ -8,7 +8,7 @@ import { categories } from "@/lib/data";
 import { cn, formatPrice } from "@/lib/utils";
 import type { Product } from "@/lib/types";
 
-const POPULAR_SEARCHES = ["Banarasi Silk", "Cotton", "Bridal", "Zari", "Handloom"];
+const POPULAR_SEARCHES = ["Cotton Fabric", "Kurta Set", "Kurti", "Stretchy Blouse", "Shapewear"];
 
 export function StoreHeader({
   announcement,

@@ -17,7 +17,7 @@ export default function AdminNewProductPage() {
   const router = useRouter();
   const [form, setForm] = useState({
     name: "",
-    category: "silk-sarees",
+    category: "fabrics",
     price: "",
     isFabric: false,
     pricePerMetre: "",
@@ -91,7 +91,7 @@ export default function AdminNewProductPage() {
           <h2 className="font-[family-name:var(--font-playfair)] text-xl sm:text-2xl font-medium text-[#2b1e1a]">
             Add a product
           </h2>
-          <p className="text-xs text-[#867273]">New sarees, fabric by the metre or bridal pieces appear on the store straight away.</p>
+          <p className="text-xs text-[#867273]">New fabrics, kurta sets, kurtis, blouses or shapewear appear on the store straight away.</p>
         </div>
       </div>
 
@@ -119,7 +119,7 @@ export default function AdminNewProductPage() {
             label="Product title *"
             value={form.name}
             onChange={(e) => set("name", e.target.value)}
-            placeholder="e.g. Royal Wine Banarasi Katan Silk Saree"
+            placeholder="e.g. Maroon Cotton Silk Kurta Set"
             required
           />
 
@@ -141,7 +141,7 @@ export default function AdminNewProductPage() {
               label="Fabric / weave type"
               value={form.fabricType}
               onChange={(e) => set("fabricType", e.target.value)}
-              placeholder="e.g. Banarasi Silk"
+              placeholder="e.g. Cotton Silk"
             />
           </div>
 
@@ -149,7 +149,7 @@ export default function AdminNewProductPage() {
             label="Composition"
             value={form.composition}
             onChange={(e) => set("composition", e.target.value)}
-            placeholder="e.g. 100% Pure Katan Silk with real zari"
+            placeholder="e.g. 95% Cotton, 5% Lycra"
           />
 
           <label className="flex items-center gap-3 pt-2 text-sm text-[#2b1e1a] cursor-pointer">

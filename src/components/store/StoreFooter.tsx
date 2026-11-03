@@ -25,13 +25,13 @@ export function StoreFooter({
               {storeName}
             </h2>
             <p className="text-sm text-[#d8c2bb] leading-relaxed max-w-xs">
-              Curators of India's finest handwoven cottons, Banarasi brocades, and bespoke bridal couture since 1978.
+              Fabrics, kurta sets, kurtis, stretchy blouses and saree shapewear, delivered across India.
             </p>
             <div className="flex gap-3 mt-6">
               <a
                 href="#"
                 className="w-10 h-10 rounded-full flex items-center justify-center border border-[#53433e] text-[#d8c2bb] hover:border-[#c5a880] hover:text-[#c5a880] transition-colors"
-                aria-label="Atelier Global"
+                aria-label="Website"
               >
                 <Globe className="w-4 h-4" />
               </a>
@@ -74,15 +74,15 @@ export function StoreFooter({
           {/* Help */}
           <div>
             <h3 className="text-[11px] tracking-[0.14em] uppercase font-semibold text-[#c5a880] mb-4">
-              Boutique Services
+              Customer Services
             </h3>
             <ul className="space-y-3">
               {[
-                "Insured Pan-India Shipping",
-                "Textile Care Guide",
-                "Custom Metre Yardage",
-                "Bulk Thaan Wholesale",
-                "Atelier Consultation",
+                "Pan-India Shipping",
+                "Fabric Care Guide",
+                "Fabric by the Metre",
+                "Bulk & Wholesale Orders",
+                "Size & Fabric Help",
               ].map((item) => (
                 <li key={item}>
                   <a href="#" className="text-sm text-[#d8c2bb] hover:text-white transition-colors">
@@ -96,7 +96,7 @@ export function StoreFooter({
           {/* Contact */}
           <div>
             <h3 className="text-[11px] tracking-[0.14em] uppercase font-semibold text-[#c5a880] mb-4">
-              Varanasi Salon
+              Contact Us
             </h3>
             <div className="space-y-3 text-sm text-[#d8c2bb]">
               <div className="flex items-start gap-2.5">
@@ -123,11 +123,11 @@ export function StoreFooter({
       <div className="border-t border-[#53433e]">
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <p className="text-xs text-[#867273]">
-            © 2026 {storeName}. All rights reserved. Handcrafted in Varanasi.
+            © 2026 {storeName}. All rights reserved.
           </p>
           <div className="flex gap-4">
             <Link href="/admin" className="text-xs text-[#c5a880] hover:underline">
-              Atelier Staff Portal →
+              Staff Login →
             </Link>
           </div>
         </div>

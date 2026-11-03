@@ -16,12 +16,12 @@ const jakarta = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default: "Shri Balaji Cotton Mills — Luxury Indian Handlooms & Textiles",
+    default: "Shri Balaji Cotton Mills — Fabrics, Kurtis & Everyday Wear",
     template: "%s | Shri Balaji Cotton Mills",
   },
   description:
-    "Exquisite handwoven cottons, pure silk weaves, Banarasi brocades, and bespoke bridal fabrics from Shri Balaji Cotton Mills.",
-  keywords: ["Shri Balaji Cotton Mills", "cotton mills", "Indian textiles", "handloom", "zari", "silk", "brocade"],
+    "Fabrics, kurta sets, kurtis, stretchy blouses and saree shapewear from Shri Balaji Cotton Mills.",
+  keywords: ["Shri Balaji Cotton Mills", "cotton mills", "fabrics", "kurta set", "kurti", "stretchy blouse", "saree shapewear"],
   openGraph: {
     type: "website",
     locale: "en_IN",

@@ -117,7 +117,7 @@ export default function AdminSettingsPage() {
             <input type="checkbox" checked={enableCod} onChange={(e) => setEnableCod(e.target.checked)} className="w-5 h-5 accent-[#5c1d24]" />
           </label>
           <p className="text-xs text-[#867273]">
-            GST is set on each product (5% by default for handloom textiles), not here.
+            GST is set on each product (5% by default for textiles), not here.
           </p>
         </div>
 

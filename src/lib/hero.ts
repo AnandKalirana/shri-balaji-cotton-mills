@@ -1,11 +1,11 @@
 /** Default homepage hero copy, used until a banner is saved in the CMS. */
 export const DEFAULT_HERO = {
   eyebrow: "Shri Balaji Cotton Mills",
-  title: "Ancient Weaves.\nArchitectural Luxury.",
+  title: "Fabrics, Kurtis &\nEveryday Essentials",
   subtitle:
-    "Curating India's finest Banarasi brocades, pure Katan silks, and artisanal handloom yardage directly from the master looms of Varanasi.",
-  ctaText: "Explore Silk Sarees",
-  ctaLink: "/category/silk-sarees",
+    "Quality cotton fabrics, kurta sets, kurtis, stretchy blouses and saree shapewear, made for comfort and sold at honest prices.",
+  ctaText: "Shop Fabrics",
+  ctaLink: "/category/fabrics",
   desktopImg: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1920",
   mobileImg: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800",
 };
@@ -18,7 +18,7 @@ export const DEFAULT_SETTINGS = {
   standardShippingFee: 150,
   enableCod: true,
   codMaxOrderLimit: 15000,
-  announcementText: "Free shipping on orders above ₹2,000 · Use code ATELIER10 for 10% off",
+  announcementText: "Free shipping on orders above ₹2,000",
   enableAnnouncement: true,
 };
 
