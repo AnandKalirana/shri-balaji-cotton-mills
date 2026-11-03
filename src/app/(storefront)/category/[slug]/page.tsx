@@ -1,4 +1,5 @@
-import { categories, products } from "@/lib/data";
+import { categories } from "@/lib/data";
+import { getProducts } from "@/lib/catalog";
 import { ProductCard } from "@/components/store/ProductCard";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -31,7 +32,7 @@ export default async function CategoryPage({
     notFound();
   }
 
-  const categoryProducts = products.filter((p) => p.category === slug);
+  const { products: categoryProducts } = await getProducts({ category: slug });
 
   return (
     <div className="min-h-screen bg-[#fcf9f4]">

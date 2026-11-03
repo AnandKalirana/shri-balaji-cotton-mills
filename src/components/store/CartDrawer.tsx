@@ -1,4 +1,5 @@
 "use client";
+import { useStoreSettings } from "@/lib/use-store-settings";
 import Link from "next/link";
 import Image from "next/image";
 import { Drawer } from "@/components/ui/Drawer";
@@ -11,11 +12,11 @@ export function CartDrawer() {
     useCartStore();
 
   const cartTotal = total();
-  const freeShippingThreshold = 2000;
-  const progressToFreeShipping = Math.min(
-    100,
-    Math.round((cartTotal / freeShippingThreshold) * 100)
-  );
+  const { freeShippingThreshold } = useStoreSettings();
+  const progressToFreeShipping =
+    freeShippingThreshold > 0
+      ? Math.min(100, Math.round((cartTotal / freeShippingThreshold) * 100))
+      : 100;
   const remainingForFree = Math.max(0, freeShippingThreshold - cartTotal);
 
   return (

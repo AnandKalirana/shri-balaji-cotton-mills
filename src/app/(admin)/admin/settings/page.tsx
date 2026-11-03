@@ -1,122 +1,139 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { Check, Shield, Store, Truck, Phone } from "lucide-react";
+import { Notice } from "@/components/ui/Notice";
+import { api } from "@/lib/api-client";
+import { DEFAULT_SETTINGS } from "@/lib/hero";
+import { Check, Store, Truck } from "lucide-react";
+
+const card =
+  "bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-5 sm:p-6 space-y-4";
 
 export default function AdminSettingsPage() {
-  const [saved, setSaved] = useState(false);
-  const [storeName, setStoreName] = useState("Shri Balaji Cotton Mills");
-  const [supportPhone, setSupportPhone] = useState("+91 98765 00000");
-  const [supportEmail, setSupportEmail] = useState("concierge@shribalajicottonmills.in");
-  const [gstRate, setGstRate] = useState("5.0");
-  const [freeShippingThreshold, setFreeShippingThreshold] = useState("2000");
+  const [loading, setLoading] = useState(true);
+  const [storeName, setStoreName] = useState(DEFAULT_SETTINGS.storeName);
+  const [supportPhone, setSupportPhone] = useState(DEFAULT_SETTINGS.supportPhone);
+  const [supportEmail, setSupportEmail] = useState(DEFAULT_SETTINGS.supportEmail);
+  const [freeShippingThreshold, setFreeShippingThreshold] = useState(String(DEFAULT_SETTINGS.freeShippingThreshold));
+  const [shippingFee, setShippingFee] = useState(String(DEFAULT_SETTINGS.standardShippingFee));
   const [enableCod, setEnableCod] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    api<{ settings: typeof DEFAULT_SETTINGS }>("/api/admin/settings").then((res) => {
+      if (res.ok) {
+        const s = res.data.settings;
+        setStoreName(s.storeName);
+        setSupportPhone(s.supportPhone);
+        setSupportEmail(s.supportEmail);
+        setFreeShippingThreshold(String(s.freeShippingThreshold));
+        setShippingFee(String(s.standardShippingFee));
+        setEnableCod(s.enableCod);
+      } else {
+        setError(res.error);
+      }
+      setLoading(false);
+    });
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    setError("");
+    setSaved(false);
+    setSaving(true);
+    const res = await api("/api/admin/settings", {
+      method: "PUT",
+      json: {
+        storeName,
+        supportPhone,
+        supportEmail,
+        freeShippingThreshold: parseFloat(freeShippingThreshold) || 0,
+        standardShippingFee: parseFloat(shippingFee) || 0,
+        enableCod,
+      },
+    });
+    setSaving(false);
+    if (res.ok) {
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } else {
+      setError(res.error);
+    }
   };
+
+  if (loading) return <div className="py-24 text-center text-sm text-[#867273]">Loading…</div>;
 
   return (
     <div className="space-y-6 max-w-4xl">
-      <div className="pb-4 border-b border-[#ebe3d5]">
+      <div>
         <h2 className="font-[family-name:var(--font-playfair)] text-xl sm:text-2xl font-medium text-[#2b1e1a]">
-          Showroom & Atelier Configuration
+          Store settings
         </h2>
-        <p className="text-xs text-[#867273]">
-          Manage boutique contact details, tax compliance, and shipping rules
-        </p>
+        <p className="text-xs text-[#867273]">Contact details, shipping and payment options.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Contact Info */}
-        <div className="bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-5 sm:p-6 space-y-4">
+        <div className={card}>
           <div className="flex items-center gap-2">
             <Store className="w-4 h-4 text-[#c5a880]" />
-            <h3 className="text-xs tracking-[0.14em] uppercase font-semibold text-[#5c1d24]">
-              Boutique Identity & Concierge
-            </h3>
+            <h3 className="text-xs tracking-[0.14em] uppercase font-semibold text-[#5c1d24]">Store & contact</h3>
           </div>
-
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Input
-              label="Storefront Name"
-              value={storeName}
-              onChange={(e) => setStoreName(e.target.value)}
-            />
-            <Input
-              label="Concierge Phone"
-              value={supportPhone}
-              onChange={(e) => setSupportPhone(e.target.value)}
-            />
+            <Input label="Store name" value={storeName} onChange={(e) => setStoreName(e.target.value)} />
+            <Input label="Support phone" value={supportPhone} onChange={(e) => setSupportPhone(e.target.value)} />
           </div>
-
-          <Input
-            label="Official Contact Email"
-            type="email"
-            value={supportEmail}
-            onChange={(e) => setSupportEmail(e.target.value)}
-          />
+          <Input label="Contact email" type="email" value={supportEmail} onChange={(e) => setSupportEmail(e.target.value)} />
         </div>
 
-        {/* Taxation & Compliance */}
-        <div className="bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-5 sm:p-6 space-y-4">
+        <div className={card}>
           <div className="flex items-center gap-2">
-            <Shield className="w-4 h-4 text-[#c5a880]" />
-            <h3 className="text-xs tracking-[0.14em] uppercase font-semibold text-[#5c1d24]">
-              Indian Textile Tax Compliance
-            </h3>
+            <Truck className="w-4 h-4 text-[#c5a880]" />
+            <h3 className="text-xs tracking-[0.14em] uppercase font-semibold text-[#5c1d24]">Shipping & payment</h3>
           </div>
-
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input
-              label="Handloom GST Rate (%)"
+              label="Free shipping minimum (₹)"
               type="number"
-              value={gstRate}
-              onChange={(e) => setGstRate(e.target.value)}
-              helperText="Statutory rate is 5% for Indian woven textiles"
-            />
-            <Input
-              label="Free Shipping Order Minimum (₹)"
-              type="number"
+              min={0}
               value={freeShippingThreshold}
               onChange={(e) => setFreeShippingThreshold(e.target.value)}
             />
-          </div>
-
-          {/* COD Toggle */}
-          <div className="pt-2 flex items-center justify-between">
-            <div>
-              <p className="text-sm font-semibold text-[#2b1e1a]">
-                Enable Cash on Delivery (COD)
-              </p>
-              <p className="text-xs text-[#867273]">
-                Allows customers to pay upon doorstep delivery across India
-              </p>
-            </div>
-            <input
-              type="checkbox"
-              checked={enableCod}
-              onChange={(e) => setEnableCod(e.target.checked)}
-              className="w-5 h-5 accent-[#5c1d24]"
+            <Input
+              label="Shipping fee below minimum (₹)"
+              type="number"
+              min={0}
+              value={shippingFee}
+              onChange={(e) => setShippingFee(e.target.value)}
             />
           </div>
+          <label className="pt-2 flex items-center justify-between gap-4 cursor-pointer">
+            <span>
+              <span className="block text-sm font-semibold text-[#2b1e1a]">Cash on delivery</span>
+              <span className="block text-xs text-[#867273]">Let customers pay when the parcel arrives.</span>
+            </span>
+            <input type="checkbox" checked={enableCod} onChange={(e) => setEnableCod(e.target.checked)} className="w-5 h-5 accent-[#5c1d24]" />
+          </label>
+          <p className="text-xs text-[#867273]">
+            GST is set on each product (5% by default for handloom textiles), not here.
+          </p>
         </div>
 
-        <Button type="submit" size="lg" className="w-full sm:w-auto min-h-[50px]">
+        {error && <Notice tone="error">{error}</Notice>}
+
+        <Button type="submit" loading={saving} size="lg" className="w-full sm:w-auto rounded-full min-h-[50px]">
           {saved ? (
             <span className="flex items-center gap-2">
               <Check className="w-4 h-4 text-emerald-400" />
-              <span>Settings Saved Successfully</span>
+              <span>Settings saved</span>
             </span>
           ) : (
-            <span>Save Configuration</span>
+            <span>Save settings</span>
           )}
         </Button>
       </form>
     </div>
   );
 }
-

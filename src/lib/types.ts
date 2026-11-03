@@ -18,6 +18,8 @@ export interface Product {
   stockQty: number;
   tags: string[];
   badge?: string;
+  /** false when the owner has hidden the product from the store. */
+  isActive?: boolean;
 }
 
 export interface Category {

@@ -29,10 +29,12 @@ export function StockAdjustModal({
   const [reason, setReason] = useState("Showroom floor recount");
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
 
   if (!isOpen) return null;
 
   const handleSave = async () => {
+    setError("");
     setSaving(true);
     try {
       const res = await fetch("/api/admin/inventory/adjust", {
@@ -53,11 +55,12 @@ export function StockAdjustModal({
           onSaved?.(stock);
           onClose();
         }, 700);
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error || "Couldn't save the new stock. Please try again.");
       }
     } catch {
-      // In dev fallback
-      onSaved?.(stock);
-      onClose();
+      setError("Couldn't reach the server. Please try again.");
     } finally {
       setSaving(false);
     }
@@ -167,6 +170,12 @@ export function StockAdjustModal({
             <option value="VIP customer hold release">VIP customer hold release</option>
           </select>
         </div>
+
+        {error && (
+          <p role="alert" className="mb-4 rounded-2xl bg-rose-50 text-rose-900 text-sm px-4 py-3">
+            {error}
+          </p>
+        )}
 
         {/* Action Button */}
         <Button

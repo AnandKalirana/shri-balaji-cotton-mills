@@ -1,13 +1,15 @@
 "use client";
-import { useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { Heart } from "lucide-react";
-import { products } from "@/lib/data";
 import { useWishlistStore } from "@/store/wishlist";
 import { ProductCard } from "@/components/store/ProductCard";
+import type { Product } from "@/lib/types";
 
 export default function WishlistPage() {
   const ids = useWishlistStore((s) => s.ids);
+  const [all, setAll] = useState<Product[] | null>(null);
+
   // false on the server render, true in the browser, so saved items never cause a hydration mismatch
   const mounted = useSyncExternalStore(
     () => () => {},
@@ -15,7 +17,15 @@ export default function WishlistPage() {
     () => false
   );
 
-  const saved = mounted ? products.filter((p) => ids.includes(p.id)) : [];
+  useEffect(() => {
+    fetch("/api/products")
+      .then((r) => r.json())
+      .then((d) => setAll(d.products ?? []))
+      .catch(() => setAll([]));
+  }, []);
+
+  const ready = mounted && all !== null;
+  const saved = ready ? all!.filter((p) => ids.includes(p.id)) : [];
 
   return (
     <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 py-12 sm:py-16 w-full">
@@ -26,7 +36,7 @@ export default function WishlistPage() {
         Your Wishlist
       </h1>
 
-      {mounted && saved.length === 0 ? (
+      {ready && saved.length === 0 ? (
         <div className="flex flex-col items-center text-center py-20">
           <span className="w-24 h-24 rounded-full bg-[#f0ede9] flex items-center justify-center mb-6">
             <Heart className="w-10 h-10 text-[#c5a880]" />

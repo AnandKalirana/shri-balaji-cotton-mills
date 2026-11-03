@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
-import { orders as fallbackOrders } from "@/lib/data";
+import { api } from "@/lib/api-client";
+import { Notice } from "@/components/ui/Notice";
 import { formatPrice } from "@/lib/utils";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
@@ -26,43 +27,51 @@ const statusOptions = [
 ];
 
 export default function AdminOrdersPage() {
-  const [orders, setOrders] = useState<Order[]>(fallbackOrders);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [filter, setFilter] = useState("all");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [demo, setDemo] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch(`/api/admin/orders?status=${filter}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.orders) setOrders(data.orders);
-      })
-      .catch(() => {});
+    api<{ orders: Order[]; demo: boolean }>(`/api/admin/orders?status=${filter}`).then((res) => {
+      if (res.ok) {
+        setOrders(res.data.orders);
+        setDemo(res.data.demo);
+      } else {
+        setError(res.error);
+      }
+      setLoading(false);
+    });
   }, [filter]);
 
   const handleQuickStatusChange = async (orderId: string, nextStatus: string) => {
+    setError("");
     setUpdatingId(orderId);
-    try {
-      await fetch(`/api/admin/orders/${orderId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderStatus: nextStatus }),
-      });
-
-      setOrders((prev) =>
-        prev.map((o) => (o.id === orderId ? { ...o, status: nextStatus as Order["status"] } : o))
-      );
-    } catch {
-      // Fallback
-    } finally {
-      setUpdatingId(null);
+    const res = await api(`/api/admin/orders/${orderId}`, { method: "PATCH", json: { orderStatus: nextStatus } });
+    setUpdatingId(null);
+    if (res.ok) {
+      setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: nextStatus as Order["status"] } : o)));
+    } else {
+      setError(res.error);
     }
   };
 
   const filteredOrders =
     filter === "all" ? orders : orders.filter((o) => o.status === filter);
 
+  if (loading) return <div className="py-24 text-center text-sm text-[#867273]">Loading…</div>;
+
   return (
     <div className="space-y-6">
+      {demo && (
+        <Notice tone="warning">
+          These are sample orders. Real customer orders will appear here automatically, and status changes can only be
+          saved on real orders.
+        </Notice>
+      )}
+      {error && <Notice tone="error">{error}</Notice>}
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
         <div>
@@ -131,7 +140,7 @@ export default function AdminOrdersPage() {
               <div className="flex items-center gap-1.5">
                 {order.status === "confirmed" && (
                   <button
-                    disabled={updatingId === order.id}
+                    disabled={demo || updatingId === order.id}
                     onClick={() => handleQuickStatusChange(order.id, "processing")}
                     className="px-4 py-2 rounded-full text-xs bg-[#f0ede9] text-[#2b1e1a] font-semibold hover:bg-[#5c1d24] hover:text-white active:scale-95 transition-all disabled:opacity-50"
                   >
@@ -140,7 +149,7 @@ export default function AdminOrdersPage() {
                 )}
                 {order.status === "processing" && (
                   <button
-                    disabled={updatingId === order.id}
+                    disabled={demo || updatingId === order.id}
                     onClick={() => handleQuickStatusChange(order.id, "shipped")}
                     className="px-4 py-2 rounded-full text-xs bg-[#5c1d24] text-white font-semibold hover:bg-[#2b1e1a] active:scale-95 transition-all disabled:opacity-50"
                   >
@@ -149,7 +158,7 @@ export default function AdminOrdersPage() {
                 )}
                 {order.status === "shipped" && (
                   <button
-                    disabled={updatingId === order.id}
+                    disabled={demo || updatingId === order.id}
                     onClick={() => handleQuickStatusChange(order.id, "delivered")}
                     className="px-4 py-2 rounded-full text-xs bg-emerald-800 text-white font-semibold hover:bg-emerald-900 active:scale-95 transition-all disabled:opacity-50"
                   >
@@ -199,7 +208,7 @@ export default function AdminOrdersPage() {
                     ariaLabel={`Update status for ${order.orderNumber}`}
                     value={order.status}
                     options={statusOptions}
-                    disabled={updatingId === order.id}
+                    disabled={demo || updatingId === order.id}
                     onChange={(next) => handleQuickStatusChange(order.id, next)}
                   />
                 </td>

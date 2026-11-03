@@ -1,14 +1,29 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Search, Heart, ShoppingBag, Menu, X, User } from "lucide-react";
 import { useCartStore, useUIStore } from "@/store";
 import { categories } from "@/lib/data";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
+import type { Product } from "@/lib/types";
 
-export function StoreHeader() {
+const POPULAR_SEARCHES = ["Banarasi Silk", "Cotton", "Bridal", "Zari", "Handloom"];
+
+export function StoreHeader({
+  announcement,
+  storeName = "Shri Balaji Cotton Mills",
+}: {
+  announcement?: string | null;
+  storeName?: string;
+}) {
   const [scrolled, setScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<{ q: string; items: Product[] } | null>(null);
+  const trimmed = query.trim();
+  const searchActive = trimmed.length >= 2;
+  const searching = searchActive && results?.q !== trimmed;
   const { itemCount, toggleCart } = useCartStore();
   const { mobileMenuOpen, toggleMobileMenu, closeMobileMenu } = useUIStore();
 
@@ -17,6 +32,29 @@ export function StoreHeader() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Debounced live search: waits for a pause in typing, then asks the server.
+  useEffect(() => {
+    if (trimmed.length < 2) return;
+    let cancelled = false;
+    const timer = setTimeout(() => {
+      fetch(`/api/products?search=${encodeURIComponent(trimmed)}&limit=8`)
+        .then((r) => r.json())
+        .then((d) => !cancelled && setResults({ q: trimmed, items: d.products ?? [] }))
+        .catch(() => !cancelled && setResults({ q: trimmed, items: [] }));
+    }, 250);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [trimmed]);
+
+  useEffect(() => {
+    if (!searchOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setSearchOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [searchOpen]);
 
   // Close menu on route change equivalent
   useEffect(() => {
@@ -28,9 +66,11 @@ export function StoreHeader() {
   return (
     <>
       {/* Announcement Bar */}
-      <div className="bg-[#5c1d24] text-white text-center py-2 px-4 text-[11px] tracking-[0.12em] uppercase font-semibold">
-        Free shipping on orders above ₹2,000 · Use code ATELIER10 for 10% off
-      </div>
+      {announcement && (
+        <div className="bg-[#5c1d24] text-white text-center py-2 px-4 text-[11px] tracking-[0.12em] uppercase font-semibold">
+          {announcement}
+        </div>
+      )}
 
       {/* Main Header */}
       <header
@@ -59,7 +99,7 @@ export function StoreHeader() {
                 className="absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0 lg:flex-1"
               >
                 <span className="font-[family-name:var(--font-playfair)] text-xl md:text-2xl font-medium text-[#2b1e1a] whitespace-nowrap tracking-tight">
-                  Shri Balaji Cotton Mills
+                  {storeName}
                 </span>
               </Link>
 
@@ -190,7 +230,7 @@ export function StoreHeader() {
           {/* Logo in drawer */}
           <div className="flex items-center justify-between px-6 py-5 border-b border-[#ebe3d5]">
             <span className="font-[family-name:var(--font-playfair)] text-lg font-medium text-[#2b1e1a]">
-              Shri Balaji Cotton Mills
+              {storeName}
             </span>
             <button
               onClick={closeMobileMenu}
@@ -241,48 +281,109 @@ export function StoreHeader() {
 
           {/* Footer */}
           <div className="px-6 py-4 border-t border-[#ebe3d5]">
-            <p className="text-xs text-[#867273]">© 2026 Shri Balaji Cotton Mills</p>
+            <p className="text-xs text-[#867273]">© 2026 {storeName}</p>
           </div>
         </nav>
       </div>
 
       {/* Full-screen Search Overlay */}
       {searchOpen && (
-        <div className="fixed inset-0 z-50 bg-[#fcf9f4] flex flex-col">
-          <div className="flex items-center gap-3 px-4 sm:px-6 py-4 border-b border-[#ebe3d5]">
+        <div className="fixed inset-0 z-50 bg-[#fcf9f4]/95 backdrop-blur-xl flex flex-col" role="dialog" aria-label="Search">
+          <form
+            onSubmit={(e) => e.preventDefault()}
+            className="flex items-center gap-3 px-4 sm:px-6 py-4 border-b border-[#ebe3d5]"
+          >
             <Search className="w-5 h-5 text-[#534343] shrink-0" />
             <input
               autoFocus
               type="search"
-              placeholder="Search fabrics, sarees, brocades…"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search sarees, fabrics, brocades…"
+              aria-label="Search products"
               className="flex-1 bg-transparent text-base text-[#2b1e1a] placeholder:text-[#867273] focus:outline-none"
             />
             <button
+              type="button"
               onClick={() => setSearchOpen(false)}
-              className="w-10 h-10 flex items-center justify-center text-[#534343] hover:bg-[#f0ede9]"
+              className="w-10 h-10 rounded-full flex items-center justify-center text-[#534343] hover:bg-[#2b1e1a]/5"
               aria-label="Close search"
             >
               <X className="w-5 h-5" />
             </button>
-          </div>
-          <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6">
-            <p className="text-[11px] tracking-[0.14em] uppercase font-semibold text-[#867273] mb-4">
-              Popular Searches
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {["Banarasi Silk", "Kantha Cotton", "Bridal Lehenga", "Zari Dupatta", "Handloom"].map((term) => (
-                <button
-                  key={term}
-                  className="px-4 py-2 text-xs rounded-full border border-[#c5a880] text-[#2b1e1a] hover:bg-[#f0ede9] transition-colors"
-                >
-                  {term}
-                </button>
-              ))}
-            </div>
+          </form>
+
+          <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 max-w-3xl w-full mx-auto">
+            {!searchActive && (
+              <>
+                <p className="text-[11px] tracking-[0.14em] uppercase font-semibold text-[#867273] mb-4">
+                  Popular searches
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {POPULAR_SEARCHES.map((term) => (
+                    <button
+                      key={term}
+                      onClick={() => setQuery(term)}
+                      className="px-4 py-2 text-xs rounded-full border border-[#c5a880] text-[#2b1e1a] hover:bg-[#f0ede9] transition-colors"
+                    >
+                      {term}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {searching && <p className="text-sm text-[#867273]">Searching…</p>}
+
+            {searchActive && !searching && results && results.items.length > 0 && (
+              <ul className="divide-y divide-[#ebe3d5]">
+                {results.items.map((p) => (
+                  <li key={p.id}>
+                    <Link
+                      href={`/product/${p.slug}`}
+                      onClick={() => {
+                        setSearchOpen(false);
+                        setQuery("");
+                      }}
+                      className="flex items-center gap-4 py-3 hover:bg-[#2b1e1a]/[0.03] rounded-2xl px-2 -mx-2 transition-colors"
+                    >
+                      <span className="relative w-14 h-16 shrink-0 rounded-xl overflow-hidden bg-[#f0ede9]">
+                        {p.images?.[0] && (
+                          <Image src={p.images[0]} alt="" fill sizes="56px" className="object-cover" />
+                        )}
+                      </span>
+                      <span className="flex-1 min-w-0">
+                        <span className="block text-[11px] text-[#867273]">{p.fabricType || p.department}</span>
+                        <span className="block text-sm font-medium text-[#2b1e1a] truncate">{p.name}</span>
+                      </span>
+                      <span className="text-sm font-semibold text-[#2b1e1a] shrink-0">{formatPrice(p.price)}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {searchActive && !searching && results && results.items.length === 0 && (
+              <div className="py-10 text-center">
+                <p className="text-[#2b1e1a] font-medium mb-1">No results for “{trimmed}”</p>
+                <p className="text-sm text-[#867273] mb-6">Try a different word, or browse a collection.</p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {categories.slice(0, 4).map((c) => (
+                    <Link
+                      key={c.id}
+                      href={`/category/${c.slug}`}
+                      onClick={() => setSearchOpen(false)}
+                      className="px-4 py-2 text-xs rounded-full border border-[#c5a880] text-[#2b1e1a] hover:bg-[#f0ede9]"
+                    >
+                      {c.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
     </>
   );
 }
-

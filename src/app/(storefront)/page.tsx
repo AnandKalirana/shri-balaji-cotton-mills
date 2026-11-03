@@ -3,10 +3,24 @@ import Image from "next/image";
 import { Reveal } from "@/components/ui/Reveal";
 import { ShutterSection } from "@/components/store/ShutterSection";
 import { ProductCard } from "@/components/store/ProductCard";
-import { products, categories } from "@/lib/data";
+import { getProducts, getActiveBanner } from "@/lib/catalog";
+import { DEFAULT_HERO } from "@/lib/hero";
 import { ArrowRight, Sparkles, Shield, Compass, Truck } from "lucide-react";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [{ products }, banner] = await Promise.all([getProducts(), getActiveBanner()]);
+  const hero = banner
+    ? {
+        eyebrow: banner.eyebrow ?? "",
+        title: banner.title,
+        subtitle: banner.subtitle ?? "",
+        ctaText: banner.ctaText,
+        ctaLink: banner.ctaLink,
+        desktopImg: banner.desktopImg,
+        mobileImg: banner.mobileImg,
+      }
+    : DEFAULT_HERO;
+  const heroLines = hero.title.split("\n");
   const featuredProducts = products.slice(0, 4);
   const fabricProducts = products.filter((p) => p.pricePerMetre).slice(0, 4);
 
@@ -17,12 +31,23 @@ export default function HomePage() {
         {/* Background Editorial Image */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1920"
-            alt="Varanasi Gold Zari Loom"
+            src={hero.desktopImg}
+            alt=""
             fill
             priority
-            className="object-cover object-center opacity-45 scale-105"
+            sizes="100vw"
+            className={`object-cover object-center opacity-45 scale-105 ${hero.mobileImg !== hero.desktopImg ? "hidden md:block" : ""}`}
           />
+          {hero.mobileImg !== hero.desktopImg && (
+            <Image
+              src={hero.mobileImg}
+              alt=""
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover object-center opacity-45 scale-105 md:hidden"
+            />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-[#2b1e1a] via-[#2b1e1a]/70 to-[#2b1e1a]/35" />
         </div>
 
@@ -30,24 +55,29 @@ export default function HomePage() {
         <Reveal y={32} className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center py-16 sm:py-24">
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/25 text-[#f0dcb8] text-[10px] sm:text-[11px] tracking-[0.2em] uppercase font-semibold mb-6">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Shri Balaji Cotton Mills</span>
+            <span>{hero.eyebrow}</span>
           </span>
 
           <h1 className="font-[family-name:var(--font-playfair)] text-4xl sm:text-5xl md:text-7xl font-normal text-[#faf7f2] tracking-tight leading-[1.1] mb-6">
-            Ancient Weaves. <br className="hidden sm:block" />
-            Architectural Luxury.
+            {heroLines.map((line, i) => (
+              <span key={i}>
+                {i > 0 && <br className="hidden sm:block" />}
+                {i > 0 && <span className="sm:hidden"> </span>}
+                {line}
+              </span>
+            ))}
           </h1>
 
           <p className="text-sm sm:text-base md:text-lg text-[#f3e8e3] font-normal max-w-2xl mx-auto leading-relaxed mb-8 sm:mb-10">
-            Curating India's finest Banarasi brocades, pure Katan silks, and artisanal handloom yardage directly from the master looms of Varanasi.
+            {hero.subtitle}
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
-              href="/category/silk-sarees"
+              href={hero.ctaLink}
               className="w-full sm:w-auto sm:min-w-[240px] px-8 py-4 rounded-full bg-[#5c1d24] text-white text-xs tracking-[0.16em] uppercase font-semibold hover:bg-white hover:text-[#2b1e1a] active:scale-[0.98] transition-all min-h-[52px] flex items-center justify-center border border-transparent shadow-[0_10px_30px_-10px_rgba(92,29,36,0.8)]"
             >
-              Explore Silk Sarees
+              {hero.ctaText}
             </Link>
 
             <Link

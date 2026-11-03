@@ -1,13 +1,30 @@
 "use client";
-import { useState } from "react";
-import { products as fallbackProducts } from "@/lib/data";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { api } from "@/lib/api-client";
+import { Notice } from "@/components/ui/Notice";
 import { formatPrice } from "@/lib/utils";
 import { StockAdjustModal } from "@/components/admin/StockAdjustModal";
 import { Sliders, AlertTriangle, CheckCircle, Package } from "lucide-react";
 import type { Product } from "@/lib/types";
 
 export default function AdminInventoryPage() {
-  const [productsList, setProductsList] = useState<Product[]>(fallbackProducts);
+  const [productsList, setProductsList] = useState<Product[]>([]);
+  const [demo, setDemo] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
+
+  useEffect(() => {
+    api<{ products: Product[]; demo: boolean }>("/api/admin/products").then((res) => {
+      if (res.ok) {
+        setProductsList(res.data.products);
+        setDemo(res.data.demo);
+      } else {
+        setLoadError(res.error);
+      }
+      setLoading(false);
+    });
+  }, []);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const handleStockUpdated = (newStock: number) => {
@@ -19,8 +36,17 @@ export default function AdminInventoryPage() {
     );
   };
 
+  if (loading) return <div className="py-24 text-center text-sm text-[#867273]">Loading…</div>;
+
   return (
     <div className="space-y-6">
+      {demo && (
+        <Notice tone="warning">
+          These are built-in sample products, so stock can&apos;t be changed yet. Import them from{" "}
+          <Link href="/admin/products" className="underline font-semibold">Products</Link> to make them editable.
+        </Notice>
+      )}
+      {loadError && <Notice tone="error">{loadError}</Notice>}
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#ebe3d5]">
         <div>

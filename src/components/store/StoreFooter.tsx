@@ -2,7 +2,17 @@ import Link from "next/link";
 import { categories } from "@/lib/data";
 import { Globe, Share2, Compass, Mail, Phone, MapPin } from "lucide-react";
 
-export function StoreFooter() {
+interface StoreFooterProps {
+  storeName?: string;
+  phone?: string;
+  email?: string;
+}
+
+export function StoreFooter({
+  storeName = "Shri Balaji Cotton Mills",
+  phone = "+91 98765 00000",
+  email = "concierge@shribalajicottonmills.in",
+}: StoreFooterProps) {
   return (
     <footer className="bg-[#281b17] text-[#faf7f2] mt-auto border-t border-[#53433e]">
       {/* Main footer */}
@@ -12,7 +22,7 @@ export function StoreFooter() {
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
             <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-medium mb-3">
-              Shri Balaji Cotton Mills
+              {storeName}
             </h2>
             <p className="text-sm text-[#d8c2bb] leading-relaxed max-w-xs">
               Curators of India's finest handwoven cottons, Banarasi brocades, and bespoke bridal couture since 1978.
@@ -95,11 +105,11 @@ export function StoreFooter() {
               </div>
               <div className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-[#c5a880] shrink-0" />
-                <span>+91 98765 00000</span>
+                <a href={`tel:${phone.replace(/[^+\d]/g, "")}`} className="hover:text-white transition-colors">{phone}</a>
               </div>
               <div className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-[#c5a880] shrink-0" />
-                <span>concierge@shribalajicottonmills.in</span>
+                <a href={`mailto:${email}`} className="hover:text-white transition-colors">{email}</a>
               </div>
               <p className="pt-2 text-xs text-[#867273]">
                 Mon – Sat: 10:00 AM – 7:00 PM IST
@@ -113,7 +123,7 @@ export function StoreFooter() {
       <div className="border-t border-[#53433e]">
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <p className="text-xs text-[#867273]">
-            © 2026 Shri Balaji Cotton Mills. All rights reserved. Handcrafted in Varanasi.
+            © 2026 {storeName}. All rights reserved. Handcrafted in Varanasi.
           </p>
           <div className="flex gap-4">
             <Link href="/admin" className="text-xs text-[#c5a880] hover:underline">
