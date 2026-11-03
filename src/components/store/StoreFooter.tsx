@@ -25,7 +25,7 @@ export function StoreFooter({
               {storeName}
             </h2>
             <p className="text-sm text-[#d8c2bb] leading-relaxed max-w-xs">
-              Fabrics, kurta sets, kurtis, stretchy blouses and saree shapewear, delivered across India.
+              Fabrics, kurta sets, kurtis, stretchy blouses, saree shapewear and men's wear, delivered across India.
             </p>
             <div className="flex gap-3 mt-6">
               <a

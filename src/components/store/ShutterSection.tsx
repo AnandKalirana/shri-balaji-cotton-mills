@@ -61,6 +61,15 @@ const departments: DepartmentData[] = [
     accentQuote: "Drape with confidence.",
     bgImage: "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=1920",
   },
+  {
+    id: "d6",
+    name: "Men's Wear",
+    slug: "mens-wear",
+    headline: "Men's T-Shirts & Shirts",
+    subheadline: "Soft cotton T-shirts and shirts for work, weekends and everything between.",
+    accentQuote: "Simple, comfortable and made to last.",
+    bgImage: "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=1920",
+  },
 ];
 
 export function ShutterSection() {

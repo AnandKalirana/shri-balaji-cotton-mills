@@ -6,6 +6,7 @@ export const categories: Category[] = [
   { id: "3", name: "Kurti", slug: "kurti", description: "Everyday and festive kurtis in soft, comfortable cottons", image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800", productCount: 0 },
   { id: "4", name: "Stretchy Blouse", slug: "stretchy-blouse", description: "Ready-made stretchy saree blouses that fit comfortably", image: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800", productCount: 0 },
   { id: "5", name: "Saree Shapewear", slug: "saree-shapewear", description: "Saree shapewear and petticoats for a smooth, secure drape", image: "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=800", productCount: 0 },
+  { id: "6", name: "Men's Wear", slug: "mens-wear", description: "Men's T-shirts and shirts in soft, comfortable cotton", image: "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800", productCount: 0 },
 ];
 
 export const products: Product[] = [
@@ -111,6 +112,28 @@ export const products: Product[] = [
     fabricType: "Stretch Nylon Blend", composition: "Nylon and spandex blend",
     care: "Hand wash cold", inStock: true, stockQty: 40,
     tags: ["shapewear", "saree", "stretchy", "nude"], badge: "New",
+  },
+  {
+    id: "p10", name: "Men's Cotton Round Neck T-Shirt", slug: "mens-cotton-round-neck-tshirt",
+    category: "mens-wear", department: "Men's Wear", price: 499,
+    images: [
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800",
+    ],
+    description: "Soft combed-cotton round neck T-shirt with a regular fit. Breathable, easy to wash and made for daily wear.",
+    fabricType: "Combed Cotton", composition: "100% Cotton",
+    care: "Machine wash cold", inStock: true, stockQty: 60,
+    tags: ["mens", "tshirt", "t-shirt", "cotton"], badge: "New",
+  },
+  {
+    id: "p11", name: "Men's Cotton Casual Shirt", slug: "mens-cotton-casual-shirt",
+    category: "mens-wear", department: "Men's Wear", price: 899,
+    images: [
+      "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800",
+    ],
+    description: "Full-sleeve casual shirt in breathable cotton with a classic collar and comfortable regular fit. Works for office and weekends.",
+    fabricType: "Cotton Poplin", composition: "100% Cotton",
+    care: "Machine wash cold", inStock: true, stockQty: 45,
+    tags: ["mens", "shirt", "casual", "cotton"],
   },
 ];
 
