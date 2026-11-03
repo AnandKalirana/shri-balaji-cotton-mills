@@ -1,39 +1,29 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { orders as fallbackOrders } from "@/lib/data";
+import { requireAdmin } from "@/lib/admin-guard";
+import { mapOrder, demoOrders } from "@/lib/catalog";
+import { toDbStatus } from "@/lib/order-status";
 
 export async function GET(req: Request) {
+  const guard = await requireAdmin();
+  if (guard.error) return guard.error;
+
+  const status = new URL(req.url).searchParams.get("status");
   try {
-    const { searchParams } = new URL(req.url);
-    const status = searchParams.get("status");
-
-    try {
-      const where: any = {};
-      if (status && status !== "all") {
-        where.orderStatus = status.toUpperCase();
-      }
-
-      const orders = await prisma.order.findMany({
-        where,
+    const total = await prisma.order.count();
+    if (total > 0) {
+      const dbStatus = status && status !== "all" ? toDbStatus(status) : null;
+      const rows = await prisma.order.findMany({
+        where: dbStatus ? { orderStatus: dbStatus } : {},
         include: { items: true },
         orderBy: { createdAt: "desc" },
       });
-
-      if (orders && orders.length > 0) {
-        return NextResponse.json({ orders });
-      }
-    } catch {
-      // Fallback
+      return NextResponse.json({ orders: rows.map(mapOrder), demo: false });
     }
-
-    let filtered = [...fallbackOrders];
-    if (status && status !== "all") {
-      filtered = filtered.filter((o) => o.status === status);
-    }
-
-    return NextResponse.json({ orders: filtered });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch {
+    // database unavailable — show sample orders, clearly flagged
   }
-}
 
+  const sample = status && status !== "all" ? demoOrders.filter((o) => o.status === status) : demoOrders;
+  return NextResponse.json({ orders: sample, demo: true });
+}

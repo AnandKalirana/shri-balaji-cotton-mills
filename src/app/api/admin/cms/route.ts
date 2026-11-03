@@ -1,73 +1,77 @@
 import { NextResponse } from "next/server";
+import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { requireAdmin, dbErrorResponse } from "@/lib/admin-guard";
+import { getActiveBanner, getStoreSettings } from "@/lib/catalog";
+import { DEFAULT_HERO } from "@/lib/hero";
+import { validateImageRef } from "@/lib/images";
+import { revalidateStore } from "@/lib/revalidate";
 
 export async function GET() {
-  try {
-    let banners: any[] = [];
-    let settings: any = null;
+  const guard = await requireAdmin();
+  if (guard.error) return guard.error;
 
-    try {
-      banners = await prisma.banner.findMany({
-        where: { isActive: true },
-        orderBy: { sortOrder: "asc" },
-      });
-      settings = await prisma.storeSettings.findUnique({
-        where: { id: "default" },
-      });
-    } catch {
-      // Fallback
-    }
-
-    if (!banners || banners.length === 0) {
-      banners = [
-        {
-          id: "b1",
-          eyebrow: "The Winter Couture Edition",
-          title: "Banarasi Royal Brocade & Katan Silk",
-          subtitle: "Hand-loomed in Varanasi with genuine gold and silver zari filaments.",
-          ctaText: "Explore The Loom",
-          ctaLink: "/category/banarasi-brocade",
-          desktopImg: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1920",
-          mobileImg: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800",
-        },
-      ];
-    }
-
-    return NextResponse.json({ banners, settings });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
+  const [banner, settings] = await Promise.all([getActiveBanner(), getStoreSettings()]);
+  return NextResponse.json({
+    demo: settings.demo,
+    banner: banner ?? { ...DEFAULT_HERO, id: null, isActive: true },
+    settings,
+  });
 }
 
-export async function POST(req: Request) {
+const imageRef = z.string().min(1, "Please add a banner image.").superRefine((v, ctx) => {
+  const problem = validateImageRef(v);
+  if (problem) ctx.addIssue({ code: "custom", message: problem });
+});
+
+const saveSchema = z.object({
+  settings: z.object({
+    announcementText: z.string().trim().max(200, "Announcement is too long (200 characters max)."),
+    enableAnnouncement: z.boolean(),
+    freeShippingThreshold: z.number().min(0, "Free shipping minimum can't be negative."),
+    codMaxOrderLimit: z.number().min(0, "COD limit can't be negative."),
+  }),
+  banner: z.object({
+    eyebrow: z.string().trim().max(80).optional().default(""),
+    title: z.string().trim().min(1, "Banner headline is required.").max(120),
+    subtitle: z.string().trim().max(300).optional().default(""),
+    ctaText: z.string().trim().min(1, "Button text is required.").max(40),
+    ctaLink: z
+      .string()
+      .trim()
+      .refine((v) => v.startsWith("/") || /^https:\/\//.test(v), "Button link must start with / or https://"),
+    desktopImg: imageRef,
+    mobileImg: imageRef,
+    isActive: z.boolean(),
+  }),
+});
+
+export async function PUT(req: Request) {
+  const guard = await requireAdmin();
+  if (guard.error) return guard.error;
+
+  const parsed = saveSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
+  }
+  const { settings, banner } = parsed.data;
+
   try {
-    const body = await req.json();
-    const { banner, settings } = body;
-
-    if (banner) {
-      try {
-        const created = await prisma.banner.create({ data: banner });
-        return NextResponse.json({ success: true, banner: created });
-      } catch {
-        return NextResponse.json({ success: true, banner });
-      }
-    }
-
-    if (settings) {
-      try {
-        const updated = await prisma.storeSettings.upsert({
-          where: { id: "default" },
-          update: settings,
-          create: { id: "default", ...settings },
-        });
-        return NextResponse.json({ success: true, settings: updated });
-      } catch {
-        return NextResponse.json({ success: true, settings });
-      }
-    }
-
-    return NextResponse.json({ error: "No payload provided" }, { status: 400 });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const [savedSettings, savedBanner] = await prisma.$transaction(async (tx) => {
+      const s = await tx.storeSettings.upsert({
+        where: { id: "default" },
+        update: settings,
+        create: { id: "default", ...settings },
+      });
+      const current = await tx.banner.findFirst({ orderBy: [{ sortOrder: "asc" }, { updatedAt: "desc" }] });
+      const b = current
+        ? await tx.banner.update({ where: { id: current.id }, data: banner })
+        : await tx.banner.create({ data: { ...banner, sortOrder: 1 } });
+      return [s, b] as const;
+    });
+    revalidateStore();
+    return NextResponse.json({ success: true, settings: savedSettings, banner: savedBanner });
+  } catch (error) {
+    return dbErrorResponse(error);
   }
 }

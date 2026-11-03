@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { importSampleCatalog } from "../src/lib/seed-catalog";
 
 const prisma = new PrismaClient();
 
@@ -77,6 +78,10 @@ async function main() {
     },
   });
   console.log("✓ CMS Banner seeded");
+
+  // 5. Sample catalogue (skips anything already in the database)
+  const imported = await importSampleCatalog(prisma);
+  console.log(`✓ Sample catalogue: ${imported} product(s) added`);
 
   console.log("Database seed completed successfully!");
 }

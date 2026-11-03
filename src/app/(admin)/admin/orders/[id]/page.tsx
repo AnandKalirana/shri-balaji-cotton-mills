@@ -1,7 +1,9 @@
 "use client";
-import { useState, use } from "react";
+import { useEffect, useState, use } from "react";
 import Link from "next/link";
-import { orders as fallbackOrders } from "@/lib/data";
+import type { Order } from "@/lib/types";
+import { api } from "@/lib/api-client";
+import { Notice } from "@/components/ui/Notice";
 import { formatPrice } from "@/lib/utils";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Button } from "@/components/ui/Button";
@@ -23,34 +25,52 @@ export default function AdminOrderDetailPage({
 }) {
   const resolvedParams = use(params);
   const orderId = resolvedParams.id;
-  const initialOrder = fallbackOrders.find((o) => o.id === orderId) || fallbackOrders[0];
-
-  const [order, setOrder] = useState(initialOrder);
-  const [status, setStatus] = useState(order.status);
-  const [courier, setCourier] = useState("BlueDart Express");
-  const [tracking, setTracking] = useState("BLUEDART-IN-889922");
+  const [order, setOrder] = useState<Order | null>(null);
+  const [demo, setDemo] = useState(false);
+  const [loadError, setLoadError] = useState("");
+  const [status, setStatus] = useState("confirmed");
+  const [courier, setCourier] = useState("");
+  const [tracking, setTracking] = useState("");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    api<{ order: Order; courier: string; tracking: string; demo: boolean }>(`/api/admin/orders/${orderId}`).then((res) => {
+      if (res.ok) {
+        setOrder(res.data.order);
+        setStatus(res.data.order.status);
+        setCourier(res.data.courier);
+        setTracking(res.data.tracking);
+        setDemo(res.data.demo);
+      } else {
+        setLoadError(res.error);
+      }
+    });
+  }, [orderId]);
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!order) return;
+    setError("");
+    setSaved(false);
     setSaving(true);
-    try {
-      await fetch(`/api/admin/orders/${order.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          orderStatus: status,
-          courierPartner: courier,
-          trackingNumber: tracking,
-        }),
-      });
+    const res = await api(`/api/admin/orders/${order.id}`, {
+      method: "PATCH",
+      json: { orderStatus: status, courierPartner: courier, trackingNumber: tracking },
+    });
+    setSaving(false);
+    if (res.ok) {
+      setOrder({ ...order, status: status as Order["status"] });
       setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
-    } finally {
-      setSaving(false);
+      setTimeout(() => setSaved(false), 2500);
+    } else {
+      setError(res.error);
     }
   };
+
+  if (loadError) return <Notice tone="error">{loadError}</Notice>;
+  if (!order) return <div className="py-24 text-center text-sm text-[#867273]">Loading…</div>;
 
   return (
     <div className="max-w-4xl space-y-6">
@@ -68,7 +88,7 @@ export default function AdminOrderDetailPage({
             <h2 className="font-[family-name:var(--font-playfair)] text-xl sm:text-2xl font-medium text-[#2b1e1a]">
               {order.orderNumber}
             </h2>
-            <StatusBadge status={status} />
+            <StatusBadge status={order.status} />
           </div>
           <p className="text-xs text-[#867273]">
             Placed on{" "}
@@ -184,7 +204,7 @@ export default function AdminOrderDetailPage({
               </label>
               <select
                 value={status}
-                onChange={(e) => setStatus(e.target.value as any)}
+                onChange={(e) => setStatus(e.target.value)}
                 className="w-full bg-[#fcf9f4] border border-[#c5a880] p-3 text-sm text-[#2b1e1a] focus:outline-none"
               >
                 <option value="confirmed">Confirmed</option>
@@ -209,8 +229,12 @@ export default function AdminOrderDetailPage({
               placeholder="e.g. BLUEDART-12345"
             />
 
+            {error && <Notice tone="error">{error}</Notice>}
+            {demo && <Notice tone="warning">Sample order — changes can&apos;t be saved.</Notice>}
+
             <Button
               type="submit"
+              disabled={demo}
               loading={saving}
               fullWidth
               size="md"

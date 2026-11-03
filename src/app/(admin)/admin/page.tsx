@@ -15,31 +15,42 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import type { Order, Product } from "@/lib/types";
-import { orders as fallbackOrders, products as fallbackProducts } from "@/lib/data";
+import { api } from "@/lib/api-client";
+import { Notice } from "@/components/ui/Notice";
 
 export default function AdminOverviewPage() {
-  const [orders, setOrders] = useState<Order[]>(fallbackOrders);
-  const [productsList, setProductsList] = useState<Product[]>(fallbackProducts);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [productsList, setProductsList] = useState<Product[]>([]);
+  const [stats, setStats] = useState({ totalRevenue: 0, totalOrders: 0, totalProducts: 0, lowStockItems: 0 });
+  const [demo, setDemo] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   useEffect(() => {
-    fetch("/api/admin/analytics")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.recentOrders) setOrders(data.recentOrders);
-      })
-      .catch(() => {});
+    api<{ demo: boolean; stats: typeof stats; recentOrders: Order[] }>("/api/admin/analytics").then((res) => {
+      if (res.ok) {
+        setOrders(res.data.recentOrders);
+        setStats(res.data.stats);
+        setDemo(res.data.demo);
+      }
+    });
+    api<{ products: Product[] }>("/api/admin/products").then((res) => {
+      if (res.ok) setProductsList(res.data.products);
+    });
   }, []);
 
-  const totalRevenue = orders.reduce((sum, o) => sum + (o.total || 0), 0);
-  const lowStock = productsList.filter((p) => p.stockQty <= 5);
 
   return (
     <div className="space-y-6 sm:space-y-8">
+      {demo && (
+        <Notice tone="warning">
+          You&apos;re seeing sample orders and figures because your database has no real orders yet. Real numbers appear
+          here automatically once customers start ordering.
+        </Notice>
+      )}
       {/* 1. Mobile Quick-Action Strip (Store owner phone convenience) */}
       <div className="flex items-center gap-3 overflow-x-auto scrollbar-none pb-1">
         <button
-          onClick={() => setSelectedProduct(productsList[0])}
+          onClick={() => productsList[0] && setSelectedProduct(productsList[0])}
           className="px-4 py-2.5 bg-[#5c1d24] text-white text-xs tracking-wider uppercase font-semibold flex items-center gap-2 whitespace-nowrap active:bg-[#2b1e1a] shrink-0 min-h-[44px]"
         >
           <Sliders className="w-4 h-4 text-[#c5a880]" />
@@ -67,29 +78,25 @@ export default function AdminOverviewPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <KpiCard
           title="Gross Revenue"
-          value={formatPrice(totalRevenue || 1248500)}
-          change={14.2}
+          value={formatPrice(stats.totalRevenue)}
           icon={IndianRupee}
           iconColor="text-emerald-800"
         />
         <KpiCard
           title="Total Orders"
-          value={String(orders.length || 128)}
-          change={8.7}
+          value={String(stats.totalOrders)}
           icon={ShoppingBag}
           iconColor="text-[#5c1d24]"
         />
         <KpiCard
           title="Catalog Pieces"
-          value={String(productsList.length || 242)}
-          change={3.1}
+          value={String(stats.totalProducts)}
           icon={Layers}
           iconColor="text-[#725b38]"
         />
         <KpiCard
           title="Low Stock Alert"
-          value={`${lowStock.length} items`}
-          change={-2}
+          value={`${stats.lowStockItems} items`}
           icon={AlertTriangle}
           iconColor="text-amber-800"
         />

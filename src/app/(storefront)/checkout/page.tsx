@@ -1,4 +1,5 @@
 "use client";
+import { useStoreSettings } from "@/lib/use-store-settings";
 import { useState } from "react";
 import { useCartStore } from "@/store";
 import { formatPrice } from "@/lib/utils";
@@ -30,7 +31,8 @@ export default function CheckoutPage() {
     pincode: "",
   });
 
-  const shippingFee = cartTotal > 2000 ? 0 : 150;
+  const { freeShippingThreshold, standardShippingFee } = useStoreSettings();
+  const shippingFee = cartTotal >= freeShippingThreshold ? 0 : standardShippingFee;
   const gstAmount = Math.round(cartTotal * 0.05); // 5% GST on textiles
   const finalPayable = cartTotal + shippingFee;
 
