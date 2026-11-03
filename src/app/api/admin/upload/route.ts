@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { requireAdmin } from "@/lib/admin-guard";
-import { supabaseConfigured, uploadToSupabase } from "@/lib/supabase-storage";
+import { keyProblem, supabaseConfigured, uploadToSupabase } from "@/lib/supabase-storage";
 
 const MAX_BYTES = 5 * 1024 * 1024;
 const TYPES: Record<string, string> = {
@@ -33,6 +33,8 @@ export async function POST(req: Request) {
   const bytes = await file.arrayBuffer();
 
   if (supabaseConfigured()) {
+    const wrongKey = keyProblem();
+    if (wrongKey) return NextResponse.json({ error: wrongKey }, { status: 500 });
     try {
       const url = await uploadToSupabase(name, bytes, file.type);
       return NextResponse.json({ success: true, url });
