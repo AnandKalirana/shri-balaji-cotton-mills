@@ -5,6 +5,9 @@ export function razorpayConfigured(): boolean {
   return Boolean(process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET);
 }
 
+/** The keys in the environment were refused by Razorpay. */
+export class RazorpayKeyError extends Error {}
+
 export interface RazorpayOrder {
   id: string;
   amount: number;
@@ -34,7 +37,13 @@ export async function createRazorpayOrder(params: {
   });
   if (!res.ok) {
     const err = await res.json().catch(() => null);
-    throw new Error(err?.error?.description || "Razorpay could not create the order");
+    const reason = err?.error?.description || "Razorpay could not create the order";
+    if (res.status === 401) {
+      throw new RazorpayKeyError(
+        "Razorpay rejected RAZORPAY_KEY_ID / RAZORPAY_KEY_SECRET. Check they are copied exactly (no quotes or spaces), belong to the same key pair, and are not placeholder values."
+      );
+    }
+    throw new Error(reason);
   }
   const data = await res.json();
   return { id: data.id, amount: data.amount, currency: data.currency, keyId };
