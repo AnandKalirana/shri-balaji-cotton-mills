@@ -10,5 +10,6 @@ export async function GET() {
     freeShippingThreshold: s.freeShippingThreshold,
     standardShippingFee: s.standardShippingFee,
     enableCod: s.enableCod,
+    codMaxOrderLimit: s.codMaxOrderLimit,
   });
 }

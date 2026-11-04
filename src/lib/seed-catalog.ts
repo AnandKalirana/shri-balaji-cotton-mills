@@ -64,6 +64,14 @@ export async function syncCategories(db: PrismaClient) {
     }
   }
 
+  // Two garments were first seeded as "fabric by the metre" by mistake; remove them (if never ordered) so they re-import correctly.
+  for (const slug of ["maroon-cotton-silk-kurta-set", "navy-kantha-cotton-kurti"]) {
+    const prod = await db.product.findUnique({ where: { slug }, include: { _count: { select: { orderItems: true } } } });
+    if (prod && prod.type === "FABRIC_BY_METRE" && prod._count.orderItems === 0) {
+      await db.product.delete({ where: { id: prod.id } });
+    }
+  }
+
   for (const slug of OLD_CATEGORY_SLUGS) {
     const old = await db.category.findUnique({ where: { slug } });
     if (!old) continue;

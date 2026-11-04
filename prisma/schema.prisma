@@ -297,7 +297,7 @@ model Banner {
   subtitle    String?
   eyebrow     String?
   ctaText     String   @default("Explore Collection")
-  ctaLink     String   @default("/category/silk-sarees")
+  ctaLink     String   @default("/category/fabrics")
   desktopImg  String
   mobileImg   String
   sortOrder   Int      @default(0)
