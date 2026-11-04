@@ -8,6 +8,24 @@ import { Input } from "@/components/ui/Input";
 import { ShieldCheck, ArrowRight, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 
+declare global {
+  interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    Razorpay: any;
+  }
+}
+
+function loadRazorpayScript(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (typeof window !== "undefined" && window.Razorpay) return resolve();
+    const s = document.createElement("script");
+    s.src = "https://checkout.razorpay.com/v1/checkout.js";
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error("Couldn't load the payment window. Check your connection and try again."));
+    document.body.appendChild(s);
+  });
+}
+
 export default function CheckoutPage() {
   const { items, total, clearCart } = useCartStore();
   const cartTotal = total();
@@ -31,7 +49,7 @@ export default function CheckoutPage() {
     pincode: "",
   });
 
-  const { freeShippingThreshold, standardShippingFee } = useStoreSettings();
+  const { freeShippingThreshold, standardShippingFee, codMaxOrderLimit, enableCod } = useStoreSettings();
   const shippingFee = cartTotal >= freeShippingThreshold ? 0 : standardShippingFee;
   const gstAmount = Math.round(cartTotal * 0.05); // 5% GST on textiles
   const finalPayable = cartTotal + shippingFee;
@@ -46,64 +64,73 @@ export default function CheckoutPage() {
     setLoading(true);
 
     try {
-      if (!formData.fullName || !formData.email || !formData.phone || !formData.street || !formData.pincode) {
+      if (!formData.fullName || !formData.email || !formData.phone || !formData.street || !formData.city || !formData.pincode) {
         throw new Error("Please fill in all required shipping address fields.");
       }
 
-      // 1. Create Razorpay order on server
-      const orderRes = await fetch("/api/payment/create-order", {
+      // The server works out prices and totals itself; we only send what was picked.
+      const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount: finalPayable,
-          orderReference: `HA-${Date.now()}`,
-          items,
+          paymentMethod,
+          customer: { fullName: formData.fullName, email: formData.email, phone: formData.phone },
+          address: { street: formData.street, city: formData.city, state: formData.state, pincode: formData.pincode },
+          items: items.map((i) => ({
+            productId: i.product.id,
+            quantity: i.quantity,
+            metres: i.metres ?? null,
+            isFullThaan: i.isFullThaan ?? false,
+          })),
         }),
       });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error || "Could not place your order.");
 
-      const orderJson = await orderRes.json();
-      if (!orderRes.ok) {
-        throw new Error(orderJson.error || "Could not initialize order");
+      // Cash on Delivery: the order is already confirmed.
+      if (!json.razorpay) {
+        clearCart();
+        setOrderComplete({ orderNumber: json.orderNumber });
+        return;
       }
 
-      // 2. Complete payment verification
-      const verifyRes = await fetch("/api/payment/verify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          razorpay_order_id: orderJson.orderId,
-          razorpay_payment_id:
-            paymentMethod === "COD" ? "cod_payment_pending" : `pay_${Date.now()}`,
-          razorpay_signature: "simulated_success", // Development/staging verified signature
-          orderData: {
-            customerName: formData.fullName,
-            customerEmail: formData.email,
-            customerPhone: formData.phone,
-            subtotal: cartTotal,
-            total: finalPayable,
-            shippingAddress: formData,
-            items: items.map((i) => ({
-              productId: i.product.id,
-              quantity: i.quantity,
-              metres: i.metres,
-              isFullThaan: i.isFullThaan,
-            })),
+      // Online payment: open Razorpay, then let the server verify the result.
+      await loadRazorpayScript();
+      await new Promise<void>((resolve, reject) => {
+        const rz = new window.Razorpay({
+          key: json.razorpay.keyId,
+          amount: json.razorpay.amount,
+          currency: "INR",
+          order_id: json.razorpay.orderId,
+          name: "Shri Balaji Cotton Mills",
+          description: `Order ${json.orderNumber}`,
+          prefill: { name: formData.fullName, email: formData.email, contact: formData.phone },
+          theme: { color: "#5c1d24" },
+          handler: async (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) => {
+            try {
+              const v = await fetch("/api/payment/verify", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(response),
+              });
+              const vj = await v.json().catch(() => ({}));
+              if (!v.ok) throw new Error(vj.error || "Payment could not be verified.");
+              clearCart();
+              setOrderComplete({ orderNumber: vj.orderNumber, paymentId: response.razorpay_payment_id });
+              resolve();
+            } catch (err) {
+              reject(err);
+            }
           },
-        }),
+          modal: { ondismiss: () => reject(new Error("Payment was not completed. You have not been charged. Please try again.")) },
+        });
+        rz.on("payment.failed", (r: { error?: { description?: string } }) =>
+          reject(new Error(r.error?.description || "Payment failed. Please try again."))
+        );
+        rz.open();
       });
-
-      const verifyJson = await verifyRes.json();
-      if (!verifyRes.ok) {
-        throw new Error(verifyJson.error || "Payment verification failed");
-      }
-
-      clearCart();
-      setOrderComplete({
-        orderNumber: verifyJson.orderNumber,
-        paymentId: verifyJson.paymentId,
-      });
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred during checkout.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An unexpected error occurred during checkout.");
     } finally {
       setLoading(false);
     }
@@ -118,10 +145,10 @@ export default function CheckoutPage() {
             Order Confirmed
           </span>
           <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-medium text-[#2b1e1a] mt-1 mb-2">
-            Gratitude from Shri Balaji Cotton Mills
+            Thank you for your order
           </h2>
           <p className="text-xs text-[#534343] mb-6">
-            Your heirloom textiles are being prepared and inspected by our master fabricators in Varanasi.
+            We are getting your order ready and will update you when it ships.
           </p>
 
           <div className="bg-[#f0ede9] p-4 border border-[#ebe3d5] mb-6 text-left">
@@ -130,7 +157,7 @@ export default function CheckoutPage() {
               <span className="font-semibold text-[#5c1d24]">{orderComplete.orderNumber}</span>
             </div>
             <div className="flex justify-between text-xs">
-              <span className="text-[#867273]">Tracking updates sent to:</span>
+              <span className="text-[#867273]">Order details for:</span>
               <span className="font-medium text-[#2b1e1a]">{formData.email}</span>
             </div>
           </div>
@@ -309,6 +336,8 @@ export default function CheckoutPage() {
                     </div>
                   </label>
 
+                  {enableCod && (
+                  <>
                   {/* Cash on Delivery Option */}
                   <label
                     className={`flex items-start gap-3 p-4 border cursor-pointer transition-colors ${
@@ -329,10 +358,12 @@ export default function CheckoutPage() {
                         Cash on Delivery (COD)
                       </span>
                       <p className="text-xs text-[#867273] mt-0.5">
-                        Pay upon doorstep inspection. Available for orders up to ₹15,000.
+                        Pay in cash when your order arrives. Available for orders up to {formatPrice(codMaxOrderLimit)}.
                       </p>
                     </div>
                   </label>
+                  </>
+                  )}
                 </div>
               </div>
             </div>

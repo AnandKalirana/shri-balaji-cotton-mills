@@ -12,7 +12,7 @@ export const categories: Category[] = [
 export const products: Product[] = [
   {
     id: "p1", name: "Maroon Cotton Silk Kurta Set", slug: "maroon-cotton-silk-kurta-set",
-    category: "kurta-set", department: "Kurta Set", price: 18500, pricePerMetre: 3700,
+    category: "kurta-set", department: "Kurta Set", price: 18500,
     images: [
       "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800",
       "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800",
@@ -82,7 +82,7 @@ export const products: Product[] = [
   },
   {
     id: "p7", name: "Navy Kantha Cotton Kurti", slug: "navy-kantha-cotton-kurti",
-    category: "kurti", department: "Kurti", price: 1800, pricePerMetre: 360,
+    category: "kurti", department: "Kurti", price: 1800,
     images: [
       "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800",
     ],

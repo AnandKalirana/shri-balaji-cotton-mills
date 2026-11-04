@@ -23,22 +23,6 @@ export async function POST(req: Request) {
     const { email, password } = parsed.data;
     const lowerEmail = email.toLowerCase();
 
-    // Check for admin default override if database has no record yet
-    if (
-      (lowerEmail === "admin@shribalajicottonmills.in" ||
-        lowerEmail === "admin@heritageatelier.in") &&
-      password === "Admin@12345"
-    ) {
-      const adminSession = {
-        id: "admin-master-id",
-        email: "admin@shribalajicottonmills.in",
-        fullName: "Shri Balaji Cotton Mills Owner",
-        role: "ADMIN" as const,
-      };
-      await setSessionCookie(adminSession);
-      return NextResponse.json({ success: true, user: adminSession });
-    }
-
     let user;
     try {
       user = await prisma.user.findUnique({

@@ -2,7 +2,17 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 
-const JWT_SECRET = process.env.JWT_SECRET || "heritage_atelier_luxury_textiles_secret_2026";
+const DEV_ONLY_SECRET = "dev-only-secret-do-not-use-in-production";
+
+/** The signing secret. Required in production; a throwaway value is used only for local development. */
+function jwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (secret && secret.length >= 32) return secret;
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("JWT_SECRET must be set to a random string of at least 32 characters.");
+  }
+  return secret || DEV_ONLY_SECRET;
+}
 const TOKEN_NAME = "ha_session_token";
 
 export interface SessionUser {
@@ -24,13 +34,13 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 
 /** Sign JWT session token */
 export function signSessionToken(payload: SessionUser): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: "7d" });
+  return jwt.sign(payload, jwtSecret(), { expiresIn: "7d" });
 }
 
 /** Verify JWT session token */
 export function verifySessionToken(token: string): SessionUser | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as SessionUser;
+    return jwt.verify(token, jwtSecret()) as SessionUser;
   } catch {
     return null;
   }

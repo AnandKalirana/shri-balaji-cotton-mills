@@ -1,93 +1,94 @@
 import { NextResponse } from "next/server";
-import { verifyRazorpaySignature } from "@/lib/razorpay";
-import { deductInventoryAtomic } from "@/lib/inventory";
+import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { getCurrentUser } from "@/lib/auth";
+import { verifyRazorpaySignature } from "@/lib/razorpay";
+import { CheckoutError, reserveStock, type PricedLine } from "@/lib/checkout";
 
+const schema = z.object({
+  razorpay_order_id: z.string().min(1),
+  razorpay_payment_id: z.string().min(1),
+  razorpay_signature: z.string().min(1),
+});
+
+/** Confirms an online payment. Only a signature made with the Razorpay secret is accepted. */
 export async function POST(req: Request) {
+  const parsed = schema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) return NextResponse.json({ error: "Invalid payment details." }, { status: 400 });
+  const { razorpay_order_id: rzOrder, razorpay_payment_id: rzPayment, razorpay_signature: rzSig } = parsed.data;
+
+  if (!verifyRazorpaySignature(rzOrder, rzPayment, rzSig)) {
+    return NextResponse.json({ error: "Payment could not be verified." }, { status: 400 });
+  }
+
   try {
-    const body = await req.json();
-    const {
-      razorpay_order_id,
-      razorpay_payment_id,
-      razorpay_signature,
-      orderData,
-    } = body;
+    const order = await prisma.order.findUnique({ where: { razorpayOrderId: rzOrder }, include: { items: true } });
+    if (!order) return NextResponse.json({ error: "Order not found." }, { status: 404 });
 
-    // 1. Verify payment signature
-    const isValid = verifyRazorpaySignature(
-      razorpay_order_id,
-      razorpay_payment_id,
-      razorpay_signature
-    );
-
-    if (!isValid) {
-      return NextResponse.json(
-        { error: "Payment verification failed: Invalid cryptographic signature" },
-        { status: 400 }
-      );
+    // Already confirmed (for example the customer's page retried): succeed without doing anything twice.
+    if (order.paymentStatus === "PAID") {
+      return NextResponse.json({ success: true, orderNumber: order.orderNumber });
     }
 
-    const user = await getCurrentUser();
-    const orderNumber = `HA-${new Date().getFullYear()}-${Math.floor(
-      10000 + Math.random() * 90000
-    )}`;
-
-    // 2. Perform atomic stock deduction
-    if (orderData?.items && Array.isArray(orderData.items)) {
-      const deduction = await deductInventoryAtomic(
-        orderData.items,
-        orderNumber,
-        user?.id
-      );
-
-      if (!deduction.success) {
-        return NextResponse.json(
-          {
-            error:
-              deduction.error ||
-              "Could not complete stock deduction. Items may be out of stock.",
-          },
-          { status: 409 }
-        );
-      }
+    if (order.orderStatus === "PENDING_PAYMENT") {
+      await prisma.order.update({
+        where: { id: order.id },
+        data: { orderStatus: "CONFIRMED", paymentStatus: "PAID", razorpayPaymentId: rzPayment, razorpaySignature: rzSig },
+      });
+      return NextResponse.json({ success: true, orderNumber: order.orderNumber });
     }
 
-    // 3. Persist Order in Database (with fallback)
+    // Only an order that expired unpaid can be revived. A cancelled or otherwise closed order is just flagged for refund.
+    const expired = order.orderStatus === "CANCELLED" && order.cancelledReason === "Payment was not completed in time";
     try {
-      await prisma.order.create({
+      if (!expired) throw new CheckoutError("closed");
+      await prisma.$transaction(async (tx) => {
+        const lines: PricedLine[] = order.items.map((i) => ({
+          productId: i.productId,
+          variantId: i.variantId,
+          productName: i.productName,
+          sku: i.sku,
+          unitPrice: Number(i.unitPrice),
+          quantity: i.quantity,
+          metres: i.metres == null ? null : Number(i.metres),
+          isFullThaan: i.isFullThaan,
+          lineTotal: Number(i.lineTotal),
+        }));
+        await reserveStock(tx, lines, order.orderNumber, order.userId);
+        await tx.order.update({
+          where: { id: order.id },
+          data: {
+            orderStatus: "CONFIRMED",
+            paymentStatus: "PAID",
+            cancelledReason: null,
+            razorpayPaymentId: rzPayment,
+            razorpaySignature: rzSig,
+          },
+        });
+      });
+      return NextResponse.json({ success: true, orderNumber: order.orderNumber });
+    } catch (e) {
+      if (!(e instanceof CheckoutError)) throw e;
+      await prisma.order.update({
+        where: { id: order.id },
         data: {
-          orderNumber,
-          userId: user?.id || null,
-          customerName: orderData.customerName || "Patron",
-          customerEmail: orderData.customerEmail,
-          customerPhone: orderData.customerPhone || "+91 9999999999",
-          subtotal: orderData.subtotal || orderData.total,
-          total: orderData.total,
-          orderStatus: "CONFIRMED",
-          paymentMethod: "RAZORPAY",
           paymentStatus: "PAID",
-          razorpayOrderId: razorpay_order_id,
-          razorpayPaymentId: razorpay_payment_id,
-          razorpaySignature: razorpay_signature,
-          shippingAddressSnapshot: orderData.shippingAddress || {},
+          razorpayPaymentId: rzPayment,
+          razorpaySignature: rzSig,
+          cancelledReason: expired
+            ? "Paid after the order expired and an item sold out. Refund this payment."
+            : "Paid on an order that was already cancelled. Refund this payment.",
         },
       });
-    } catch {
-      // In dev fallback
+      return NextResponse.json(
+        { error: `Your payment went through, but this order could not be completed. We will refund you. Order ${order.orderNumber}.` },
+        { status: 409 }
+      );
     }
-
-    return NextResponse.json({
-      success: true,
-      orderNumber,
-      paymentId: razorpay_payment_id,
-      message: "Order placed and payment verified successfully",
-    });
-  } catch (error: any) {
+  } catch (e) {
+    console.error("[payment/verify]", e);
     return NextResponse.json(
-      { error: error.message || "Payment verification exception" },
+      { error: "Your payment was received but we couldn't update the order. Please contact the store with your payment id." },
       { status: 500 }
     );
   }
 }
-

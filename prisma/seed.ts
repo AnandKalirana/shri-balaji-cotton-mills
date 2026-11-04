@@ -7,20 +7,29 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("Seeding Shri Balaji Cotton Mills Database...");
 
-  // 1. Admin User
-  const passwordHash = await bcrypt.hash("Admin@12345", 12);
-  const admin = await prisma.user.upsert({
-    where: { email: "admin@shribalajicottonmills.in" },
-    update: {},
-    create: {
-      email: "admin@shribalajicottonmills.in",
-      fullName: "Shri Balaji Cotton Mills Owner",
-      phone: "+91 98765 00000",
-      passwordHash,
-      role: "ADMIN",
-    },
-  });
-  console.log("✓ Admin created: admin@shribalajicottonmills.in (Pass: Admin@12345)");
+  // 1. Admin user — credentials come from the environment, nothing is hard-coded.
+  const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  if (adminEmail && adminPassword) {
+    if (adminPassword.length < 12) {
+      throw new Error("ADMIN_PASSWORD must be at least 12 characters.");
+    }
+    const passwordHash = await bcrypt.hash(adminPassword, 12);
+    await prisma.user.upsert({
+      where: { email: adminEmail },
+      update: {}, // never overwrite an existing admin's password
+      create: {
+        email: adminEmail,
+        fullName: "Shri Balaji Cotton Mills Owner",
+        phone: "+91 98765 00000",
+        passwordHash,
+        role: "ADMIN",
+      },
+    });
+    console.log(`✓ Admin ready: ${adminEmail}`);
+  } else {
+    console.log("! No admin created. Set ADMIN_EMAIL and ADMIN_PASSWORD (12+ characters) and run the seed again.");
+  }
 
   // 2. Categories (Fabrics, Kurta Set, Kurti, Stretchy Blouse, Saree Shapewear)
   await syncCategories(prisma);
