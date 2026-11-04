@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { getStoreSettings } from "@/lib/catalog";
 import { CheckoutError, priceCart, releaseExpiredOrders, reserveStock } from "@/lib/checkout";
-import { createRazorpayOrder, razorpayConfigured } from "@/lib/razorpay";
+import { createRazorpayOrder, razorpayConfigured, RazorpayKeyError } from "@/lib/razorpay";
 
 const schema = z.object({
   paymentMethod: z.enum(["RAZORPAY", "COD"]),
@@ -127,6 +127,13 @@ export async function POST(req: Request) {
     });
   } catch (e) {
     if (e instanceof CheckoutError) return NextResponse.json({ error: e.message }, { status: e.status });
+    if (e instanceof RazorpayKeyError) {
+      console.error("[checkout]", e.message);
+      return NextResponse.json(
+        { error: "Online payment isn't working right now. Please choose Cash on Delivery or contact the store." },
+        { status: 503 }
+      );
+    }
     console.error("[checkout]", e);
     return NextResponse.json(
       { error: "We couldn't place your order right now. Please try again in a moment." },
