@@ -171,7 +171,7 @@ export function ProductDetailView({ product }: { product: Product }) {
               )}
 
               <p className="text-[11px] text-[#867273] mt-2">
-                Inclusive of 5% Indian Textile GST • Complimentary insured shipping
+                Inclusive of 5% GST
               </p>
             </div>
 
@@ -308,7 +308,7 @@ export function ProductDetailView({ product }: { product: Product }) {
               </div>
               <div className="flex items-center gap-2">
                 <Truck className="w-4 h-4 text-[#5c1d24]" />
-                <span>Dispatched within 24 hours via Insured Express Courier</span>
+                <span>Dispatched in 1–2 working days</span>
               </div>
               <div className="flex items-center gap-2">
                 <RotateCcw className="w-4 h-4 text-[#725b38]" />

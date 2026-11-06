@@ -15,6 +15,18 @@ const schema = z.object({
   storeName: z.string().trim().min(1, "Store name is required.").max(80),
   supportPhone: z.string().trim().min(5, "Enter a valid phone number.").max(30),
   supportEmail: z.string().trim().email("Enter a valid contact email."),
+  legalName: z.string().trim().max(120).default(""),
+  gstin: z
+    .string()
+    .trim()
+    .toUpperCase()
+    .regex(/^$|^\d{2}[A-Z]{5}\d{4}[A-Z][A-Z\d]Z[A-Z\d]$/, "Enter a valid 15-character GSTIN, or leave it blank.")
+    .default(""),
+  address: z.string().trim().max(300).default(""),
+  businessHours: z.string().trim().max(120).default(""),
+  instagramUrl: z.string().trim().max(200).regex(/^$|^https:\/\//, "Social links must start with https://").default(""),
+  facebookUrl: z.string().trim().max(200).regex(/^$|^https:\/\//, "Social links must start with https://").default(""),
+  youtubeUrl: z.string().trim().max(200).regex(/^$|^https:\/\//, "Social links must start with https://").default(""),
   freeShippingThreshold: z.number().min(0, "Free shipping minimum can't be negative."),
   standardShippingFee: z.number().min(0, "Shipping fee can't be negative."),
   enableCod: z.boolean(),
