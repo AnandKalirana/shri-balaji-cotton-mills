@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/Input";
 import { Notice } from "@/components/ui/Notice";
 import { api } from "@/lib/api-client";
 import { DEFAULT_SETTINGS } from "@/lib/hero";
-import { Check, Store, Truck } from "lucide-react";
+import { Building2, Check, Store, Truck } from "lucide-react";
 
 const card =
   "bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-5 sm:p-6 space-y-4";
@@ -18,6 +18,17 @@ export default function AdminSettingsPage() {
   const [freeShippingThreshold, setFreeShippingThreshold] = useState(String(DEFAULT_SETTINGS.freeShippingThreshold));
   const [shippingFee, setShippingFee] = useState(String(DEFAULT_SETTINGS.standardShippingFee));
   const [enableCod, setEnableCod] = useState(true);
+  const [biz, setBiz] = useState({
+    legalName: "",
+    gstin: "",
+    address: "",
+    businessHours: DEFAULT_SETTINGS.businessHours,
+    instagramUrl: "",
+    facebookUrl: "",
+    youtubeUrl: "",
+  });
+  const setB = (k: keyof typeof biz) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    setBiz((b) => ({ ...b, [k]: e.target.value }));
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
@@ -32,6 +43,15 @@ export default function AdminSettingsPage() {
         setFreeShippingThreshold(String(s.freeShippingThreshold));
         setShippingFee(String(s.standardShippingFee));
         setEnableCod(s.enableCod);
+        setBiz({
+          legalName: s.legalName ?? "",
+          gstin: s.gstin ?? "",
+          address: s.address ?? "",
+          businessHours: s.businessHours ?? "",
+          instagramUrl: s.instagramUrl ?? "",
+          facebookUrl: s.facebookUrl ?? "",
+          youtubeUrl: s.youtubeUrl ?? "",
+        });
       } else {
         setError(res.error);
       }
@@ -53,6 +73,7 @@ export default function AdminSettingsPage() {
         freeShippingThreshold: parseFloat(freeShippingThreshold) || 0,
         standardShippingFee: parseFloat(shippingFee) || 0,
         enableCod,
+        ...biz,
       },
     });
     setSaving(false);
@@ -86,6 +107,45 @@ export default function AdminSettingsPage() {
             <Input label="Support phone" value={supportPhone} onChange={(e) => setSupportPhone(e.target.value)} />
           </div>
           <Input label="Contact email" type="email" value={supportEmail} onChange={(e) => setSupportEmail(e.target.value)} />
+        </div>
+
+        <div className={card}>
+          <div className="flex items-center gap-2">
+            <Building2 className="w-4 h-4 text-[#c5a880]" />
+            <h3 className="text-xs tracking-[0.14em] uppercase font-semibold text-[#5c1d24]">Business details</h3>
+          </div>
+          <p className="text-xs text-[#867273]">
+            Shown in the footer, on the Contact page and in the policy pages. Anything left blank is simply hidden.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Input label="Registered business name" value={biz.legalName} onChange={setB("legalName")} />
+            <Input
+              label="GSTIN"
+              value={biz.gstin}
+              onChange={setB("gstin")}
+              maxLength={15}
+              placeholder="15 characters"
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label htmlFor="shop-address" className="text-[11px] tracking-[0.14em] uppercase font-semibold text-[#534343]">
+              Shop address
+            </label>
+            <textarea
+              id="shop-address"
+              rows={3}
+              value={biz.address}
+              onChange={setB("address")}
+              maxLength={300}
+              className="w-full bg-transparent border-0 border-b border-[#c5a880] px-0 py-3 text-sm text-[#2b1e1a] focus:outline-none focus:border-b-[1.5px] focus:border-[#5c1d24] resize-none"
+            />
+          </div>
+          <Input label="Opening hours" value={biz.businessHours} onChange={setB("businessHours")} />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <Input label="Instagram link" value={biz.instagramUrl} onChange={setB("instagramUrl")} placeholder="https://" />
+            <Input label="Facebook link" value={biz.facebookUrl} onChange={setB("facebookUrl")} placeholder="https://" />
+            <Input label="YouTube link" value={biz.youtubeUrl} onChange={setB("youtubeUrl")} placeholder="https://" />
+          </div>
         </div>
 
         <div className={card}>

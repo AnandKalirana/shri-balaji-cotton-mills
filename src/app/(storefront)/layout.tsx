@@ -19,7 +19,18 @@ export default async function StorefrontLayout({
         announcement={settings.enableAnnouncement ? settings.announcementText : null}
       />
       <main className="flex-1">{children}</main>
-      <StoreFooter storeName={settings.storeName} phone={settings.supportPhone} email={settings.supportEmail} />
+      <StoreFooter
+        storeName={settings.storeName}
+        phone={settings.supportPhone}
+        email={settings.supportEmail}
+        legalName={settings.legalName}
+        gstin={settings.gstin}
+        address={settings.address}
+        businessHours={settings.businessHours}
+        instagramUrl={settings.instagramUrl}
+        facebookUrl={settings.facebookUrl}
+        youtubeUrl={settings.youtubeUrl}
+      />
       <CartDrawer />
     </div>
   );
