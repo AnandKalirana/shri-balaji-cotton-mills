@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Logo } from "@/components/ui/Logo";
 import { Search, Heart, ShoppingBag, Menu, X, User } from "lucide-react";
 import { useCartStore, useUIStore } from "@/store";
 import { categories } from "@/lib/data";
@@ -98,9 +99,7 @@ export function StoreHeader({
                 href="/"
                 className="absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0 lg:flex-1"
               >
-                <span className="font-[family-name:var(--font-playfair)] text-xl md:text-2xl font-medium text-[#2b1e1a] whitespace-nowrap tracking-tight">
-                  {storeName}
-                </span>
+                <Logo alt={storeName} priority className="h-7 sm:h-8 md:h-9" />
               </Link>
 
               {/* Desktop: Category Nav */}
@@ -229,9 +228,7 @@ export function StoreHeader({
         >
           {/* Logo in drawer */}
           <div className="flex items-center justify-between px-6 py-5 border-b border-[#ebe3d5]">
-            <span className="font-[family-name:var(--font-playfair)] text-lg font-medium text-[#2b1e1a]">
-              {storeName}
-            </span>
+            <Logo alt={storeName} className="h-7" />
             <button
               onClick={closeMobileMenu}
               className="w-10 h-10 flex items-center justify-center text-[#534343] hover:bg-[#f0ede9] transition-colors"

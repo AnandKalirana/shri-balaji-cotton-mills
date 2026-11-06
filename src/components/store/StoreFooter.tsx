@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Logo } from "@/components/ui/Logo";
 import { categories } from "@/lib/data";
 import { Globe, Share2, Compass, Mail, Phone, MapPin } from "lucide-react";
 
@@ -21,11 +22,9 @@ export function StoreFooter({
 
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
-            <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-medium mb-3">
-              {storeName}
-            </h2>
+            <Logo tone="light" alt={storeName} className="h-9 mb-4" />
             <p className="text-sm text-[#d8c2bb] leading-relaxed max-w-xs">
-              Fabrics, kurta sets, kurtis, stretchy blouses, saree shapewear and men's wear, delivered across India.
+              Fabrics, kurta sets, kurtis, stretchy blouses, saree shapewear and men&apos;s wear, delivered across India.
             </p>
             <div className="flex gap-3 mt-6">
               <a

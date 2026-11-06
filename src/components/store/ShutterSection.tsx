@@ -186,7 +186,7 @@ export function ShutterSection() {
             </Link>
 
             <span className="hidden sm:inline-block italic text-xs text-[#c5a880] border-l border-[#c5a880]/40 pl-4 py-1 max-w-xs">
-              "{activeDept.accentQuote}"
+              &ldquo;{activeDept.accentQuote}&rdquo;
             </span>
           </div>
         </div>
