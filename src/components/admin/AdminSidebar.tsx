@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { Logo } from "@/components/ui/Logo";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
@@ -40,12 +41,7 @@ export function AdminSidebar() {
       <div>
         {/* Brand Header */}
         <div className="h-16 md:h-20 flex items-center justify-between px-6 border-b border-[#53433e]">
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#c5a880] inline-block" />
-            <span className="font-[family-name:var(--font-playfair)] text-sm font-semibold text-white tracking-wide">
-              Shri Balaji Cotton Mills
-            </span>
-          </div>
+          <Logo tone="light" className="h-7" />
 
           {/* Close button on mobile */}
           <button

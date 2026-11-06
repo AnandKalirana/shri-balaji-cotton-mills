@@ -105,6 +105,7 @@ export default function CheckoutPage() {
           name: "Shri Balaji Cotton Mills",
           description: `Order ${json.orderNumber}`,
           prefill: { name: formData.fullName, email: formData.email, contact: formData.phone },
+          image: `${window.location.origin}/brand/icon.png`,
           theme: { color: "#5c1d24" },
           handler: async (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) => {
             try {
