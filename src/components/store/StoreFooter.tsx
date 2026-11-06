@@ -1,6 +1,8 @@
+"use client";
 import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
 import { categories } from "@/lib/data";
+import { useLiveStoreInfo } from "@/lib/use-live-store-info";
 import { Mail, Phone, MapPin } from "lucide-react";
 
 interface StoreFooterProps {
@@ -16,18 +18,25 @@ interface StoreFooterProps {
   youtubeUrl?: string;
 }
 
-export function StoreFooter({
-  storeName = "Shri Balaji Cotton Mills",
-  phone = "",
-  email = "",
-  legalName = "",
-  gstin = "",
-  address = "",
-  businessHours = "",
-  instagramUrl = "",
-  facebookUrl = "",
-  youtubeUrl = "",
-}: StoreFooterProps) {
+export function StoreFooter(props: StoreFooterProps) {
+  const live = useLiveStoreInfo({
+    storeName: props.storeName ?? "Shri Balaji Cotton Mills",
+    supportPhone: props.phone ?? "",
+    supportEmail: props.email ?? "",
+    legalName: props.legalName ?? "",
+    gstin: props.gstin ?? "",
+    address: props.address ?? "",
+    businessHours: props.businessHours ?? "",
+    instagramUrl: props.instagramUrl ?? "",
+    facebookUrl: props.facebookUrl ?? "",
+    youtubeUrl: props.youtubeUrl ?? "",
+    announcementText: "",
+    enableAnnouncement: false,
+  });
+  const storeName = live.storeName;
+  const phone = live.supportPhone;
+  const email = live.supportEmail;
+  const { legalName, gstin, address, businessHours, instagramUrl, facebookUrl, youtubeUrl } = live;
   const socials = [
     { label: "Instagram", href: instagramUrl },
     { label: "Facebook", href: facebookUrl },

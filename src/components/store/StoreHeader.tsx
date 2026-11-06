@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Logo } from "@/components/ui/Logo";
+import { useLiveStoreInfo } from "@/lib/use-live-store-info";
 import { Search, Heart, ShoppingBag, Menu, X, User } from "lucide-react";
 import { useCartStore, useUIStore } from "@/store";
 import { categories } from "@/lib/data";
@@ -12,12 +13,28 @@ import type { Product } from "@/lib/types";
 const POPULAR_SEARCHES = ["Cotton Fabric", "Kurta Set", "Kurti", "Stretchy Blouse", "Shapewear", "Men's T-Shirt", "Men's Shirt"];
 
 export function StoreHeader({
-  announcement,
-  storeName = "Shri Balaji Cotton Mills",
+  announcement: initialAnnouncement,
+  storeName: initialName = "Shri Balaji Cotton Mills",
 }: {
   announcement?: string | null;
   storeName?: string;
 }) {
+  const live = useLiveStoreInfo({
+    storeName: initialName,
+    supportPhone: "",
+    supportEmail: "",
+    legalName: "",
+    gstin: "",
+    address: "",
+    businessHours: "",
+    instagramUrl: "",
+    facebookUrl: "",
+    youtubeUrl: "",
+    announcementText: initialAnnouncement ?? "",
+    enableAnnouncement: Boolean(initialAnnouncement),
+  });
+  const storeName = live.storeName;
+  const announcement = live.enableAnnouncement && live.announcementText ? live.announcementText : null;
   const [scrolled, setScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
