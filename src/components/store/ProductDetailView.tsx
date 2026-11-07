@@ -114,10 +114,10 @@ export function ProductDetailView({ product, initialColour }: { product: Product
 
   return (
     <div className="bg-white pb-28 sm:pb-16">
-      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 pt-5 pb-2 flex items-center gap-2 text-xs text-[#6f6f6f]">
-        <Link href="/" className="hover:text-[#1a1a1a]">Home</Link>
+      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 pt-5 pb-2 flex items-center gap-2 text-xs text-muted">
+        <Link href="/" className="hover:text-ink">Home</Link>
         <span aria-hidden>/</span>
-        <Link href={`/category/${product.category}`} className="hover:text-[#1a1a1a]">{product.department}</Link>
+        <Link href={`/category/${product.category}`} className="hover:text-ink">{product.department}</Link>
       </div>
 
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 py-4 sm:py-8">
@@ -133,8 +133,8 @@ export function ProductDetailView({ product, initialColour }: { product: Product
                     aria-label={`Show photo ${idx + 1}`}
                     aria-current={idx === safeIndex}
                     className={cn(
-                      "relative w-16 h-20 lg:w-[72px] lg:h-[90px] shrink-0 overflow-hidden bg-[#f3f3f1] border transition-colors",
-                      idx === safeIndex ? "border-[#1a1a1a]" : "border-transparent opacity-70 hover:opacity-100"
+                      "relative w-16 h-20 lg:w-[72px] lg:h-[90px] shrink-0 overflow-hidden bg-fog border transition-colors",
+                      idx === safeIndex ? "border-ink" : "border-transparent opacity-70 hover:opacity-100"
                     )}
                   >
                     <Image src={img} alt="" fill sizes="72px" className="object-cover" />
@@ -144,7 +144,7 @@ export function ProductDetailView({ product, initialColour }: { product: Product
             )}
 
             <div
-              className="relative flex-1 aspect-[4/5] bg-[#f3f3f1] overflow-hidden select-none"
+              className="relative flex-1 aspect-[4/5] bg-fog overflow-hidden select-none"
               onTouchStart={(e) => setTouchX(e.touches[0].clientX)}
               onTouchEnd={(e) => {
                 if (touchX === null || images.length < 2) return;
@@ -169,15 +169,15 @@ export function ProductDetailView({ product, initialColour }: { product: Product
               )}
               {images.length > 1 && (
                 <>
-                  <button onClick={() => step(-1)} aria-label="Previous photo" className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 flex items-center justify-center text-[#1a1a1a] hover:bg-white">
+                  <button onClick={() => step(-1)} aria-label="Previous photo" className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 flex items-center justify-center text-ink hover:bg-white">
                     <ChevronLeft className="w-5 h-5" />
                   </button>
-                  <button onClick={() => step(1)} aria-label="Next photo" className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 flex items-center justify-center text-[#1a1a1a] hover:bg-white">
+                  <button onClick={() => step(1)} aria-label="Next photo" className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 flex items-center justify-center text-ink hover:bg-white">
                     <ChevronRight className="w-5 h-5" />
                   </button>
                   <div className="absolute bottom-3 inset-x-0 flex justify-center gap-1.5 lg:hidden" aria-hidden>
                     {images.map((_, i) => (
-                      <span key={i} className={cn("h-1.5 rounded-full transition-all", i === safeIndex ? "w-4 bg-[#1a1a1a]" : "w-1.5 bg-[#1a1a1a]/30")} />
+                      <span key={i} className={cn("h-1.5 rounded-full transition-colors", i === safeIndex ? "w-4 bg-ink" : "w-1.5 bg-ink/30")} />
                     ))}
                   </div>
                 </>
@@ -187,25 +187,25 @@ export function ProductDetailView({ product, initialColour }: { product: Product
 
           {/* Details */}
           <div className="lg:col-span-5 lg:sticky lg:top-28 self-start">
-            <p className="text-xs text-[#6f6f6f]">{product.fabricType || product.department}</p>
-            <h1 className="text-2xl sm:text-3xl text-[#1a1a1a] mt-1 leading-snug">{product.name}</h1>
+            <p className="text-xs text-muted">{product.fabricType || product.department}</p>
+            <h1 className="text-2xl sm:text-3xl text-ink mt-1 leading-snug">{product.name}</h1>
 
             <div className="mt-4 flex items-baseline gap-3 flex-wrap">
-              <span className="text-2xl font-medium text-[#1a1a1a] tabular-nums">{formatPrice(currentPrice)}</span>
-              {showMrp && <span className="text-base text-[#6f6f6f] line-through tabular-nums">{formatPrice(product.mrp!)}</span>}
+              <span className="text-2xl font-medium text-ink tabular-nums">{formatPrice(currentPrice)}</span>
+              {showMrp && <span className="text-base text-muted line-through tabular-nums">{formatPrice(product.mrp!)}</span>}
               {percentOff > 0 && <span className="text-sm font-medium text-emerald-800">{percentOff}% off</span>}
               {isFabric && product.pricePerMetre && !isFullThaan && (
-                <span className="text-xs text-[#6f6f6f]">({formatPrice(product.pricePerMetre)} per metre)</span>
+                <span className="text-xs text-muted">({formatPrice(product.pricePerMetre)} per metre)</span>
               )}
             </div>
-            <p className="text-xs text-[#6f6f6f] mt-1">
+            <p className="text-xs text-muted mt-1">
               Inclusive of 5% GST{isFullThaan ? `, includes ${thaanDiscountPct}% savings on the full roll` : ""}
             </p>
 
             {/* Colour */}
             {colours.length > 0 && (
               <div className="mt-7">
-                <p className="text-sm text-[#1a1a1a]">
+                <p className="text-sm text-ink">
                   Colour: <span className="font-medium">{colour?.name}</span>
                 </p>
                 <div className="mt-3 flex flex-wrap gap-3" role="group" aria-label="Choose a colour">
@@ -222,13 +222,13 @@ export function ProductDetailView({ product, initialColour }: { product: Product
                         title={c.name}
                         className={cn(
                           "relative w-9 h-9 rounded-full ring-offset-2 ring-offset-white transition-shadow",
-                          on ? "ring-2 ring-[#1a1a1a]" : "hover:ring-2 hover:ring-[#1a1a1a]/30",
+                          on ? "ring-2 ring-ink" : "hover:ring-2 hover:ring-ink/30",
                           isLightHex(c.hex) && "border border-black/15",
                           out && "opacity-40"
                         )}
                         style={{ backgroundColor: c.hex }}
                       >
-                        {out && <span aria-hidden className="absolute inset-0 flex items-center justify-center"><span className="block w-full h-px bg-[#1a1a1a] rotate-45" /></span>}
+                        {out && <span aria-hidden className="absolute inset-0 flex items-center justify-center"><span className="block w-full h-px bg-ink rotate-45" /></span>}
                       </button>
                     );
                   })}
@@ -240,10 +240,10 @@ export function ProductDetailView({ product, initialColour }: { product: Product
             {needsSize && (
               <div id="size-picker" className="mt-7">
                 <div className="flex items-center justify-between">
-                  <p className="text-sm text-[#1a1a1a]">
+                  <p className="text-sm text-ink">
                     Size{size ? <>: <span className="font-medium">{size}</span></> : null}
                   </p>
-                  {showMissing && missingSize && <p role="alert" className="text-xs text-[#ba1a1a]">Choose a size to continue</p>}
+                  {showMissing && missingSize && <p role="alert" className="text-xs text-danger">Choose a size to continue</p>}
                 </div>
                 <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="Choose a size">
                   {sizes.map((s) => {
@@ -262,7 +262,7 @@ export function ProductDetailView({ product, initialColour }: { product: Product
                         aria-pressed={on}
                         className={cn(
                           "min-w-[56px] h-11 px-4 text-sm border transition-colors",
-                          on ? "bg-[#1a1a1a] text-white border-[#1a1a1a]" : "bg-white text-[#1a1a1a] border-black/20 hover:border-[#1a1a1a]",
+                          on ? "bg-ink text-white border-ink" : "bg-white text-ink border-black/20 hover:border-ink",
                           stock === 0 && "opacity-40 line-through cursor-not-allowed hover:border-black/20"
                         )}
                       >
@@ -272,7 +272,7 @@ export function ProductDetailView({ product, initialColour }: { product: Product
                   })}
                 </div>
                 {selectedVariant && selectedVariant.stockQty > 0 && selectedVariant.stockQty <= 3 && (
-                  <p className="text-xs text-[#9a5b00] mt-3">Only {selectedVariant.stockQty} left in this size and colour</p>
+                  <p className="text-xs text-amber-ink mt-3">Only {selectedVariant.stockQty} left in this size and colour</p>
                 )}
               </div>
             )}
@@ -281,7 +281,7 @@ export function ProductDetailView({ product, initialColour }: { product: Product
             {isFabric && (
               <div className="mt-7 border border-black/15 p-4 sm:p-5 space-y-4">
                 <div className="flex items-center justify-between gap-3 flex-wrap">
-                  <span className="text-sm text-[#1a1a1a]">How much fabric</span>
+                  <span className="text-sm text-ink">How much fabric</span>
                   <div className="flex gap-2">
                     {[false, true].map((thaan) => (
                       <button
@@ -290,7 +290,7 @@ export function ProductDetailView({ product, initialColour }: { product: Product
                         onClick={() => setIsFullThaan(thaan)}
                         className={cn(
                           "px-3 py-1.5 text-xs border transition-colors",
-                          isFullThaan === thaan ? "bg-[#1a1a1a] text-white border-[#1a1a1a]" : "border-black/20 text-[#1a1a1a]"
+                          isFullThaan === thaan ? "bg-ink text-white border-ink" : "border-black/20 text-ink"
                         )}
                       >
                         {thaan ? "Full thaan (25 m)" : "Custom metres"}
@@ -303,14 +303,14 @@ export function ProductDetailView({ product, initialColour }: { product: Product
                     <Stepper label="Length in metres (0.5 m steps)" value={metres} onChange={setMetres} min={1.0} max={50.0} step={0.5} unit="metres" large />
                     <div className="flex gap-2 mt-3 flex-wrap">
                       {[1.5, 2.5, 3.5, 5.0].map((quick) => (
-                        <button key={quick} type="button" onClick={() => setMetres(quick)} className="px-2.5 py-1 text-xs bg-[#f3f3f1] border border-black/10 hover:border-[#1a1a1a] text-[#1a1a1a]">
+                        <button key={quick} type="button" onClick={() => setMetres(quick)} className="px-2.5 py-1 text-xs bg-fog border border-black/10 hover:border-ink text-ink">
                           {quick} m{quick === 1.5 ? " (blouse)" : quick === 2.5 ? " (kurta)" : ""}
                         </button>
                       ))}
                     </div>
                   </div>
                 ) : (
-                  <p className="text-xs text-[#444444] leading-relaxed">
+                  <p className="text-xs text-graphite leading-relaxed">
                     A full 25 metre roll at a wholesale rate, suitable for boutiques and tailors.
                   </p>
                 )}
@@ -327,7 +327,7 @@ export function ProductDetailView({ product, initialColour }: { product: Product
             <button
               onClick={handleAddToCart}
               disabled={!available}
-              className="hidden sm:flex mt-8 w-full h-14 bg-[#1a1a1a] hover:bg-[#5c1d24] text-white text-sm font-medium items-center justify-center gap-3 transition-colors disabled:opacity-50 disabled:hover:bg-[#1a1a1a]"
+              className="hidden sm:flex mt-8 w-full h-14 bg-ink hover:bg-wine text-white text-sm font-medium items-center justify-center gap-3 transition-colors disabled:opacity-50 disabled:hover:bg-ink"
             >
               <ShoppingBag className="w-4 h-4" />
               {ctaLabel}
@@ -344,11 +344,11 @@ export function ProductDetailView({ product, initialColour }: { product: Product
                   title: "Fabric and care",
                   body: (
                     <dl className="grid grid-cols-[110px_1fr] gap-y-2">
-                      <dt className="text-[#6f6f6f]">Fabric</dt>
+                      <dt className="text-muted">Fabric</dt>
                       <dd>{product.fabricType || "—"}</dd>
-                      {product.composition && (<><dt className="text-[#6f6f6f]">Composition</dt><dd>{product.composition}</dd></>)}
-                      {isFabric && (<><dt className="text-[#6f6f6f]">Width</dt><dd>{product.width || "44 inches"}</dd></>)}
-                      <dt className="text-[#6f6f6f]">Care</dt>
+                      {product.composition && (<><dt className="text-muted">Composition</dt><dd>{product.composition}</dd></>)}
+                      {isFabric && (<><dt className="text-muted">Width</dt><dd>{product.width || "44 inches"}</dd></>)}
+                      <dt className="text-muted">Care</dt>
                       <dd>{product.care || "Wash separately in cold water, dry in shade"}</dd>
                     </dl>
                   ),
@@ -365,11 +365,11 @@ export function ProductDetailView({ product, initialColour }: { product: Product
                 },
               ].map((s, i) => (
                 <details key={s.title} open={i === 0} className="group border-b border-black/10">
-                  <summary className="flex items-center justify-between py-4 text-sm font-medium text-[#1a1a1a] cursor-pointer list-none">
+                  <summary className="flex items-center justify-between py-4 text-sm font-medium text-ink cursor-pointer list-none">
                     {s.title}
                     <ChevronDown className="w-4 h-4 transition-transform group-open:rotate-180" />
                   </summary>
-                  <div className="pb-5 text-sm text-[#444444] leading-relaxed">{s.body}</div>
+                  <div className="pb-5 text-sm text-graphite leading-relaxed">{s.body}</div>
                 </details>
               ))}
             </div>
@@ -380,13 +380,13 @@ export function ProductDetailView({ product, initialColour }: { product: Product
       {/* Mobile bar */}
       <div className="sm:hidden fixed bottom-0 inset-x-0 z-30 bg-white border-t border-black/10 p-3 flex items-center gap-3">
         <div className="shrink-0">
-          <span className="block text-base font-medium tabular-nums text-[#1a1a1a]">{formatPrice(currentPrice)}</span>
-          {showMrp && <span className="block text-xs text-[#6f6f6f] line-through tabular-nums">{formatPrice(product.mrp!)}</span>}
+          <span className="block text-base font-medium tabular-nums text-ink">{formatPrice(currentPrice)}</span>
+          {showMrp && <span className="block text-xs text-muted line-through tabular-nums">{formatPrice(product.mrp!)}</span>}
         </div>
         <button
           onClick={handleAddToCart}
           disabled={!available}
-          className="flex-1 h-12 bg-[#1a1a1a] text-white text-sm font-medium flex items-center justify-center gap-2 disabled:opacity-50"
+          className="flex-1 h-12 bg-ink text-white text-sm font-medium flex items-center justify-center gap-2 disabled:opacity-50"
         >
           <ShoppingBag className="w-4 h-4" />
           {added ? "Added to bag" : !available ? "Out of stock" : missingSize ? "Select a size" : "Add to bag"}
