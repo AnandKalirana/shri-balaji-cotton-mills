@@ -107,9 +107,9 @@ export function StoreHeader({
       <header
         data-overlay={whiteInk ? "true" : "false"}
         className={cn(
-          "group/hdr sticky top-0 z-30 bg-white transition-[background-color,box-shadow] duration-300",
+          "group/hdr sticky top-0 z-30 bg-white/70 backdrop-blur-xl backdrop-saturate-150 transition-[background-color,box-shadow] duration-300",
           isHome && "-mb-16 md:-mb-20",
-          overlay && "bg-transparent",
+          overlay && "bg-transparent backdrop-blur-none backdrop-saturate-100",
           scrolled && "shadow-[0_1px_0_rgba(43,30,26,0.08),0_8px_24px_-12px_rgba(43,30,26,0.18)]"
         )}
       >
