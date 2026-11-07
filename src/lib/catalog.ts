@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { products as demoProducts, categories as demoCategories, orders as demoOrders } from "@/lib/data";
 import { DEFAULT_SETTINGS, type StoreSettingsData } from "@/lib/hero";
-import type { Product, Category, Order } from "@/lib/types";
+import type { Product, Category, Order, ProductOptions } from "@/lib/types";
+import { colourHex, NEUTRAL_SWATCH, sortSizes } from "@/lib/colours";
 
 /**
  * Single read layer for the catalogue, used by both the storefront and the admin.
@@ -16,6 +17,28 @@ const productInclude = { category: true, fabricDetail: true, variants: true } as
 // Loose row type so this file also compiles before `prisma generate` has been run.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DbProduct = any;
+
+/** Builds the size and colour choices from a product's variants. Null when it has none. */
+export function buildOptions(p: DbProduct): ProductOptions | undefined {
+  type V = { id: string; sku: string; size?: string | null; colorName?: string | null; colorHex?: string | null; stockQty: number; isActive: boolean };
+  const variants = ((p.variants ?? []) as V[]).filter((v) => v.isActive && (v.size || v.colorName));
+  if (!variants.length) return undefined;
+
+  const images = (p.colourImages && typeof p.colourImages === "object" ? p.colourImages : {}) as Record<string, string[]>;
+  const colours: ProductOptions["colours"] = [];
+  for (const v of variants) {
+    const name = v.colorName?.trim();
+    if (name && !colours.some((c) => c.name === name)) {
+      colours.push({ name, hex: v.colorHex || colourHex(name) || NEUTRAL_SWATCH, images: Array.isArray(images[name]) ? images[name] : [] });
+    }
+  }
+  const sizes = sortSizes([...new Set(variants.map((v) => v.size?.trim()).filter((s): s is string => Boolean(s)))]);
+  return {
+    sizes,
+    colours,
+    variants: variants.map((v) => ({ id: v.id, sku: v.sku, size: v.size?.trim() ?? "", colour: v.colorName?.trim() ?? "", stockQty: v.stockQty })),
+  };
+}
 
 export function mapProduct(p: DbProduct): Product {
   const fabric = p.fabricDetail;
@@ -36,6 +59,7 @@ export function mapProduct(p: DbProduct): Product {
     mrp: p.salePrice != null && Number(p.basePrice) > Number(p.salePrice) ? Number(p.basePrice) : undefined,
     pricePerMetre: fabric ? Number(fabric.pricePerMetre) : undefined,
     images: p.images ?? [],
+    options: buildOptions(p),
     description: p.description ?? "",
     fabricType: p.weaveType || p.category?.name || "",
     composition: p.composition || "",

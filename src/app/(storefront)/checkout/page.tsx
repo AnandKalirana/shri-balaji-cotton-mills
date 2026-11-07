@@ -78,6 +78,7 @@ export default function CheckoutPage() {
           address: { street: formData.street, city: formData.city, state: formData.state, pincode: formData.pincode },
           items: items.map((i) => ({
             productId: i.product.id,
+            variantId: i.variantId ?? null,
             quantity: i.quantity,
             metres: i.metres ?? null,
             isFullThaan: i.isFullThaan ?? false,
@@ -377,11 +378,13 @@ export default function CheckoutPage() {
 
               <div className="divide-y divide-[#e5e5e3] max-h-60 overflow-y-auto mb-4">
                 {items.map((item) => (
-                  <div key={item.product.id} className="py-2.5 flex justify-between gap-3 text-xs">
+                  <div key={`${item.product.id}:${item.variantId ?? ""}`} className="py-2.5 flex justify-between gap-3 text-xs">
                     <div>
                       <p className="font-medium text-[#1a1a1a] line-clamp-1">{item.product.name}</p>
                       <p className="text-[#6f6f6f]">
-                        {item.metres ? `${item.metres}m cut` : `Qty: ${item.quantity}`}
+                        {item.metres
+                          ? `${item.metres}m cut`
+                          : `${[item.colour, item.size].filter(Boolean).join(" · ")}${item.colour || item.size ? " · " : ""}Qty: ${item.quantity}`}
                       </p>
                     </div>
                     <span className="font-semibold text-[#1a1a1a] shrink-0">

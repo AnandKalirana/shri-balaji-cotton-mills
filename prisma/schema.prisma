@@ -82,6 +82,8 @@ model Product {
   
   // Media & Badges
   images         String[]
+  // Photos for each colour, like {"Maroon": ["https://..."]}. Colours without photos use `images`.
+  colourImages   Json?
   badge          String?
   isActive       Boolean         @default(true)
   isFeatured     Boolean         @default(false)

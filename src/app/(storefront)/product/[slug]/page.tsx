@@ -16,11 +16,14 @@ export async function generateMetadata({
 
 export default async function ProductPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ colour?: string }>;
 }) {
   const { slug } = await params;
+  const { colour } = await searchParams;
   const { product } = await getProductBySlug(slug);
   if (!product) notFound();
-  return <ProductDetailView product={product} />;
+  return <ProductDetailView product={product} initialColour={colour} />;
 }

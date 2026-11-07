@@ -1,33 +1,63 @@
 "use client";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/lib/types";
-import { formatPrice } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
+import { isLightHex } from "@/lib/colours";
 import { Stepper } from "@/components/ui/Stepper";
 import { Badge } from "@/components/ui/Badge";
 import { useCartStore } from "@/store";
-import {
-  ShoppingBag,
-  ShieldCheck,
-  Truck,
-  RotateCcw,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { ShoppingBag, ChevronLeft, ChevronRight, Truck, ShieldCheck, RotateCcw, ChevronDown } from "lucide-react";
 
-export function ProductDetailView({ product }: { product: Product }) {
-  const [activeImageIndex, setActiveImageIndex] = useState(0);
+const FALLBACK_IMG = "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800";
+
+export function ProductDetailView({ product, initialColour }: { product: Product; initialColour?: string }) {
+  const options = product.options;
+  const colours = useMemo(() => options?.colours ?? [], [options]);
+  const sizes = options?.sizes ?? [];
+  const variants = useMemo(() => options?.variants ?? [], [options]);
+
+  // Start on the colour from the link, otherwise the first colour that is in stock.
+  const firstColour = useMemo(() => {
+    const fromLink = colours.find((c) => c.name.toLowerCase() === (initialColour ?? "").toLowerCase());
+    if (fromLink) return fromLink.name;
+    return colours.find((c) => variants.some((v) => v.colour === c.name && v.stockQty > 0))?.name ?? colours[0]?.name ?? "";
+  }, [colours, variants, initialColour]);
+
+  const [colourName, setColourName] = useState(firstColour);
+  const [size, setSize] = useState(sizes.length === 1 ? sizes[0] : "");
+  const [activeImage, setActiveImage] = useState(0);
   const [metres, setMetres] = useState(2.5);
   const [isFullThaan, setIsFullThaan] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+  const [showMissing, setShowMissing] = useState(false);
+  const [touchX, setTouchX] = useState<number | null>(null);
 
   const { addItem, toggleCart } = useCartStore();
 
   const isFabric = Boolean(product.pricePerMetre);
   const standardThaanMetres = 25.0;
   const thaanDiscountPct = 12;
+
+  const colour = colours.find((c) => c.name === colourName);
+  const images = colour?.images.length ? colour.images : product.images?.length ? product.images : [FALLBACK_IMG];
+  const safeIndex = Math.min(activeImage, images.length - 1);
+
+  const stockOf = (c: string, s: string) => variants.find((v) => v.colour === c && v.size === s)?.stockQty ?? 0;
+  const selectedVariant = options ? variants.find((v) => v.colour === (colour?.name ?? "") && v.size === size) : undefined;
+  const sizeStock = (s: string) => stockOf(colour?.name ?? "", s);
+  const colourInStock = (c: string) => variants.some((v) => v.colour === c && v.stockQty > 0);
+
+  const needsSize = sizes.length > 0;
+  const missingSize = needsSize && !size;
+  const available = isFabric
+    ? product.inStock
+    : options
+    ? colourInStock(colour?.name ?? "") || !colours.length && variants.some((v) => v.stockQty > 0)
+    : product.inStock;
+  const maxQty = Math.max(1, Math.min(10, options ? selectedVariant?.stockQty ?? 10 : product.stockQty || 10));
 
   // Price calculations
   let currentPrice = product.price;
@@ -39,310 +69,329 @@ export function ProductDetailView({ product }: { product: Product }) {
       currentPrice = Math.round(metres * product.pricePerMetre);
     }
   }
+  const showMrp = product.mrp && !isFabric;
+  const percentOff = showMrp ? Math.round(((product.mrp! - product.price) / product.mrp!) * 100) : 0;
+
+  const chooseColour = (name: string) => {
+    setColourName(name);
+    setActiveImage(0);
+    if (size && stockOf(name, size) === 0) setSize("");
+    try {
+      window.history.replaceState(null, "", `?colour=${encodeURIComponent(name)}`);
+    } catch {
+      /* the link just won't update */
+    }
+  };
 
   const handleAddToCart = () => {
+    if (missingSize) {
+      setShowMissing(true);
+      document.getElementById("size-picker")?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    if (options && !selectedVariant) return;
     addItem(
       { ...product, price: currentPrice },
       quantity,
-      isFabric ? (isFullThaan ? standardThaanMetres : metres) : undefined
+      isFabric ? (isFullThaan ? standardThaanMetres : metres) : undefined,
+      selectedVariant
+        ? { variantId: selectedVariant.id, size: selectedVariant.size || undefined, colour: selectedVariant.colour || undefined, image: images[0] }
+        : undefined
     );
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
     toggleCart();
   };
 
-  const images =
-    product.images && product.images.length > 0
-      ? product.images
-      : ["https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800"];
+  const step = (dir: 1 | -1) => setActiveImage((safeIndex + dir + images.length) % images.length);
+  const ctaLabel = added
+    ? "Added to bag"
+    : !available
+    ? "Out of stock"
+    : missingSize
+    ? "Select a size"
+    : `Add to bag · ${formatPrice(currentPrice * (isFabric ? 1 : quantity))}`;
 
   return (
-    <div className="min-h-screen bg-[#ffffff] pb-24 sm:pb-16">
-      {/* Breadcrumb Bar */}
-      <div className="border-b border-[#e5e5e3] bg-white">
-        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 py-3 flex items-center gap-2 text-xs font-medium text-[#6f6f6f]">
-          <Link href="/" className="hover:text-[#1a1a1a]">Home</Link>
-          <span>/</span>
-          <Link href={`/category/${product.category}`} className="hover:text-[#1a1a1a]">
-            {product.department}
-          </Link>
-          <span>/</span>
-          <span className="text-[#1a1a1a] truncate max-w-[180px] sm:max-w-none">
-            {product.name}
-          </span>
-        </div>
+    <div className="bg-white pb-28 sm:pb-16">
+      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 pt-5 pb-2 flex items-center gap-2 text-xs text-[#6f6f6f]">
+        <Link href="/" className="hover:text-[#1a1a1a]">Home</Link>
+        <span aria-hidden>/</span>
+        <Link href={`/category/${product.category}`} className="hover:text-[#1a1a1a]">{product.department}</Link>
       </div>
 
-      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 py-8 sm:py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16">
+      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 py-4 sm:py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-14">
+          {/* Gallery */}
+          <div className="lg:col-span-7 flex flex-col-reverse lg:flex-row gap-3 lg:gap-4">
+            {images.length > 1 && (
+              <div className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-y-auto lg:max-h-[720px] scrollbar-none shrink-0">
+                {images.map((img, idx) => (
+                  <button
+                    key={img + idx}
+                    onClick={() => setActiveImage(idx)}
+                    aria-label={`Show photo ${idx + 1}`}
+                    aria-current={idx === safeIndex}
+                    className={cn(
+                      "relative w-16 h-20 lg:w-[72px] lg:h-[90px] shrink-0 overflow-hidden bg-[#f3f3f1] border transition-colors",
+                      idx === safeIndex ? "border-[#1a1a1a]" : "border-transparent opacity-70 hover:opacity-100"
+                    )}
+                  >
+                    <Image src={img} alt="" fill sizes="72px" className="object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
 
-          {/* Left Column: Image Gallery (Mobile Touch Swipe + Desktop Stack) */}
-          <div className="lg:col-span-7 flex flex-col gap-4">
-            {/* Main Stage Image */}
-            <div className="relative aspect-[4/5] w-full bg-[#f3f3f1] border border-[#e5e5e3] overflow-hidden select-none">
+            <div
+              className="relative flex-1 aspect-[4/5] bg-[#f3f3f1] overflow-hidden select-none"
+              onTouchStart={(e) => setTouchX(e.touches[0].clientX)}
+              onTouchEnd={(e) => {
+                if (touchX === null || images.length < 2) return;
+                const dx = e.changedTouches[0].clientX - touchX;
+                if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1);
+                setTouchX(null);
+              }}
+            >
               <Image
-                src={images[activeImageIndex]}
-                alt={product.name}
+                key={images[safeIndex]}
+                src={images[safeIndex]}
+                alt={`${product.name}${colour ? `, ${colour.name}` : ""}`}
                 fill
                 priority
-                className="object-cover object-center"
+                sizes="(max-width: 1024px) 100vw, 58vw"
+                className="object-cover object-center fade-in"
               />
-
               {product.badge && (
                 <div className="absolute top-4 left-4 z-10">
                   <Badge variant="gold">{product.badge}</Badge>
                 </div>
               )}
-
-              {/* Mobile Arrows */}
               {images.length > 1 && (
-                <div className="absolute inset-y-0 inset-x-2 flex items-center justify-between pointer-events-none sm:hidden">
-                  <button
-                    onClick={() =>
-                      setActiveImageIndex((prev) =>
-                        (prev - 1 + images.length) % images.length
-                      )
-                    }
-                    className="w-10 h-10 bg-white flex items-center justify-center pointer-events-auto text-[#1a1a1a]"
-                    aria-label="Previous image"
-                  >
+                <>
+                  <button onClick={() => step(-1)} aria-label="Previous photo" className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 flex items-center justify-center text-[#1a1a1a] hover:bg-white">
                     <ChevronLeft className="w-5 h-5" />
                   </button>
-                  <button
-                    onClick={() =>
-                      setActiveImageIndex((prev) => (prev + 1) % images.length)
-                    }
-                    className="w-10 h-10 bg-white flex items-center justify-center pointer-events-auto text-[#1a1a1a]"
-                    aria-label="Next image"
-                  >
+                  <button onClick={() => step(1)} aria-label="Next photo" className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 flex items-center justify-center text-[#1a1a1a] hover:bg-white">
                     <ChevronRight className="w-5 h-5" />
                   </button>
-                </div>
+                  <div className="absolute bottom-3 inset-x-0 flex justify-center gap-1.5 lg:hidden" aria-hidden>
+                    {images.map((_, i) => (
+                      <span key={i} className={cn("h-1.5 rounded-full transition-all", i === safeIndex ? "w-4 bg-[#1a1a1a]" : "w-1.5 bg-[#1a1a1a]/30")} />
+                    ))}
+                  </div>
+                </>
               )}
             </div>
-
-            {/* Thumbnails row */}
-            {images.length > 1 && (
-              <div className="flex gap-3 overflow-x-auto scrollbar-none py-1">
-                {images.map((img, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveImageIndex(idx)}
-                    className={`relative w-20 h-24 shrink-0 border-2 transition-all ${
-                      activeImageIndex === idx
-                        ? "border-[#5c1d24]"
-                        : "border-[#e5e5e3] opacity-60 hover:opacity-100"
-                    }`}
-                  >
-                    <Image src={img} alt="" fill className="object-cover" />
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
 
-          {/* Right Column: Textile Specs, Metre Stepper, Buy Options */}
-          <div className="lg:col-span-5 flex flex-col justify-start">
-            <span className="text-xs font-medium text-[#5c1d24]">
-              {product.fabricType || product.department}
-            </span>
+          {/* Details */}
+          <div className="lg:col-span-5 lg:sticky lg:top-28 self-start">
+            <p className="text-xs text-[#6f6f6f]">{product.fabricType || product.department}</p>
+            <h1 className="text-2xl sm:text-3xl text-[#1a1a1a] mt-1 leading-snug">{product.name}</h1>
 
-            <h1 className="font-[family-name:var(--font-playfair)] text-2xl sm:text-3xl md:text-4xl font-normal text-[#1a1a1a] mt-2 mb-4 leading-tight">
-              {product.name}
-            </h1>
+            <div className="mt-4 flex items-baseline gap-3 flex-wrap">
+              <span className="text-2xl font-medium text-[#1a1a1a] tabular-nums">{formatPrice(currentPrice)}</span>
+              {showMrp && <span className="text-base text-[#6f6f6f] line-through tabular-nums">{formatPrice(product.mrp!)}</span>}
+              {percentOff > 0 && <span className="text-sm font-medium text-emerald-800">{percentOff}% off</span>}
+              {isFabric && product.pricePerMetre && !isFullThaan && (
+                <span className="text-xs text-[#6f6f6f]">({formatPrice(product.pricePerMetre)} per metre)</span>
+              )}
+            </div>
+            <p className="text-xs text-[#6f6f6f] mt-1">
+              Inclusive of 5% GST{isFullThaan ? `, includes ${thaanDiscountPct}% savings on the full roll` : ""}
+            </p>
 
-            {/* Price Box */}
-            <div className="bg-[#f5f5f3] p-4 sm:p-5 border border-[#e5e5e3] mb-6">
-              <div className="flex items-baseline justify-between gap-2">
-                <span className="text-2xl sm:text-3xl font-semibold text-[#1a1a1a]">
-                  {formatPrice(currentPrice)}
-                  {product.mrp && !isFabric && (
-                    <span className="ml-3 text-base font-normal text-[#6f6f6f] line-through tabular-nums">{formatPrice(product.mrp)}</span>
-                  )}
-                </span>
-                {product.pricePerMetre && !isFullThaan && (
-                  <span className="text-xs text-[#444444]">
-                    ({formatPrice(product.pricePerMetre)} / metre)
-                  </span>
+            {/* Colour */}
+            {colours.length > 0 && (
+              <div className="mt-7">
+                <p className="text-sm text-[#1a1a1a]">
+                  Colour: <span className="font-medium">{colour?.name}</span>
+                </p>
+                <div className="mt-3 flex flex-wrap gap-3" role="group" aria-label="Choose a colour">
+                  {colours.map((c) => {
+                    const on = c.name === colour?.name;
+                    const out = !colourInStock(c.name);
+                    return (
+                      <button
+                        key={c.name}
+                        type="button"
+                        onClick={() => chooseColour(c.name)}
+                        aria-label={`${c.name}${out ? ", out of stock" : ""}`}
+                        aria-pressed={on}
+                        title={c.name}
+                        className={cn(
+                          "relative w-9 h-9 rounded-full ring-offset-2 ring-offset-white transition-shadow",
+                          on ? "ring-2 ring-[#1a1a1a]" : "hover:ring-2 hover:ring-[#1a1a1a]/30",
+                          isLightHex(c.hex) && "border border-black/15",
+                          out && "opacity-40"
+                        )}
+                        style={{ backgroundColor: c.hex }}
+                      >
+                        {out && <span aria-hidden className="absolute inset-0 flex items-center justify-center"><span className="block w-full h-px bg-[#1a1a1a] rotate-45" /></span>}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Size */}
+            {needsSize && (
+              <div id="size-picker" className="mt-7">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-[#1a1a1a]">
+                    Size{size ? <>: <span className="font-medium">{size}</span></> : null}
+                  </p>
+                  {showMissing && missingSize && <p role="alert" className="text-xs text-[#ba1a1a]">Choose a size to continue</p>}
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="Choose a size">
+                  {sizes.map((s) => {
+                    const stock = sizeStock(s);
+                    const on = s === size;
+                    return (
+                      <button
+                        key={s}
+                        type="button"
+                        disabled={stock === 0}
+                        onClick={() => {
+                          setSize(s);
+                          setShowMissing(false);
+                          setQuantity(1);
+                        }}
+                        aria-pressed={on}
+                        className={cn(
+                          "min-w-[56px] h-11 px-4 text-sm border transition-colors",
+                          on ? "bg-[#1a1a1a] text-white border-[#1a1a1a]" : "bg-white text-[#1a1a1a] border-black/20 hover:border-[#1a1a1a]",
+                          stock === 0 && "opacity-40 line-through cursor-not-allowed hover:border-black/20"
+                        )}
+                      >
+                        {s}
+                      </button>
+                    );
+                  })}
+                </div>
+                {selectedVariant && selectedVariant.stockQty > 0 && selectedVariant.stockQty <= 3 && (
+                  <p className="text-xs text-[#9a5b00] mt-3">Only {selectedVariant.stockQty} left in this size and colour</p>
                 )}
               </div>
+            )}
 
-              {isFullThaan && (
-                <p className="text-xs text-emerald-800 font-semibold mt-1">
-                  Includes {thaanDiscountPct}% Bulk Thaan Roll Savings
-                </p>
-              )}
-
-              <p className="text-[11px] text-[#6f6f6f] mt-2">
-                Inclusive of 5% GST
-              </p>
-            </div>
-
-            {/* Fabric Metre Selector & Thaan Option */}
+            {/* Fabric by the metre */}
             {isFabric && (
-              <div className="border border-[#c5a880] p-4 sm:p-5 bg-white mb-6 space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-[#1a1a1a]">
-                    Select Yardage Mode
-                  </span>
+              <div className="mt-7 border border-black/15 p-4 sm:p-5 space-y-4">
+                <div className="flex items-center justify-between gap-3 flex-wrap">
+                  <span className="text-sm text-[#1a1a1a]">How much fabric</span>
                   <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setIsFullThaan(false)}
-                      className={`px-3 py-1 text-xs font-medium border ${
-                        !isFullThaan
-                          ? "bg-[#5c1d24] text-white border-[#5c1d24]"
-                          : "border-[#e5e5e3] text-[#444444]"
-                      }`}
-                    >
-                      Custom Metres
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setIsFullThaan(true)}
-                      className={`px-3 py-1 text-xs font-medium border ${
-                        isFullThaan
-                          ? "bg-[#5c1d24] text-white border-[#5c1d24]"
-                          : "border-[#e5e5e3] text-[#444444]"
-                      }`}
-                    >
-                      Full Thaan (25m)
-                    </button>
+                    {[false, true].map((thaan) => (
+                      <button
+                        key={String(thaan)}
+                        type="button"
+                        onClick={() => setIsFullThaan(thaan)}
+                        className={cn(
+                          "px-3 py-1.5 text-xs border transition-colors",
+                          isFullThaan === thaan ? "bg-[#1a1a1a] text-white border-[#1a1a1a]" : "border-black/20 text-[#1a1a1a]"
+                        )}
+                      >
+                        {thaan ? "Full thaan (25 m)" : "Custom metres"}
+                      </button>
+                    ))}
                   </div>
                 </div>
-
                 {!isFullThaan ? (
                   <div>
-                    <Stepper
-                      label="Custom Cut Length (0.5m increments)"
-                      value={metres}
-                      onChange={setMetres}
-                      min={1.0}
-                      max={50.0}
-                      step={0.5}
-                      unit="metres"
-                      large
-                    />
+                    <Stepper label="Length in metres (0.5 m steps)" value={metres} onChange={setMetres} min={1.0} max={50.0} step={0.5} unit="metres" large />
                     <div className="flex gap-2 mt-3 flex-wrap">
                       {[1.5, 2.5, 3.5, 5.0].map((quick) => (
-                        <button
-                          key={quick}
-                          onClick={() => setMetres(quick)}
-                          className="px-2.5 py-1 text-xs bg-[#f3f3f1] border border-[#e5e5e3] hover:border-[#c5a880] text-[#1a1a1a]"
-                        >
-                          {quick}m {quick === 1.5 ? "(Blouse)" : quick === 2.5 ? "(Kurta)" : ""}
+                        <button key={quick} type="button" onClick={() => setMetres(quick)} className="px-2.5 py-1 text-xs bg-[#f3f3f1] border border-black/10 hover:border-[#1a1a1a] text-[#1a1a1a]">
+                          {quick} m{quick === 1.5 ? " (blouse)" : quick === 2.5 ? " (kurta)" : ""}
                         </button>
                       ))}
                     </div>
                   </div>
                 ) : (
-                  <div className="text-xs text-[#444444] space-y-1">
-                    <p>• Standard wholesale bolt length: <strong>25.0 metres</strong></p>
-                    <p>• Suitable for stitching kurtas, blouses and suits, and for boutique use.</p>
-                  </div>
+                  <p className="text-xs text-[#444444] leading-relaxed">
+                    A full 25 metre roll at a wholesale rate, suitable for boutiques and tailors.
+                  </p>
                 )}
               </div>
             )}
 
-            {/* Standard Quantity Stepper */}
-            {!isFabric && (
-              <div className="mb-6">
-                <Stepper
-                  label="Quantity"
-                  value={quantity}
-                  onChange={setQuantity}
-                  min={1}
-                  max={product.stockQty || 10}
-                />
+            {/* Quantity */}
+            {!isFabric && available && (
+              <div className="mt-7">
+                <Stepper label="Quantity" value={quantity} onChange={setQuantity} min={1} max={maxQty} />
               </div>
             )}
 
-            {/* Add to Cart Desktop Button */}
             <button
               onClick={handleAddToCart}
-              disabled={!product.inStock}
-              className="hidden sm:flex w-full py-4 bg-[#5c1d24] hover:bg-[#1a1a1a] text-white text-xs font-medium items-center justify-center gap-3 transition-colors min-h-[52px] disabled:opacity-50"
+              disabled={!available}
+              className="hidden sm:flex mt-8 w-full h-14 bg-[#1a1a1a] hover:bg-[#5c1d24] text-white text-sm font-medium items-center justify-center gap-3 transition-colors disabled:opacity-50 disabled:hover:bg-[#1a1a1a]"
             >
               <ShoppingBag className="w-4 h-4" />
-              <span>
-                {added
-                  ? "Added to bag"
-                  : product.inStock
-                  ? `Add to Bag • ${formatPrice(currentPrice)}`
-                  : "Currently Out of Stock"}
-              </span>
+              {ctaLabel}
             </button>
 
-            {/* Textile Attributes Accordion / Specs */}
-            <div className="mt-8 border-t border-[#e5e5e3] pt-6 space-y-4">
-              <h4 className="text-xs font-medium text-[#6f6f6f]">
-                Artisanal Specifications
-              </h4>
-
-              <div className="grid grid-cols-2 gap-4 text-xs">
-                <div>
-                  <span className="text-[#6f6f6f] block">Weave / Technique</span>
-                  <span className="font-semibold text-[#1a1a1a]">{product.fabricType}</span>
-                </div>
-                <div>
-                  <span className="text-[#6f6f6f] block">Composition</span>
-                  <span className="font-semibold text-[#1a1a1a]">{product.composition}</span>
-                </div>
-                <div>
-                  <span className="text-[#6f6f6f] block">Fabric Width</span>
-                  <span className="font-semibold text-[#1a1a1a]">{product.width || "44 inches"}</span>
-                </div>
-                <div>
-                  <span className="text-[#6f6f6f] block">Care</span>
-                  <span className="font-semibold text-[#1a1a1a]">{product.care || "Dry clean only"}</span>
-                </div>
-              </div>
-
-              <p className="text-xs text-[#444444] leading-relaxed pt-2">
-                {product.description}
-              </p>
-            </div>
-
-            {/* Assurance Badges */}
-            <div className="mt-6 border-t border-[#e5e5e3] pt-4 space-y-2 text-xs text-[#444444]">
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-emerald-700" />
-                <span>Quality checked before dispatch</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Truck className="w-4 h-4 text-[#5c1d24]" />
-                <span>Dispatched in 1–2 working days</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <RotateCcw className="w-4 h-4 text-[#725b38]" />
-                <span>Easy 7-day exchange on uncut fabric</span>
-              </div>
+            {/* Information */}
+            <div className="mt-8 border-t border-black/10">
+              {[
+                {
+                  title: "Description",
+                  body: <p className="whitespace-pre-line">{product.description}</p>,
+                },
+                {
+                  title: "Fabric and care",
+                  body: (
+                    <dl className="grid grid-cols-[110px_1fr] gap-y-2">
+                      <dt className="text-[#6f6f6f]">Fabric</dt>
+                      <dd>{product.fabricType || "—"}</dd>
+                      {product.composition && (<><dt className="text-[#6f6f6f]">Composition</dt><dd>{product.composition}</dd></>)}
+                      {isFabric && (<><dt className="text-[#6f6f6f]">Width</dt><dd>{product.width || "44 inches"}</dd></>)}
+                      <dt className="text-[#6f6f6f]">Care</dt>
+                      <dd>{product.care || "Wash separately in cold water, dry in shade"}</dd>
+                    </dl>
+                  ),
+                },
+                {
+                  title: "Delivery and exchange",
+                  body: (
+                    <ul className="space-y-2">
+                      <li className="flex gap-2"><Truck className="w-4 h-4 shrink-0 mt-0.5" /> Dispatched in 1 to 2 working days</li>
+                      <li className="flex gap-2"><ShieldCheck className="w-4 h-4 shrink-0 mt-0.5" /> Quality checked before dispatch</li>
+                      <li className="flex gap-2"><RotateCcw className="w-4 h-4 shrink-0 mt-0.5" /> Easy exchange on garments. Fabric cut to length is not returnable</li>
+                    </ul>
+                  ),
+                },
+              ].map((s, i) => (
+                <details key={s.title} open={i === 0} className="group border-b border-black/10">
+                  <summary className="flex items-center justify-between py-4 text-sm font-medium text-[#1a1a1a] cursor-pointer list-none">
+                    {s.title}
+                    <ChevronDown className="w-4 h-4 transition-transform group-open:rotate-180" />
+                  </summary>
+                  <div className="pb-5 text-sm text-[#444444] leading-relaxed">{s.body}</div>
+                </details>
+              ))}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Sticky Bottom Bar for Mobile Phones (360px-430px) */}
-      <div className="sm:hidden fixed bottom-0 left-0 right-0 z-30 bg-[#ffffff] border-t border-[#c5a880] p-3 shadow-2xl flex items-center justify-between gap-3">
-        <div>
-          <span className="text-xs text-[#6f6f6f] block">
-            {isFabric ? (isFullThaan ? "Full Thaan" : `${metres}m Cut`) : "Total"}
-          </span>
-          <span className="text-base font-semibold text-[#1a1a1a]">
-            {formatPrice(currentPrice)}
-          </span>
+      {/* Mobile bar */}
+      <div className="sm:hidden fixed bottom-0 inset-x-0 z-30 bg-white border-t border-black/10 p-3 flex items-center gap-3">
+        <div className="shrink-0">
+          <span className="block text-base font-medium tabular-nums text-[#1a1a1a]">{formatPrice(currentPrice)}</span>
+          {showMrp && <span className="block text-xs text-[#6f6f6f] line-through tabular-nums">{formatPrice(product.mrp!)}</span>}
         </div>
-
         <button
           onClick={handleAddToCart}
-          disabled={!product.inStock}
-          className="flex-1 py-3.5 bg-[#5c1d24] text-white text-xs font-medium flex items-center justify-center gap-2 active:bg-[#1a1a1a] min-h-[48px]"
+          disabled={!available}
+          className="flex-1 h-12 bg-[#1a1a1a] text-white text-sm font-medium flex items-center justify-center gap-2 disabled:opacity-50"
         >
           <ShoppingBag className="w-4 h-4" />
-          <span>{added ? "Added" : "Add to Bag"}</span>
+          {added ? "Added to bag" : !available ? "Out of stock" : missingSize ? "Select a size" : "Add to bag"}
         </button>
       </div>
     </div>
   );
 }
-
