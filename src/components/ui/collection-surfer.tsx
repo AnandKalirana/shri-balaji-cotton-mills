@@ -2,11 +2,14 @@
 
 import { motion, useScroll, useTransform, useSpring, useMotionValue, MotionValue } from "framer-motion";
 import React from "react";
+import Link from "next/link";
 
 export interface CollectionItem {
     id: number;
     image: string;
     title: string;
+    /** Where the card goes when clicked. */
+    href?: string;
 }
 
 export type CollectionSurferVariant = "magnetic" | "uplift" | "simple";
@@ -14,9 +17,11 @@ export type CollectionSurferVariant = "magnetic" | "uplift" | "simple";
 interface CollectionSurferProps {
     items: CollectionItem[];
     variant?: CollectionSurferVariant;
+    /** Big heading, one string per line. */
+    heading?: [string, string];
 }
 
-export function CollectionSurfer({ items, variant = "magnetic" }: CollectionSurferProps) {
+export function CollectionSurfer({ items, variant = "magnetic", heading = ["HERITAGE FW25/26", "COLLECTION"] }: CollectionSurferProps) {
     // 1. Loop Setup: Duplicate items to create a buffer
     // We render the list twice: [Original Set, Duplicate Set]
     // When we scroll past the Original Set, we snap back to the start.
@@ -85,10 +90,10 @@ export function CollectionSurfer({ items, variant = "magnetic" }: CollectionSurf
                 {/* UI Overlays */}
                 <div className="absolute top-[3vw] left-[3vw] z-50 pointer-events-none mix-blend-difference">
                     <h1 className="font-heading font-bold text-[clamp(2rem,6vw,5rem)] leading-[0.9] tracking-tighter ml-[4vw]">
-                        HERITAGE FW25/26
+                        {heading[0]}
                     </h1>
                     <h1 className="font-heading font-bold text-[clamp(2rem,6vw,5rem)] leading-[0.9] tracking-tighter">
-                        COLLECTION
+                        {heading[1]}
                         <span className="text-[0.4em] align-top relative top-[0.6em] ml-2 font-mono tabular-nums">
                             ({items.length})
                         </span>
@@ -123,6 +128,7 @@ export function CollectionSurfer({ items, variant = "magnetic" }: CollectionSurf
                                 key={`${item.id}-${i}`}
                                 item={item}
                                 i={i}
+                                count={items.length}
                                 stepX={stepX}
                                 stepY={stepY}
                                 stepZ={stepZ}
@@ -142,6 +148,7 @@ export function CollectionSurfer({ items, variant = "magnetic" }: CollectionSurf
 function Card({
     item,
     i,
+    count,
     stepX,
     stepY,
     stepZ,
@@ -152,6 +159,7 @@ function Card({
 }: {
     item: CollectionItem,
     i: number,
+    count: number,
     stepX: number,
     stepY: number,
     stepZ: number,
@@ -226,7 +234,7 @@ function Card({
         >
             {/* Index number: Using i % 16 + 1 so the duplicate cards show correct numbers (01-16) */}
             <div className="absolute -top-6 -left-4 text-white font-mono text-xs opacity-50 transition-opacity group-hover:opacity-100">
-                {String((i % 16) + 1).padStart(2, '0')}
+                {String((i % count) + 1).padStart(2, '0')}
             </div>
 
             {/* Image */}
@@ -238,7 +246,13 @@ function Card({
                 />
             </div>
 
-            <div className="absolute inset-0 bg-gradient-to-tr from-black/20 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+            <div className="absolute bottom-4 left-4 right-4 text-sm font-medium text-white pointer-events-none">
+                {item.title}
+            </div>
+            {item.href && (
+                <Link href={item.href} aria-label={item.title} className="absolute inset-0 z-10" />
+            )}
         </motion.div>
     );
 }
