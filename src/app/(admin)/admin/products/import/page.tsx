@@ -120,7 +120,7 @@ export default function AdminImportProductsPage() {
               </select>
             </label>
             <label className="block">
-              <span className="text-xs font-semibold text-[#444444]">Starting stock per product</span>
+              <span className="text-xs font-semibold text-[#444444]">Starting stock per size and colour</span>
               <input
                 type="number"
                 min={0}
@@ -141,8 +141,8 @@ export default function AdminImportProductsPage() {
           </div>
           <p className="text-xs text-[#6f6f6f] leading-relaxed">
             Recognised columns: Design No., Product Name, MRP, Selling Price, Description, Available Colours, Sizes, Image URL, and optionally
-            Category, Stock and Badge. Photos are copied from the links into your own storage. Sizes and colours are added to the
-            description until size and colour choices are built into the store.
+            Category, Stock and Badge. Photos are copied from the links into your own storage. Every colour and size becomes a choice
+            on the product page, each with its own stock. Importing the same file again adds sizes and colours to products you imported earlier.
           </p>
         </div>
       )}

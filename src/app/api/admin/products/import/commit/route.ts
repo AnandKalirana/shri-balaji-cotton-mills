@@ -5,6 +5,8 @@ import { requireAdmin, auditUserId, dbErrorResponse } from "@/lib/admin-guard";
 import { ensureCategory, uniqueSlug } from "@/lib/seed-catalog";
 import { copyRemoteImage } from "@/lib/store-image";
 import { revalidateStore } from "@/lib/revalidate";
+import { colourHex } from "@/lib/colours";
+import { combos, variantSku } from "@/lib/variants";
 
 const rowSchema = z.object({
   line: z.number().int(),
@@ -15,6 +17,8 @@ const rowSchema = z.object({
   description: z.string().trim().min(1).max(4000),
   images: z.array(z.string().url()).min(1).max(6),
   category: z.string().min(1),
+  sizes: z.array(z.string().trim().min(1).max(20)).max(12).optional().default([]),
+  colours: z.array(z.string().trim().min(1).max(40)).max(20).optional().default([]),
   stock: z.number().int().min(0).max(100000),
   badge: z.string().max(30).optional().default(""),
 });
@@ -37,10 +41,49 @@ export async function POST(req: Request) {
   for (const d of parsed.data.rows) {
     const base = { line: d.line, name: d.name };
     try {
-      const sku = d.designNo ? `SBCM-${d.designNo}`.toUpperCase().slice(0, 40) : null;
-      if (sku && (await prisma.productVariant.findUnique({ where: { sku }, select: { id: true } }))) {
-        results.push({ ...base, status: "skipped", message: "Already in your store." });
-        continue;
+      const designBase = d.designNo ? `SBCM-${d.designNo}`.toUpperCase().slice(0, 40) : null;
+      const list = combos(d.colours, d.sizes);
+      const hasChoices = d.colours.length > 0 || d.sizes.length > 0;
+      if (designBase) {
+        const found = await prisma.productVariant.findMany({
+          where: { OR: [{ sku: designBase }, { sku: { startsWith: `${designBase}-` } }] },
+          select: { id: true, sku: true, size: true, colorName: true, productId: true },
+        });
+        if (found.length) {
+          // A product imported before sizes and colours existed has one plain variant.
+          // Importing the same file again turns it into the full set of sizes and colours.
+          const legacy = found.length === 1 && !found[0].size && !found[0].colorName && found[0].sku === designBase;
+          if (legacy && hasChoices) {
+            const first = list[0];
+            await prisma.$transaction(async (tx) => {
+              await tx.productVariant.update({
+                where: { id: found[0].id },
+                data: {
+                  sku: variantSku(d.designNo, first.colour, first.size),
+                  colorName: first.colour || null,
+                  colorHex: first.colour ? colourHex(first.colour) ?? null : null,
+                  size: first.size || null,
+                },
+              });
+              for (const c of list.slice(1)) {
+                await tx.productVariant.create({
+                  data: {
+                    productId: found[0].productId,
+                    sku: variantSku(d.designNo, c.colour, c.size),
+                    colorName: c.colour || null,
+                    colorHex: c.colour ? colourHex(c.colour) ?? null : null,
+                    size: c.size || null,
+                    stockQty: d.stock,
+                  },
+                });
+              }
+            });
+            results.push({ ...base, status: "created", message: `Updated with ${list.length} size and colour options.` });
+            continue;
+          }
+          results.push({ ...base, status: "skipped", message: "Already in your store." });
+          continue;
+        }
       }
       const category = await ensureCategory(prisma, d.category);
       if (!category) {
@@ -78,18 +121,29 @@ export async function POST(req: Request) {
           images: stored,
           badge: d.badge || null,
           isActive: true,
-          variants: { create: { sku: sku ?? `SBCM-${slug}`.toUpperCase().slice(0, 40), stockQty: d.stock } },
+          variants: {
+            create: hasChoices
+              ? list.map((c) => ({
+                  sku: variantSku(d.designNo || slug, c.colour, c.size),
+                  colorName: c.colour || null,
+                  colorHex: c.colour ? colourHex(c.colour) ?? null : null,
+                  size: c.size || null,
+                  stockQty: d.stock,
+                }))
+              : { sku: designBase ?? `SBCM-${slug}`.toUpperCase().slice(0, 40), stockQty: d.stock },
+          },
         },
       });
 
       if (d.stock > 0) {
+        const total = d.stock * (hasChoices ? list.length : 1);
         await prisma.inventoryLog
           .create({
             data: {
               productId: product.id,
               action: "NEW_STOCK_RECEIPT",
-              quantityChanged: d.stock,
-              balanceAfter: d.stock,
+              quantityChanged: total,
+              balanceAfter: total,
               reason: "Opening stock from bulk import",
               performedById,
             },

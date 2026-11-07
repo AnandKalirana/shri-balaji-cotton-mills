@@ -171,8 +171,6 @@ export function parseTable(table: unknown[][], defaults: ImportDefaults): { rows
     const details = text(get("description"));
     const parts = [details || name];
     if (designNo) parts.push(`Design no. ${designNo}`);
-    if (sizes.length) parts.push(`Available sizes: ${sizes.join(", ")}`);
-    if (colours.length) parts.push(`Available colours: ${colours.join(", ")}`);
     const description = parts.join("\n\n").slice(0, 4000);
 
     rows.push({

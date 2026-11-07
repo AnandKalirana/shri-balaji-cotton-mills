@@ -1,5 +1,27 @@
 export type DeviceType = "mobile" | "tablet" | "desktop";
 
+export interface ProductVariantOption {
+  id: string;
+  sku: string;
+  size: string;
+  colour: string;
+  stockQty: number;
+}
+
+export interface ProductColour {
+  name: string;
+  hex: string;
+  /** Photos for this colour. Empty means use the product's main photos. */
+  images: string[];
+}
+
+/** Sizes and colours a shopper can choose. Only present when the product has some. */
+export interface ProductOptions {
+  sizes: string[];
+  colours: ProductColour[];
+  variants: ProductVariantOption[];
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -11,6 +33,7 @@ export interface Product {
   mrp?: number;
   pricePerMetre?: number;
   images: string[];
+  options?: ProductOptions;
   description: string;
   fabricType: string;
   composition: string;
@@ -35,6 +58,12 @@ export interface Category {
 
 export interface CartItem {
   product: Product;
+  /** Which size and colour was chosen, for products that have them. */
+  variantId?: string;
+  size?: string;
+  colour?: string;
+  /** Photo of the chosen colour, shown in the bag. */
+  image?: string;
   quantity: number;
   metres?: number;
   isFullThaan?: boolean;

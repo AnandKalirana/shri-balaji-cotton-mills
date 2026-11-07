@@ -3,7 +3,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { formatPrice } from "@/lib/utils";
 import { Badge } from "@/components/ui/Badge";
+import { useRouter } from "next/navigation";
 import { useCartStore } from "@/store";
+import { isLightHex } from "@/lib/colours";
 import { ShoppingBag, Heart } from "lucide-react";
 import { useWishlistStore } from "@/store/wishlist";
 import type { Product } from "@/lib/types";
@@ -14,13 +16,21 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, priority = false }: ProductCardProps) {
+  const router = useRouter();
   const { addItem, toggleCart } = useCartStore();
+  const colours = product.options?.colours ?? [];
+  const hasChoices = Boolean(product.options?.variants.length);
   const wishlisted = useWishlistStore((st) => st.ids.includes(product.id));
   const toggleWishlist = useWishlistStore((st) => st.toggle);
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    // Products with sizes or colours need a choice first, so open the product page.
+    if (hasChoices) {
+      router.push(`/product/${product.slug}`);
+      return;
+    }
     addItem(product, 1, product.pricePerMetre ? 2.5 : undefined);
     toggleCart();
   };
@@ -79,7 +89,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
         {product.inStock && (
           <button
             onClick={handleQuickAdd}
-            aria-label={`Quick add ${product.name} to cart`}
+            aria-label={hasChoices ? `Choose size and colour for ${product.name}` : `Quick add ${product.name} to cart`}
             className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 w-11 h-11 rounded-full bg-white text-[#1a1a1a] flex items-center justify-center hover:bg-[#1a1a1a] hover:text-white active:scale-90 transition-all duration-300 shadow-lg sm:opacity-0 sm:group-hover:opacity-100 touch-manipulation"
           >
             <ShoppingBag className="w-4 h-4" />
@@ -102,6 +112,21 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             </h3>
           </Link>
         </div>
+
+        {colours.length > 1 && (
+          <div className="flex items-center gap-1.5" aria-label={`${colours.length} colours`}>
+            {colours.slice(0, 5).map((c) => (
+              <span
+                key={c.name}
+                title={c.name}
+                className={"w-3.5 h-3.5 rounded-full " + (isLightHex(c.hex) ? "border border-black/20" : "")}
+                style={{ backgroundColor: c.hex }}
+              />
+            ))}
+            {colours.length > 5 && <span className="text-[11px] text-[#6f6f6f]">+{colours.length - 5}</span>}
+            <span className="text-[11px] text-[#6f6f6f] ml-1">{colours.length} colours</span>
+          </div>
+        )}
 
         {/* Price & Metre specs */}
         <div className="flex items-baseline justify-between gap-2">

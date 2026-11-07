@@ -232,7 +232,16 @@ export default function AdminProductsPage() {
                     {p.stockQty} {p.pricePerMetre ? "metres" : "units"}
                   </span>
                 </td>
-                <td className="py-4 px-6 text-right"><VisibilityButton p={p} /></td>
+                <td className="py-4 px-6 text-right">
+                  <div className="flex items-center justify-end gap-3">
+                    {!p.pricePerMetre && (
+                      <Link href={`/admin/products/${p.id}`} className="text-xs font-semibold text-[#5c1d24] hover:underline whitespace-nowrap">
+                        {p.options?.variants.length ? `${p.options.colours.length || 0} colours, ${p.options.sizes.length || 0} sizes` : "Add sizes and colours"}
+                      </Link>
+                    )}
+                    <VisibilityButton p={p} />
+                  </div>
+                </td>
               </tr>
             ))}
           </tbody>

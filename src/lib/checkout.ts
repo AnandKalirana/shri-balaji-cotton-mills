@@ -5,6 +5,8 @@ type Db = PrismaClient | Prisma.TransactionClient;
 
 export interface CartLineInput {
   productId: string;
+  /** The chosen size and colour, for products that have them. */
+  variantId?: string | null;
   quantity: number;
   metres?: number | null;
   isFullThaan?: boolean;
@@ -86,15 +88,34 @@ export async function priceCart(db: Db, lines: CartLineInput[], rules: ShopRules
         lineTotal: calc.finalPrice * qty,
       });
     } else {
-      const variant = product.variants.find((v) => v.stockQty >= qty);
-      if (!variant) {
-        throw new CheckoutError(`${product.name} doesn't have ${qty} in stock.`, 409);
+      const hasChoices = product.variants.some((v) => v.size || v.colorName);
+      let variant;
+      if (line.variantId) {
+        variant = product.variants.find((v) => v.id === line.variantId);
+        if (!variant) {
+          throw new CheckoutError(`${product.name}: that size or colour is no longer available. Please choose again.`, 409);
+        }
+        if (variant.stockQty < qty) {
+          const label = [variant.colorName, variant.size].filter(Boolean).join(", ");
+          throw new CheckoutError(
+            variant.stockQty > 0
+              ? `${product.name} (${label}): only ${variant.stockQty} left in stock.`
+              : `${product.name} (${label}) is out of stock.`,
+            409
+          );
+        }
+      } else if (hasChoices) {
+        throw new CheckoutError(`${product.name}: please choose a size and colour.`, 400);
+      } else {
+        variant = product.variants.find((v) => v.stockQty >= qty);
+        if (!variant) throw new CheckoutError(`${product.name} doesn't have ${qty} in stock.`, 409);
       }
       const unit = Math.round(Number(product.salePrice ?? product.basePrice) + Number(variant.priceAdjustment));
+      const choice = [variant.colorName, variant.size].filter(Boolean).join(", ");
       priced.push({
         productId: product.id,
         variantId: variant.id,
-        productName: product.name,
+        productName: choice ? `${product.name} (${choice})` : product.name,
         sku: variant.sku,
         unitPrice: unit,
         quantity: qty,
