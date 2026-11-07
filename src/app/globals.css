@@ -1,4 +1,33 @@
+/* Hallmark · checked: 2026-11-07 · genre: editorial (inferred)
+ * floor: 0 FAIL · fixed: 10a, 20, 48, 63, 67 · structural: none printed
+ * waive 29 · the owner asked for a glass header that lets the page show through
+ * built: the project · redesign: polish · v2.0.0 */
 @import "tailwindcss";
+
+/* Storefront colour tokens. Components use these names, never raw hex values. */
+@theme {
+  --color-ink: #1a1a1a;
+  --color-ink-deep: #111111;
+  --color-charcoal: #333333;
+  --color-graphite: #444444;
+  --color-muted: #6f6f6f;
+  --color-wine: #5c1d24;
+  --color-sand: #c5a880;
+  --color-blush: #d8c2bb;
+  --color-line: #e5e5e3;
+  --color-stone: #d9d5cf;
+  --color-mist: #f5f5f3;
+  --color-fog: #f3f3f1;
+  --color-cream: #faf7f2;
+  --color-cream-warm: #f8f3ea;
+  --color-danger: #ba1a1a;
+  --color-amber-ink: #9a5b00;
+  --color-paper: #fcf9f4;
+  --color-text: #1c1c19;
+  --shadow-card: 0 1px 2px rgba(43, 30, 26, 0.04);
+  --shadow-bar: 0 1px 0 rgba(43, 30, 26, 0.08), 0 8px 24px -12px rgba(43, 30, 26, 0.18);
+  --shadow-menu: 0 20px 50px -20px rgba(43, 30, 26, 0.35);
+}
 
 :root {
   --color-primary: #400710;
@@ -23,19 +52,20 @@ html {
 }
 
 body {
-  background-color: #fcf9f4;
-  color: #1c1c19;
+  background-color: var(--color-paper);
+  color: var(--color-text);
   font-family: var(--font-jakarta), "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
   font-family: var(--font-playfair), "Playfair Display", Georgia, Cambria, "Times New Roman", serif;
 }
 
 :focus-visible {
-  outline: 2px solid #5c1d24;
+  outline: 2px solid var(--color-wine);
   outline-offset: 3px;
 }
 

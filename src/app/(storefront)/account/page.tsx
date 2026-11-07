@@ -72,7 +72,7 @@ export default function AccountPage() {
     router.refresh();
   }
 
-  if (checking) return <div className="py-32 text-center text-[#6f6f6f]">Loading…</div>;
+  if (checking) return <div className="py-32 text-center text-muted">Loading…</div>;
 
   if (user) {
     const firstName = user.fullName.split(" ")[0];
@@ -85,24 +85,24 @@ export default function AccountPage() {
     ];
     return (
       <div className="max-w-xl mx-auto px-4 py-16 sm:py-24">
-        <span className="text-xs font-medium text-[#5c1d24]">My Account</span>
-        <h1 className="font-[family-name:var(--font-playfair)] text-3xl sm:text-4xl text-[#1a1a1a] mt-1">
+        <span className="text-xs font-medium text-wine">My Account</span>
+        <h1 className="font-[family-name:var(--font-playfair)] text-3xl sm:text-4xl text-ink mt-1">
           Welcome back, {firstName}
         </h1>
-        <p className="text-sm text-[#444444] mt-2 mb-8 break-all">{user.email}</p>
+        <p className="text-sm text-graphite mt-2 mb-8 break-all">{user.email}</p>
 
-        <ul className="rounded-2xl bg-white border border-[#e5e5e3]/70 shadow-[0_1px_2px_rgba(43,30,26,0.04)] overflow-hidden divide-y divide-[#e5e5e3]/70">
+        <ul className="rounded-2xl bg-white border border-line/70 shadow-card overflow-hidden divide-y divide-line/70">
           {rows.map(({ href, label, icon: Icon }) => (
             <li key={href}>
               <Link
                 href={href}
-                className="flex items-center gap-4 px-5 py-4 min-h-[56px] text-[#1a1a1a] hover:bg-[#f3f3f1] active:bg-[#f5f5f3] transition-colors"
+                className="flex items-center gap-4 px-5 py-4 min-h-[56px] text-ink hover:bg-fog active:bg-mist transition-colors"
               >
-                <span className="w-9 h-9 rounded-full bg-[#f5f5f3] text-[#5c1d24] flex items-center justify-center shrink-0">
+                <span className="w-9 h-9 rounded-full bg-mist text-wine flex items-center justify-center shrink-0">
                   <Icon className="w-4 h-4" />
                 </span>
                 <span className="flex-1 text-sm font-medium">{label}</span>
-                <ChevronRight className="w-4 h-4 text-[#6f6f6f]" />
+                <ChevronRight className="w-4 h-4 text-muted" />
               </Link>
             </li>
           ))}
@@ -115,7 +115,7 @@ export default function AccountPage() {
 
   return (
     <div className="max-w-md mx-auto px-4 py-16 sm:py-24">
-      <h1 className="font-[family-name:var(--font-playfair)] text-3xl sm:text-4xl text-[#1a1a1a] mb-8">
+      <h1 className="font-[family-name:var(--font-playfair)] text-3xl sm:text-4xl text-ink mb-8">
         {mode === "login" ? "Sign in" : "Create account"}
       </h1>
       <form onSubmit={submit} className="flex flex-col gap-5">
@@ -127,7 +127,7 @@ export default function AccountPage() {
         )}
         <Input label="Email" type="email" value={form.email} onChange={set("email")} required />
         <Input label="Password" type="password" value={form.password} onChange={set("password")} required />
-        {error && <p role="alert" className="text-sm text-[#ba1a1a]">{error}</p>}
+        {error && <p role="alert" className="text-sm text-danger">{error}</p>}
         <Button type="submit" loading={loading} fullWidth className="rounded-full">
           {mode === "login" ? "Sign in" : "Create account"}
         </Button>
@@ -135,7 +135,7 @@ export default function AccountPage() {
       <button
         type="button"
         onClick={() => { setMode(mode === "login" ? "register" : "login"); setError(""); }}
-        className="mt-6 text-xs font-medium text-[#5c1d24] underline"
+        className="mt-6 text-xs font-medium text-wine underline"
       >
         {mode === "login" ? "New here? Create an account" : "Already have an account? Sign in"}
       </button>
