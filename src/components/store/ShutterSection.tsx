@@ -158,9 +158,14 @@ export function ShutterSection() {
           <span className="text-xs sm:text-xs font-medium text-[#c5a880]">
             Shop by Category
           </span>
-          <span className="text-xs tracking-widest text-[#d8c2bb]">
-            0{currentIndex + 1} / 0{departments.length}
-          </span>
+          <div className="flex items-center gap-4">
+            <Link href="/collections" className="text-xs font-medium text-[#c5a880] hover:text-white transition-colors">
+              View all categories
+            </Link>
+            <span className="text-xs tracking-widest text-[#d8c2bb]">
+              0{currentIndex + 1} / 0{departments.length}
+            </span>
+          </div>
         </div>
 
         {/* Center Editorial Headlines */}
