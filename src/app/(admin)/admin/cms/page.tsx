@@ -27,6 +27,7 @@ export default function AdminCmsPage() {
   const [ctaLink, setCtaLink] = useState(DEFAULT_HERO.ctaLink);
   const [desktopImg, setDesktopImg] = useState(DEFAULT_HERO.desktopImg);
   const [mobileImg, setMobileImg] = useState("");
+  const [imageOnly, setImageOnly] = useState(false);
   const [bannerActive, setBannerActive] = useState(true);
 
   const [saving, setSaving] = useState(false);
@@ -51,6 +52,7 @@ export default function AdminCmsPage() {
         setCtaLink(banner.ctaLink);
         setDesktopImg(banner.desktopImg);
         setMobileImg(banner.mobileImg === banner.desktopImg ? "" : banner.mobileImg);
+        setImageOnly(Boolean(banner.imageOnly));
         setBannerActive(banner.isActive);
       } else {
         setError(res.error);
@@ -81,6 +83,7 @@ export default function AdminCmsPage() {
           ctaLink,
           desktopImg,
           mobileImg: mobileImg || desktopImg,
+          imageOnly,
           isActive: bannerActive,
         },
       },
@@ -180,6 +183,21 @@ export default function AdminCmsPage() {
             onChange={setMobileImg}
             helper="Leave empty to use the desktop image on phones too."
           />
+
+          <label className="flex items-start gap-2 text-sm text-[#2b1e1a] cursor-pointer">
+            <input
+              type="checkbox"
+              checked={imageOnly}
+              onChange={(e) => setImageOnly(e.target.checked)}
+              className="w-5 h-5 mt-0.5 accent-[#5c1d24]"
+            />
+            <span>
+              My image already has text on it
+              <span className="block text-xs text-[#867273]">
+                Shows the picture on its own, with no headline over it. The headline below is still needed for screen readers, and the button shows under the image.
+              </span>
+            </span>
+          </label>
 
           <Input label="Small label above headline" value={eyebrow} onChange={(e) => setEyebrow(e.target.value)} />
           <div>

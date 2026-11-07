@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Reveal } from "@/components/ui/Reveal";
+import { HeroTone } from "@/components/store/HeroTone";
 import { ShutterSection } from "@/components/store/ShutterSection";
 import { ProductCard } from "@/components/store/ProductCard";
 import { getProducts, getActiveBanner } from "@/lib/catalog";
@@ -18,6 +19,7 @@ export default async function HomePage() {
         ctaLink: banner.ctaLink,
         desktopImg: banner.desktopImg,
         mobileImg: banner.mobileImg,
+        imageOnly: Boolean((banner as { imageOnly?: boolean }).imageOnly),
       }
     : DEFAULT_HERO;
   const heroLines = hero.title.split("\n");
@@ -27,6 +29,49 @@ export default async function HomePage() {
   return (
     <div className="flex flex-col">
       {/* 1. Hero Showcase */}
+      <HeroTone light={hero.imageOnly} />
+      {hero.imageOnly ? (
+        <section>
+          <h1 className="sr-only">{heroLines.join(" ")}</h1>
+          <div className="relative w-full bg-[#f8f3ea]">
+            <Image
+              src={hero.desktopImg}
+              alt=""
+              width={1500}
+              height={600}
+              priority
+              sizes="100vw"
+              className={`w-full h-auto min-h-[220px] object-cover ${hero.mobileImg !== hero.desktopImg ? "hidden md:block" : ""}`}
+            />
+            {hero.mobileImg !== hero.desktopImg && (
+              <Image
+                src={hero.mobileImg}
+                alt=""
+                width={800}
+                height={1000}
+                priority
+                sizes="100vw"
+                className="w-full h-auto md:hidden"
+              />
+            )}
+          </div>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 px-4 py-6">
+            <Link
+              href={hero.ctaLink}
+              className="w-full sm:w-auto sm:min-w-[200px] px-8 py-3 bg-[#1a1a1a] text-white text-sm font-medium hover:bg-[#5c1d24] transition-colors min-h-[48px] flex items-center justify-center"
+            >
+              {hero.ctaText}
+            </Link>
+            <Link
+              href="/category/fabrics"
+              className="w-full sm:w-auto sm:min-w-[200px] px-8 py-3 border border-[#1a1a1a] text-[#1a1a1a] text-sm font-medium hover:bg-[#1a1a1a] hover:text-white transition-colors min-h-[48px] flex items-center justify-center"
+            >
+              Order fabric by the metre
+            </Link>
+          </div>
+        </section>
+      ) : (
+      <>
       <section className="relative min-h-[560px] sm:min-h-[640px] lg:min-h-[720px] flex items-center justify-center bg-[#d9d5cf] text-white overflow-hidden">
         {/* Full-bleed photo */}
         <div className="absolute inset-0 z-0">
@@ -88,6 +133,8 @@ export default async function HomePage() {
           </div>
         </Reveal>
       </section>
+      </>
+      )}
 
       {/* 2. Signature Upward Shutter Section */}
       <ShutterSection />

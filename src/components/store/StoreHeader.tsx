@@ -83,7 +83,16 @@ export function StoreHeader({
 
   const count = itemCount();
   // On the home page the header sits on top of the hero photo until the visitor scrolls.
+  const [lightHero, setLightHero] = useState(false);
+  useEffect(() => {
+    const read = () => setLightHero(document.documentElement.dataset.heroTone === "light");
+    read();
+    window.addEventListener("hero-tone", read);
+    return () => window.removeEventListener("hero-tone", read);
+  }, []);
   const overlay = isHome && !scrolled && !mobileMenuOpen;
+  // White logo and links only when the photo behind them is dark.
+  const whiteInk = overlay && !lightHero;
 
   return (
     <>
@@ -96,7 +105,7 @@ export function StoreHeader({
 
       {/* Main Header */}
       <header
-        data-overlay={overlay ? "true" : "false"}
+        data-overlay={whiteInk ? "true" : "false"}
         className={cn(
           "group/hdr sticky top-0 z-30 bg-white transition-[background-color,box-shadow] duration-300",
           isHome && "-mb-16 md:-mb-20",
@@ -123,7 +132,7 @@ export function StoreHeader({
                 href="/"
                 className="absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0 lg:flex-1"
               >
-                <Logo tone={overlay ? "light" : "dark"} alt={storeName} priority className="h-7 sm:h-8 md:h-9" />
+                <Logo tone={whiteInk ? "light" : "dark"} alt={storeName} priority className="h-7 sm:h-8 md:h-9" />
               </Link>
 
               {/* Desktop: Category Nav */}

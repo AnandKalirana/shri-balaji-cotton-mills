@@ -42,6 +42,7 @@ const saveSchema = z.object({
       .refine((v) => v.startsWith("/") || /^https:\/\//.test(v), "Button link must start with / or https://"),
     desktopImg: imageRef,
     mobileImg: imageRef,
+    imageOnly: z.boolean().optional().default(false),
     isActive: z.boolean(),
   }),
 });
