@@ -109,6 +109,9 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             <span className="text-sm font-medium text-[#1a1a1a] tabular-nums">
               {formatPrice(product.price)}
             </span>
+            {product.mrp && (
+              <span className="ml-2 text-xs text-[#6f6f6f] line-through tabular-nums">{formatPrice(product.mrp)}</span>
+            )}
             {product.pricePerMetre && (
               <span className="block text-[11px] text-[#6f6f6f]">
                 {formatPrice(product.pricePerMetre)} / metre

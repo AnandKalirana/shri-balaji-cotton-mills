@@ -33,6 +33,7 @@ export function mapProduct(p: DbProduct): Product {
     category: p.category?.slug ?? "",
     department: p.category?.name ?? "",
     price: Number(p.salePrice ?? p.basePrice),
+    mrp: p.salePrice != null && Number(p.basePrice) > Number(p.salePrice) ? Number(p.basePrice) : undefined,
     pricePerMetre: fabric ? Number(fabric.pricePerMetre) : undefined,
     images: p.images ?? [],
     description: p.description ?? "",
