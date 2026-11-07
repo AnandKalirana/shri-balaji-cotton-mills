@@ -8,6 +8,7 @@ export const DEFAULT_HERO = {
   ctaLink: "/category/fabrics",
   desktopImg: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1920",
   mobileImg: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800",
+  imageOnly: false,
 };
 
 export const DEFAULT_SETTINGS = {

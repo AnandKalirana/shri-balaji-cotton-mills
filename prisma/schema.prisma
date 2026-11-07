@@ -300,6 +300,8 @@ model Banner {
   ctaLink     String   @default("/category/fabrics")
   desktopImg  String
   mobileImg   String
+  // True when the banner picture already has its own words on it, so the store shows just the image.
+  imageOnly   Boolean  @default(false)
   sortOrder   Int      @default(0)
   isActive    Boolean  @default(true)
   updatedAt   DateTime @updatedAt
