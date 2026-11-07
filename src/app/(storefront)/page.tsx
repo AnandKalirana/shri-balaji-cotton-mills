@@ -5,7 +5,7 @@ import { ShutterSection } from "@/components/store/ShutterSection";
 import { ProductCard } from "@/components/store/ProductCard";
 import { getProducts, getActiveBanner } from "@/lib/catalog";
 import { DEFAULT_HERO } from "@/lib/hero";
-import { ArrowRight, MessageCircle, Shield, Compass, Truck } from "lucide-react";
+import { ArrowRight, Check, MessageCircle, Shield, Compass, Truck } from "lucide-react";
 
 export default async function HomePage() {
   const [{ products }, banner] = await Promise.all([getProducts(), getActiveBanner()]);
@@ -54,7 +54,7 @@ export default async function HomePage() {
         {/* Hero Content */}
         <Reveal y={32} className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center py-16 sm:py-24">
           {hero.eyebrow.trim() && (
-            <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/25 text-[#f0dcb8] text-[10px] sm:text-[11px] tracking-[0.2em] uppercase font-semibold mb-6">
+            <span className="inline-flex items-center text-[#f0dcb8] text-xs sm:text-xs font-medium mb-6">
               {hero.eyebrow}
             </span>
           )}
@@ -76,14 +76,14 @@ export default async function HomePage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href={hero.ctaLink}
-              className="w-full sm:w-auto sm:min-w-[240px] px-8 py-4 rounded-full bg-[#5c1d24] text-white text-xs tracking-[0.16em] uppercase font-semibold hover:bg-white hover:text-[#2b1e1a] active:scale-[0.98] transition-all min-h-[52px] flex items-center justify-center border border-transparent shadow-[0_10px_30px_-10px_rgba(92,29,36,0.8)]"
+              className="w-full sm:w-auto sm:min-w-[240px] px-8 py-4 rounded-full bg-[#5c1d24] text-white text-xs font-medium hover:bg-white hover:text-[#2b1e1a] active:scale-[0.98] transition-all min-h-[52px] flex items-center justify-center border border-transparent shadow-[0_10px_30px_-10px_rgba(92,29,36,0.8)]"
             >
               {hero.ctaText}
             </Link>
 
             <Link
               href="/category/fabrics"
-              className="w-full sm:w-auto sm:min-w-[240px] px-8 py-4 rounded-full bg-white/10 backdrop-blur-md text-[#faf7f2] text-xs tracking-[0.16em] uppercase font-semibold border border-white/30 hover:bg-[#faf7f2] hover:text-[#2b1e1a] active:scale-[0.98] transition-all min-h-[52px] flex items-center justify-center"
+              className="w-full sm:w-auto sm:min-w-[240px] px-8 py-4 rounded-full bg-transparent text-[#faf7f2] text-xs font-medium border border-white/30 hover:bg-[#faf7f2] hover:text-[#2b1e1a] active:scale-[0.98] transition-all min-h-[52px] flex items-center justify-center"
             >
               Order Fabric by Metre
             </Link>
@@ -92,7 +92,7 @@ export default async function HomePage() {
 
         {/* Scroll cue */}
         <div aria-hidden className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 text-white/60">
-          <span className="text-[10px] tracking-[0.2em] uppercase">Scroll</span>
+          <span className="text-xs">Scroll</span>
           <span className="block w-px h-8 bg-gradient-to-b from-white/60 to-transparent" />
         </div>
       </section>
@@ -104,7 +104,7 @@ export default async function HomePage() {
       <section className="py-16 sm:py-24 max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 w-full">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 sm:mb-14 border-b border-[#ebe3d5] pb-6">
           <div>
-            <span className="text-[10px] sm:text-[11px] tracking-[0.2em] uppercase font-semibold text-[#5c1d24]">
+            <span className="text-xs sm:text-xs font-medium text-[#5c1d24]">
               Handpicked for You
             </span>
             <h2 className="font-[family-name:var(--font-playfair)] text-2xl sm:text-4xl font-normal text-[#2b1e1a] mt-1">
@@ -114,7 +114,7 @@ export default async function HomePage() {
 
           <Link
             href="/category/fabrics"
-            className="inline-flex items-center gap-2 text-xs tracking-[0.12em] uppercase font-semibold text-[#5c1d24] hover:text-[#2b1e1a] transition-colors"
+            className="inline-flex items-center gap-2 text-xs font-medium text-[#5c1d24] hover:text-[#2b1e1a] transition-colors"
           >
             <span>View All Products</span>
             <ArrowRight className="w-4 h-4" />
@@ -137,7 +137,7 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Text column */}
             <div className="lg:col-span-5">
-              <span className="text-[11px] tracking-[0.18em] uppercase font-semibold text-[#5c1d24]">
+              <span className="text-xs font-medium text-[#5c1d24]">
                 Fabric by the Metre
               </span>
               <h2 className="font-[family-name:var(--font-playfair)] text-3xl sm:text-4xl font-normal text-[#2b1e1a] mt-2 mb-4 leading-tight">
@@ -149,22 +149,22 @@ export default async function HomePage() {
 
               <div className="space-y-3 mb-8">
                 <div className="flex items-center gap-3 text-xs sm:text-sm text-[#2b1e1a]">
-                  <span className="w-5 h-5 bg-[#5c1d24] text-white flex items-center justify-center rounded-none text-xs font-bold">✓</span>
+                  <span className="w-5 h-5 bg-[#5c1d24] text-white flex items-center justify-center rounded-none"><Check size={14} strokeWidth={1.5} /></span>
                   <span>Cut to length from 0.5 metre, with a neat pinked edge</span>
                 </div>
                 <div className="flex items-center gap-3 text-xs sm:text-sm text-[#2b1e1a]">
-                  <span className="w-5 h-5 bg-[#5c1d24] text-white flex items-center justify-center rounded-none text-xs font-bold">✓</span>
+                  <span className="w-5 h-5 bg-[#5c1d24] text-white flex items-center justify-center rounded-none"><Check size={14} strokeWidth={1.5} /></span>
                   <span>Automatic 12% savings on uncut standard thaan bolts (25m)</span>
                 </div>
                 <div className="flex items-center gap-3 text-xs sm:text-sm text-[#2b1e1a]">
-                  <span className="w-5 h-5 bg-[#5c1d24] text-white flex items-center justify-center rounded-none text-xs font-bold">✓</span>
+                  <span className="w-5 h-5 bg-[#5c1d24] text-white flex items-center justify-center rounded-none"><Check size={14} strokeWidth={1.5} /></span>
                   <span>Quality-checked fabric, cut fresh for every order</span>
                 </div>
               </div>
 
               <Link
                 href="/category/fabrics"
-                className="inline-flex px-8 py-3.5 rounded-full bg-[#2b1e1a] text-white text-xs tracking-[0.14em] uppercase font-semibold hover:bg-[#5c1d24] transition-colors min-h-[48px] items-center justify-center"
+                className="inline-flex px-8 py-3.5 rounded-full bg-[#2b1e1a] text-white text-xs font-medium hover:bg-[#5c1d24] transition-colors min-h-[48px] items-center justify-center"
               >
                 Browse Fabrics by Metre
               </Link>

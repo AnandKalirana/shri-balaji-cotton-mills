@@ -85,7 +85,7 @@ export function StoreHeader({
     <>
       {/* Announcement Bar */}
       {announcement && (
-        <div className="bg-[#5c1d24] text-white text-center py-2 px-4 text-[11px] tracking-[0.12em] uppercase font-semibold">
+        <div className="bg-[#5c1d24] text-white text-center py-2 px-4 text-xs font-medium">
           {announcement}
         </div>
       )}
@@ -93,7 +93,7 @@ export function StoreHeader({
       {/* Main Header */}
       <header
         className={cn(
-          "sticky top-0 z-30 bg-[#fcf9f4]/75 backdrop-blur-xl backdrop-saturate-150 transition-shadow duration-300",
+          "sticky top-0 z-30 bg-[#fcf9f4]/95 transition-shadow duration-300",
           scrolled && "shadow-[0_1px_0_rgba(43,30,26,0.08),0_8px_24px_-12px_rgba(43,30,26,0.18)]"
         )}
       >
@@ -125,7 +125,7 @@ export function StoreHeader({
                   <Link
                     key={cat.id}
                     href={`/category/${cat.slug}`}
-                    className="px-3.5 py-2 rounded-full text-[11px] tracking-[0.12em] uppercase font-semibold text-[#534343] hover:text-[#2b1e1a] hover:bg-[#2b1e1a]/5 transition-colors whitespace-nowrap"
+                    className="px-3.5 py-2 rounded-full text-[13px] font-medium text-[#534343] hover:text-[#2b1e1a] hover:bg-[#2b1e1a]/5 transition-colors whitespace-nowrap"
                   >
                     {cat.name}
                   </Link>
@@ -134,13 +134,13 @@ export function StoreHeader({
                   <div className="relative group">
                     <button
                       type="button"
-                      className="px-3.5 py-2 rounded-full text-[11px] tracking-[0.12em] uppercase font-semibold text-[#534343] group-hover:text-[#2b1e1a] group-hover:bg-[#2b1e1a]/5 group-focus-within:bg-[#2b1e1a]/5 transition-colors"
+                      className="px-3.5 py-2 rounded-full text-[13px] font-medium text-[#534343] group-hover:text-[#2b1e1a] group-hover:bg-[#2b1e1a]/5 group-focus-within:bg-[#2b1e1a]/5 transition-colors"
                       aria-haspopup="true"
                     >
                       More
                     </button>
                     <div className="invisible opacity-0 translate-y-1 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:visible group-focus-within:opacity-100 group-focus-within:translate-y-0 transition-all duration-200 absolute left-1/2 -translate-x-1/2 top-full pt-2 z-40">
-                      <div className="min-w-[220px] rounded-2xl bg-[#fcf9f4]/95 backdrop-blur-xl border border-[#ebe3d5] shadow-[0_20px_50px_-20px_rgba(43,30,26,0.35)] p-2">
+                      <div className="min-w-[220px] rounded-2xl bg-[#fcf9f4] border border-[#ebe3d5] shadow-[0_20px_50px_-20px_rgba(43,30,26,0.35)] p-2">
                         {categories.slice(4).map((cat) => (
                           <Link
                             key={cat.id}
@@ -161,7 +161,7 @@ export function StoreHeader({
                 {/* Search */}
                 <button
                   onClick={() => setSearchOpen(true)}
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-[#2b1e1a] hover:bg-[#2b1e1a]/5 active:scale-95 transition-all"
+                  className="w-10 h-10 rounded-full flex items-center justify-center text-[#2b1e1a] hover:bg-[#2b1e1a]/5 active:scale-95 transition-[transform,background-color]"
                   aria-label="Search"
                 >
                   <Search className="w-5 h-5" />
@@ -193,7 +193,7 @@ export function StoreHeader({
                 >
                   <ShoppingBag className="w-5 h-5" />
                   {count > 0 && (
-                    <span className="absolute top-1 right-1 w-4 h-4 bg-[#5c1d24] text-white text-[9px] font-bold flex items-center justify-center rounded-full">
+                    <span className="absolute top-1 right-1 w-4 h-4 bg-[#5c1d24] text-white text-[9px] font-semibold flex items-center justify-center rounded-full">
                       {count > 9 ? "9+" : count}
                     </span>
                   )}
@@ -210,7 +210,7 @@ export function StoreHeader({
               <Link
                 key={cat.id}
                 href={`/category/${cat.slug}`}
-                className="px-4 py-2.5 text-[10px] tracking-[0.12em] uppercase font-semibold text-[#534343] hover:text-[#2b1e1a] whitespace-nowrap hover:bg-[#f0ede9] transition-colors"
+                className="px-4 py-2.5 text-[13px] font-medium text-[#534343] hover:text-[#2b1e1a] whitespace-nowrap hover:bg-[#f0ede9] transition-colors"
               >
                 {cat.name}
               </Link>
@@ -257,7 +257,7 @@ export function StoreHeader({
 
           {/* Categories */}
           <div className="flex-1 overflow-y-auto py-2">
-            <p className="px-6 py-3 text-[10px] tracking-[0.14em] uppercase font-semibold text-[#867273]">
+            <p className="px-6 py-3 text-xs font-medium text-[#867273]">
               Shop by Category
             </p>
             {categories.map((cat) => (
@@ -273,7 +273,7 @@ export function StoreHeader({
 
             {/* Quick links */}
             <div className="mt-4 border-t border-[#ebe3d5]">
-              <p className="px-6 py-3 text-[10px] tracking-[0.14em] uppercase font-semibold text-[#867273]">
+              <p className="px-6 py-3 text-xs font-medium text-[#867273]">
                 Account
               </p>
               {[
@@ -330,7 +330,7 @@ export function StoreHeader({
           <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 max-w-3xl w-full mx-auto">
             {!searchActive && (
               <>
-                <p className="text-[11px] tracking-[0.14em] uppercase font-semibold text-[#867273] mb-4">
+                <p className="text-xs font-medium text-[#867273] mb-4">
                   Popular searches
                 </p>
                 <div className="flex flex-wrap gap-2">

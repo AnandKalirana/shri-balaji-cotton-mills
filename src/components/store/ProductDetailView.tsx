@@ -60,7 +60,7 @@ export function ProductDetailView({ product }: { product: Product }) {
     <div className="min-h-screen bg-[#fcf9f4] pb-24 sm:pb-16">
       {/* Breadcrumb Bar */}
       <div className="border-b border-[#ebe3d5] bg-white">
-        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 py-3 flex items-center gap-2 text-[11px] tracking-wider uppercase font-semibold text-[#867273]">
+        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 py-3 flex items-center gap-2 text-xs font-medium text-[#867273]">
           <Link href="/" className="hover:text-[#2b1e1a]">Home</Link>
           <span>/</span>
           <Link href={`/category/${product.category}`} className="hover:text-[#2b1e1a]">
@@ -103,7 +103,7 @@ export function ProductDetailView({ product }: { product: Product }) {
                         (prev - 1 + images.length) % images.length
                       )
                     }
-                    className="w-10 h-10 bg-white/80 backdrop-blur-xs flex items-center justify-center pointer-events-auto text-[#2b1e1a]"
+                    className="w-10 h-10 bg-white flex items-center justify-center pointer-events-auto text-[#2b1e1a]"
                     aria-label="Previous image"
                   >
                     <ChevronLeft className="w-5 h-5" />
@@ -112,7 +112,7 @@ export function ProductDetailView({ product }: { product: Product }) {
                     onClick={() =>
                       setActiveImageIndex((prev) => (prev + 1) % images.length)
                     }
-                    className="w-10 h-10 bg-white/80 backdrop-blur-xs flex items-center justify-center pointer-events-auto text-[#2b1e1a]"
+                    className="w-10 h-10 bg-white flex items-center justify-center pointer-events-auto text-[#2b1e1a]"
                     aria-label="Next image"
                   >
                     <ChevronRight className="w-5 h-5" />
@@ -143,7 +143,7 @@ export function ProductDetailView({ product }: { product: Product }) {
 
           {/* Right Column: Textile Specs, Metre Stepper, Buy Options */}
           <div className="lg:col-span-5 flex flex-col justify-start">
-            <span className="text-[11px] tracking-[0.2em] uppercase font-semibold text-[#5c1d24]">
+            <span className="text-xs font-medium text-[#5c1d24]">
               {product.fabricType || product.department}
             </span>
 
@@ -154,7 +154,7 @@ export function ProductDetailView({ product }: { product: Product }) {
             {/* Price Box */}
             <div className="bg-[#f0ede9] p-4 sm:p-5 border border-[#ebe3d5] mb-6">
               <div className="flex items-baseline justify-between gap-2">
-                <span className="text-2xl sm:text-3xl font-bold text-[#2b1e1a]">
+                <span className="text-2xl sm:text-3xl font-semibold text-[#2b1e1a]">
                   {formatPrice(currentPrice)}
                 </span>
                 {product.pricePerMetre && !isFullThaan && (
@@ -179,14 +179,14 @@ export function ProductDetailView({ product }: { product: Product }) {
             {isFabric && (
               <div className="border border-[#c5a880] p-4 sm:p-5 bg-white mb-6 space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs tracking-wider uppercase font-semibold text-[#2b1e1a]">
+                  <span className="text-xs font-medium text-[#2b1e1a]">
                     Select Yardage Mode
                   </span>
                   <div className="flex gap-2">
                     <button
                       type="button"
                       onClick={() => setIsFullThaan(false)}
-                      className={`px-3 py-1 text-xs font-semibold uppercase tracking-wider border ${
+                      className={`px-3 py-1 text-xs font-medium border ${
                         !isFullThaan
                           ? "bg-[#5c1d24] text-white border-[#5c1d24]"
                           : "border-[#ebe3d5] text-[#534343]"
@@ -197,7 +197,7 @@ export function ProductDetailView({ product }: { product: Product }) {
                     <button
                       type="button"
                       onClick={() => setIsFullThaan(true)}
-                      className={`px-3 py-1 text-xs font-semibold uppercase tracking-wider border ${
+                      className={`px-3 py-1 text-xs font-medium border ${
                         isFullThaan
                           ? "bg-[#5c1d24] text-white border-[#5c1d24]"
                           : "border-[#ebe3d5] text-[#534343]"
@@ -258,12 +258,12 @@ export function ProductDetailView({ product }: { product: Product }) {
             <button
               onClick={handleAddToCart}
               disabled={!product.inStock}
-              className="hidden sm:flex w-full py-4 bg-[#5c1d24] hover:bg-[#2b1e1a] text-white text-xs tracking-widest uppercase font-semibold items-center justify-center gap-3 transition-colors min-h-[52px] disabled:opacity-50"
+              className="hidden sm:flex w-full py-4 bg-[#5c1d24] hover:bg-[#2b1e1a] text-white text-xs font-medium items-center justify-center gap-3 transition-colors min-h-[52px] disabled:opacity-50"
             >
               <ShoppingBag className="w-4 h-4" />
               <span>
                 {added
-                  ? "Added to Bag ✓"
+                  ? "Added to bag"
                   : product.inStock
                   ? `Add to Bag • ${formatPrice(currentPrice)}`
                   : "Currently Out of Stock"}
@@ -272,7 +272,7 @@ export function ProductDetailView({ product }: { product: Product }) {
 
             {/* Textile Attributes Accordion / Specs */}
             <div className="mt-8 border-t border-[#ebe3d5] pt-6 space-y-4">
-              <h4 className="text-[11px] tracking-[0.14em] uppercase font-semibold text-[#867273]">
+              <h4 className="text-xs font-medium text-[#867273]">
                 Artisanal Specifications
               </h4>
 
@@ -322,10 +322,10 @@ export function ProductDetailView({ product }: { product: Product }) {
       {/* Sticky Bottom Bar for Mobile Phones (360px-430px) */}
       <div className="sm:hidden fixed bottom-0 left-0 right-0 z-30 bg-[#fcf9f4] border-t border-[#c5a880] p-3 shadow-2xl flex items-center justify-between gap-3">
         <div>
-          <span className="text-[10px] uppercase text-[#867273] block">
+          <span className="text-xs text-[#867273] block">
             {isFabric ? (isFullThaan ? "Full Thaan" : `${metres}m Cut`) : "Total"}
           </span>
-          <span className="text-base font-bold text-[#2b1e1a]">
+          <span className="text-base font-semibold text-[#2b1e1a]">
             {formatPrice(currentPrice)}
           </span>
         </div>
@@ -333,10 +333,10 @@ export function ProductDetailView({ product }: { product: Product }) {
         <button
           onClick={handleAddToCart}
           disabled={!product.inStock}
-          className="flex-1 py-3.5 bg-[#5c1d24] text-white text-xs tracking-wider uppercase font-semibold flex items-center justify-center gap-2 active:bg-[#2b1e1a] min-h-[48px]"
+          className="flex-1 py-3.5 bg-[#5c1d24] text-white text-xs font-medium flex items-center justify-center gap-2 active:bg-[#2b1e1a] min-h-[48px]"
         >
           <ShoppingBag className="w-4 h-4" />
-          <span>{added ? "Added ✓" : "Add to Bag"}</span>
+          <span>{added ? "Added" : "Add to Bag"}</span>
         </button>
       </div>
     </div>

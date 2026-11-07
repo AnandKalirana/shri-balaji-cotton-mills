@@ -85,7 +85,7 @@ export default function AccountPage() {
     ];
     return (
       <div className="max-w-xl mx-auto px-4 py-16 sm:py-24">
-        <span className="text-[11px] tracking-[0.2em] uppercase font-semibold text-[#5c1d24]">My Account</span>
+        <span className="text-xs font-medium text-[#5c1d24]">My Account</span>
         <h1 className="font-[family-name:var(--font-playfair)] text-3xl sm:text-4xl text-[#2b1e1a] mt-1">
           Welcome back, {firstName}
         </h1>
@@ -135,7 +135,7 @@ export default function AccountPage() {
       <button
         type="button"
         onClick={() => { setMode(mode === "login" ? "register" : "login"); setError(""); }}
-        className="mt-6 text-xs tracking-[0.12em] uppercase font-semibold text-[#5c1d24] underline"
+        className="mt-6 text-xs font-medium text-[#5c1d24] underline"
       >
         {mode === "login" ? "New here? Create an account" : "Already have an account? Sign in"}
       </button>

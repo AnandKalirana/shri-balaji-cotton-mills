@@ -29,7 +29,7 @@ export default function WishlistPage() {
 
   return (
     <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 py-12 sm:py-16 w-full">
-      <span className="text-[11px] tracking-[0.2em] uppercase font-semibold text-[#5c1d24]">
+      <span className="text-xs font-medium text-[#5c1d24]">
         Saved for Later
       </span>
       <h1 className="font-[family-name:var(--font-playfair)] text-3xl sm:text-4xl text-[#2b1e1a] mt-1 mb-10 border-b border-[#ebe3d5] pb-6">
@@ -45,7 +45,7 @@ export default function WishlistPage() {
           <p className="text-[#534343] mb-8 max-w-sm">Tap the heart on any fabric to keep it here for later.</p>
           <Link
             href="/category/fabrics"
-            className="px-8 py-3.5 rounded-full bg-[#5c1d24] text-white text-xs tracking-[0.14em] uppercase font-semibold hover:bg-[#2b1e1a] transition-colors"
+            className="px-8 py-3.5 rounded-full bg-[#5c1d24] text-white text-xs font-medium hover:bg-[#2b1e1a] transition-colors"
           >
             Browse Fabrics
           </Link>
