@@ -9,7 +9,7 @@ import { categories } from "@/lib/data";
 import { formatPrice } from "@/lib/utils";
 import type { ImportRow } from "@/lib/product-import";
 
-const card = "bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-5 sm:p-6";
+const card = "bg-white border border-[#e5e5e3]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-5 sm:p-6";
 
 interface PreviewRow {
   line: number;
@@ -88,8 +88,8 @@ export default function AdminImportProductsPage() {
         <Link href="/admin/products" className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#5c1d24] hover:underline">
           <ArrowLeft className="w-3.5 h-3.5" /> Back to products
         </Link>
-        <h2 className="font-[family-name:var(--font-playfair)] text-xl sm:text-2xl font-medium text-[#2b1e1a] mt-2">Import products from a file</h2>
-        <p className="text-xs text-[#867273]">
+        <h2 className="font-[family-name:var(--font-playfair)] text-xl sm:text-2xl font-medium text-[#1a1a1a] mt-2">Import products from a file</h2>
+        <p className="text-xs text-[#6f6f6f]">
           Upload an Excel or CSV file with one product per row. You see a preview first, and nothing is added until you confirm.
         </p>
       </div>
@@ -100,7 +100,7 @@ export default function AdminImportProductsPage() {
         <div className={`${card} space-y-5`}>
           <div className="grid sm:grid-cols-3 gap-4">
             <label className="sm:col-span-3 block">
-              <span className="text-xs font-semibold text-[#534343]">File (.xlsx or .csv, up to 500 products)</span>
+              <span className="text-xs font-semibold text-[#444444]">File (.xlsx or .csv, up to 500 products)</span>
               <input
                 type="file"
                 accept=".xlsx,.csv"
@@ -112,7 +112,7 @@ export default function AdminImportProductsPage() {
               />
             </label>
             <label className="block">
-              <span className="text-xs font-semibold text-[#534343]">Category for rows without one</span>
+              <span className="text-xs font-semibold text-[#444444]">Category for rows without one</span>
               <select value={category} onChange={(e) => setCategory(e.target.value)} className="mt-1 w-full border-b border-[#c5a880] bg-transparent py-2.5 text-sm">
                 {categories.map((c) => (
                   <option key={c.slug} value={c.slug}>{c.name}</option>
@@ -120,7 +120,7 @@ export default function AdminImportProductsPage() {
               </select>
             </label>
             <label className="block">
-              <span className="text-xs font-semibold text-[#534343]">Starting stock per product</span>
+              <span className="text-xs font-semibold text-[#444444]">Starting stock per product</span>
               <input
                 type="number"
                 min={0}
@@ -139,7 +139,7 @@ export default function AdminImportProductsPage() {
               <Download className="w-3.5 h-3.5" /> Download a blank template
             </a>
           </div>
-          <p className="text-xs text-[#867273] leading-relaxed">
+          <p className="text-xs text-[#6f6f6f] leading-relaxed">
             Recognised columns: Design No., Product Name, MRP, Selling Price, Description, Available Colours, Sizes, Image URL, and optionally
             Category, Stock and Badge. Photos are copied from the links into your own storage. Sizes and colours are added to the
             description until size and colour choices are built into the store.
@@ -152,7 +152,7 @@ export default function AdminImportProductsPage() {
           {warnings.map((w) => (
             <Notice key={w} tone="warning">{w}</Notice>
           ))}
-          <p className="text-sm text-[#2b1e1a]">
+          <p className="text-sm text-[#1a1a1a]">
             <strong>{ready.length}</strong> ready to import
             {skipped.length > 0 && <>, <strong>{skipped.length}</strong> already in your store</>}
             {problems.length > 0 && <>, <strong>{problems.length}</strong> with problems</>}.
@@ -161,7 +161,7 @@ export default function AdminImportProductsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-xs text-[#867273] border-b border-[#ebe3d5]">
+                <tr className="text-left text-xs text-[#6f6f6f] border-b border-[#e5e5e3]">
                   <th className="py-2 pr-3 font-medium">Row</th>
                   <th className="py-2 pr-3 font-medium">Photo</th>
                   <th className="py-2 pr-3 font-medium">Product</th>
@@ -172,8 +172,8 @@ export default function AdminImportProductsPage() {
               </thead>
               <tbody>
                 {rows.map((r) => (
-                  <tr key={r.line} className="border-b border-[#ebe3d5]/60 align-top">
-                    <td className="py-2 pr-3 tabular-nums text-[#867273]">{r.line}</td>
+                  <tr key={r.line} className="border-b border-[#e5e5e3]/60 align-top">
+                    <td className="py-2 pr-3 tabular-nums text-[#6f6f6f]">{r.line}</td>
                     <td className="py-2 pr-3">
                       {r.row && (
                         // eslint-disable-next-line @next/next/no-img-element
@@ -181,23 +181,23 @@ export default function AdminImportProductsPage() {
                       )}
                     </td>
                     <td className="py-2 pr-3 max-w-[280px]">
-                      <div className="font-medium text-[#2b1e1a]">{r.row?.name ?? "—"}</div>
-                      {r.row?.designNo && <div className="text-xs text-[#867273]">Design no. {r.row.designNo}</div>}
+                      <div className="font-medium text-[#1a1a1a]">{r.row?.name ?? "—"}</div>
+                      {r.row?.designNo && <div className="text-xs text-[#6f6f6f]">Design no. {r.row.designNo}</div>}
                     </td>
                     <td className="py-2 pr-3 tabular-nums">
                       {r.row && (
                         <>
                           {formatPrice(r.row.price)}
-                          {r.row.mrp && <span className="ml-1 text-xs text-[#867273] line-through">{formatPrice(r.row.mrp)}</span>}
+                          {r.row.mrp && <span className="ml-1 text-xs text-[#6f6f6f] line-through">{formatPrice(r.row.mrp)}</span>}
                         </>
                       )}
                     </td>
-                    <td className="py-2 pr-3 text-xs text-[#534343]">
+                    <td className="py-2 pr-3 text-xs text-[#444444]">
                       {r.row && `${r.row.sizes.length || "No"} sizes, ${r.row.colours.length || "no"} colours`}
                     </td>
                     <td className="py-2 text-xs">
                       {r.row && !r.duplicate && <span className="text-emerald-700">Ready</span>}
-                      {r.duplicate && <span className="text-[#867273]">Already in store, will be skipped</span>}
+                      {r.duplicate && <span className="text-[#6f6f6f]">Already in store, will be skipped</span>}
                       {r.errors.map((e) => (
                         <div key={e} className="text-rose-700">{e}</div>
                       ))}
@@ -212,7 +212,7 @@ export default function AdminImportProductsPage() {
             <Button onClick={runImport} loading={importing} disabled={ready.length === 0} className="rounded-full">
               {importing ? `Importing ${done} of ${ready.length}…` : `Import ${ready.length} product${ready.length === 1 ? "" : "s"}`}
             </Button>
-            {problems.length > 0 && <span className="text-xs text-[#867273]">Rows with problems are left out. Fix them in the file and check it again.</span>}
+            {problems.length > 0 && <span className="text-xs text-[#6f6f6f]">Rows with problems are left out. Fix them in the file and check it again.</span>}
           </div>
         </div>
       )}
@@ -225,7 +225,7 @@ export default function AdminImportProductsPage() {
           </Notice>
           <ul className="text-sm space-y-1">
             {results.filter((r) => r.status !== "created" || r.message !== "Added.").map((r) => (
-              <li key={r.line} className={r.status === "failed" ? "text-rose-700" : "text-[#534343]"}>
+              <li key={r.line} className={r.status === "failed" ? "text-rose-700" : "text-[#444444]"}>
                 Row {r.line}, {r.name}: {r.message}
               </li>
             ))}

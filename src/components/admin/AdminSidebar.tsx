@@ -37,16 +37,16 @@ export function AdminSidebar() {
   };
 
   const navContent = (
-    <div className="flex flex-col h-full justify-between bg-[#281b17] text-[#faf7f2] select-none">
+    <div className="flex flex-col h-full justify-between bg-[#111111] text-[#f7f7f5] select-none">
       <div>
         {/* Brand Header */}
-        <div className="h-16 md:h-20 flex items-center justify-between px-6 border-b border-[#53433e]">
+        <div className="h-16 md:h-20 flex items-center justify-between px-6 border-b border-[#333333]">
           <Logo tone="light" className="h-7" />
 
           {/* Close button on mobile */}
           <button
             onClick={closeAdminSidebar}
-            className="lg:hidden w-10 h-10 rounded-full flex items-center justify-center text-[#d8c2bb] hover:text-white hover:bg-white/10"
+            className="lg:hidden w-10 h-10 rounded-full flex items-center justify-center text-[#cfcfcd] hover:text-white hover:bg-white/10"
             aria-label="Close admin menu"
           >
             <X className="w-5 h-5" />
@@ -68,10 +68,10 @@ export function AdminSidebar() {
                 href={item.href}
                 onClick={closeAdminSidebar}
                 className={cn(
-                  "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all min-h-[46px]",
+                  "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors min-h-[46px]",
                   isActive
                     ? "bg-[#5c1d24] text-white shadow-[0_8px_20px_-10px_rgba(0,0,0,0.6)]"
-                    : "text-[#d8c2bb] hover:bg-white/5 hover:text-white"
+                    : "text-[#cfcfcd] hover:bg-white/5 hover:text-white"
                 )}
               >
                 <Icon className="w-4 h-4 shrink-0 text-[#c5a880]" />
@@ -83,10 +83,10 @@ export function AdminSidebar() {
       </div>
 
       {/* Footer Actions */}
-      <div className="p-4 border-t border-[#53433e] space-y-2">
+      <div className="p-4 border-t border-[#333333] space-y-2">
         <Link
           href="/"
-          className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-[#d8c2bb] hover:text-white hover:bg-white/5 transition-colors"
+          className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-[#cfcfcd] hover:text-white hover:bg-white/5 transition-colors"
         >
           <Store className="w-4 h-4 text-[#c5a880]" />
           <span>View Live Store</span>
@@ -94,13 +94,13 @@ export function AdminSidebar() {
 
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-[#d8c2bb] hover:text-rose-300 hover:bg-white/5 transition-colors text-left"
+          className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-[#cfcfcd] hover:text-rose-300 hover:bg-white/5 transition-colors text-left"
         >
           <LogOut className="w-4 h-4 text-rose-400" />
           <span>Sign Out</span>
         </button>
 
-        <p className="text-[10px] text-[#867273] px-4 pt-2">
+        <p className="text-[10px] text-[#6f6f6f] px-4 pt-2">
           Shri Balaji Cotton Mills v1.0
         </p>
       </div>
@@ -110,7 +110,7 @@ export function AdminSidebar() {
   return (
     <>
       {/* Desktop Fixed Sidebar */}
-      <aside className="hidden lg:block w-60 shrink-0 border-r border-[#53433e] h-screen sticky top-0 overflow-y-auto z-20">
+      <aside className="hidden lg:block w-60 shrink-0 border-r border-[#333333] h-screen sticky top-0 overflow-y-auto z-20">
         {navContent}
       </aside>
 
@@ -123,7 +123,7 @@ export function AdminSidebar() {
       >
         <div
           className={cn(
-            "absolute inset-0 bg-[#2b1e1a]/80 backdrop-blur-[2px] transition-opacity duration-300",
+            "absolute inset-0 bg-[#1a1a1a]/80 backdrop-blur-[2px] transition-opacity duration-300",
             adminSidebarOpen ? "opacity-100" : "opacity-0"
           )}
           onClick={closeAdminSidebar}

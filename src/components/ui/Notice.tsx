@@ -9,7 +9,7 @@ interface NoticeProps {
 }
 
 const tones = {
-  info: { box: "bg-[#2b1e1a]/[0.04] text-[#2b1e1a]", Icon: Info },
+  info: { box: "bg-[#1a1a1a]/[0.04] text-[#1a1a1a]", Icon: Info },
   warning: { box: "bg-amber-50 text-amber-900", Icon: AlertTriangle },
   success: { box: "bg-emerald-50 text-emerald-900", Icon: CheckCircle2 },
   error: { box: "bg-rose-50 text-rose-900", Icon: AlertTriangle },

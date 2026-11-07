@@ -41,7 +41,7 @@ export function Stepper({
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
       {label && (
-        <span className="text-[11px] tracking-[0.14em] uppercase font-semibold text-[#534343]">
+        <span className="text-xs font-medium text-[#444444]">
           {label}
         </span>
       )}
@@ -53,15 +53,15 @@ export function Stepper({
           aria-label="Decrease quantity"
           className={cn(
             btnSize,
-            "flex items-center justify-center text-[#2b1e1a] hover:bg-[#f0ede9] disabled:opacity-30 disabled:cursor-not-allowed transition-colors select-none active:bg-[#e5e2dd]"
+            "flex items-center justify-center text-[#1a1a1a] hover:bg-[#f5f5f3] disabled:opacity-30 disabled:cursor-not-allowed transition-colors select-none active:bg-[#e5e2dd]"
           )}
         >
           <Minus className="w-4 h-4" />
         </button>
 
-        <div className={cn(textSize, "text-center text-[#2b1e1a] px-2 select-none")}>
+        <div className={cn(textSize, "text-center text-[#1a1a1a] px-2 select-none")}>
           {value}
-          {unit && <span className="ml-1 text-xs text-[#867273] font-normal">{unit}</span>}
+          {unit && <span className="ml-1 text-xs text-[#6f6f6f] font-normal">{unit}</span>}
         </div>
 
         <button
@@ -71,7 +71,7 @@ export function Stepper({
           aria-label="Increase quantity"
           className={cn(
             btnSize,
-            "flex items-center justify-center text-[#2b1e1a] hover:bg-[#f0ede9] disabled:opacity-30 disabled:cursor-not-allowed transition-colors select-none active:bg-[#e5e2dd]"
+            "flex items-center justify-center text-[#1a1a1a] hover:bg-[#f5f5f3] disabled:opacity-30 disabled:cursor-not-allowed transition-colors select-none active:bg-[#e5e2dd]"
           )}
         >
           <Plus className="w-4 h-4" />

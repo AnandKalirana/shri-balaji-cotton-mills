@@ -14,7 +14,7 @@ export function MobileOrderCard({ order }: { order: Order }) {
   return (
     <Link
       href={`/admin/orders/${order.id}`}
-      className="block p-4 bg-white border border-[#ebe3d5] hover:border-[#c5a880] transition-colors active:bg-[#faf7f2]"
+      className="block p-4 bg-white border border-[#e5e5e3] hover:border-[#c5a880] transition-colors active:bg-[#f7f7f5]"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
@@ -24,10 +24,10 @@ export function MobileOrderCard({ order }: { order: Order }) {
             </span>
             <StatusBadge status={order.status} />
           </div>
-          <p className="mt-1 text-sm font-medium text-[#2b1e1a] truncate">
+          <p className="mt-1 text-sm font-medium text-[#1a1a1a] truncate">
             {order.customer?.name || "Patron"}
           </p>
-          <div className="flex items-center gap-2 mt-0.5 text-xs text-[#534343]">
+          <div className="flex items-center gap-2 mt-0.5 text-xs text-[#444444]">
             <span>{date}</span>
             <span>•</span>
             <span>{order.items?.length || 1} item{order.items?.length !== 1 ? "s" : ""}</span>
@@ -35,10 +35,10 @@ export function MobileOrderCard({ order }: { order: Order }) {
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <span className="text-sm font-semibold text-[#2b1e1a]">
+          <span className="text-sm font-semibold text-[#1a1a1a]">
             {formatPrice(order.total)}
           </span>
-          <ChevronRight className="w-4 h-4 text-[#867273]" />
+          <ChevronRight className="w-4 h-4 text-[#6f6f6f]" />
         </div>
       </div>
     </Link>

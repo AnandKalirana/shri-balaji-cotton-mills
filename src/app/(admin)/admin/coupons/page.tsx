@@ -16,7 +16,7 @@ interface CouponItem {
   validUntil: string;
 }
 
-const card = "bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)]";
+const card = "bg-white border border-[#e5e5e3]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)]";
 
 function inOneYear() {
   const d = new Date();
@@ -82,10 +82,10 @@ export default function AdminCouponsPage() {
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
-        <h2 className="font-[family-name:var(--font-playfair)] text-xl sm:text-2xl font-medium text-[#2b1e1a]">
+        <h2 className="font-[family-name:var(--font-playfair)] text-xl sm:text-2xl font-medium text-[#1a1a1a]">
           Coupons
         </h2>
-        <p className="text-xs text-[#867273]">Create percentage discount codes with a minimum order value.</p>
+        <p className="text-xs text-[#6f6f6f]">Create percentage discount codes with a minimum order value.</p>
       </div>
 
       <Notice tone="info">
@@ -94,7 +94,7 @@ export default function AdminCouponsPage() {
       </Notice>
 
       <form onSubmit={handleAdd} className={`${card} p-5 sm:p-6 space-y-4`}>
-        <h3 className="text-xs tracking-[0.14em] uppercase font-semibold text-[#5c1d24]">New coupon</h3>
+        <h3 className="text-xs font-medium text-[#5c1d24]">New coupon</h3>
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 items-end">
           <Input label="Code *" value={newCode} onChange={(e) => setNewCode(e.target.value)} placeholder="FESTIVE20" required />
           <Input label="Discount % *" type="number" min={1} max={90} value={discount} onChange={(e) => setDiscount(e.target.value)} required />
@@ -109,21 +109,21 @@ export default function AdminCouponsPage() {
 
       {message && <Notice tone={message.tone}>{message.text}</Notice>}
 
-      <div className={`${card} overflow-hidden divide-y divide-[#ebe3d5]/70`}>
+      <div className={`${card} overflow-hidden divide-y divide-[#e5e5e3]/70`}>
         {loading ? (
-          <p className="p-6 text-sm text-[#867273]">Loading…</p>
+          <p className="p-6 text-sm text-[#6f6f6f]">Loading…</p>
         ) : coupons.length === 0 ? (
-          <p className="p-6 text-sm text-[#867273]">No coupons yet. Create your first one above.</p>
+          <p className="p-6 text-sm text-[#6f6f6f]">No coupons yet. Create your first one above.</p>
         ) : (
           coupons.map((c) => (
             <div key={c.id} className="p-4 sm:p-5 flex items-center justify-between gap-4 flex-wrap">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#f0ede9] text-[#5c1d24] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-[#f5f5f3] text-[#5c1d24] flex items-center justify-center">
                   <Tag className="w-4 h-4" />
                 </div>
                 <div>
-                  <p className="font-bold text-sm tracking-wider text-[#2b1e1a]">{c.code}</p>
-                  <p className="text-xs text-[#867273]">
+                  <p className="font-semibold text-sm tracking-wider text-[#1a1a1a]">{c.code}</p>
+                  <p className="text-xs text-[#6f6f6f]">
                     {c.discountPct}% off above ₹{c.minOrder.toLocaleString("en-IN")} · until{" "}
                     {new Date(c.validUntil).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                   </p>
@@ -140,7 +140,7 @@ export default function AdminCouponsPage() {
                 <button
                   onClick={() => remove(c)}
                   aria-label={`Delete ${c.code}`}
-                  className="w-9 h-9 rounded-full flex items-center justify-center text-[#867273] hover:text-[#ba1a1a] hover:bg-rose-50"
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-[#6f6f6f] hover:text-[#ba1a1a] hover:bg-rose-50"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>

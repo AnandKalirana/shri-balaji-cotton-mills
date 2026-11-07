@@ -49,7 +49,7 @@ export function Drawer({
       {/* Backdrop */}
       <div
         className={cn(
-          "absolute inset-0 bg-[#2b1e1a]/70 backdrop-blur-[2px] transition-opacity duration-300",
+          "absolute inset-0 bg-[#1a1a1a]/70 backdrop-blur-[2px] transition-opacity duration-300",
           open ? "opacity-100" : "opacity-0"
         )}
         onClick={onClose}
@@ -62,7 +62,7 @@ export function Drawer({
         aria-modal="true"
         aria-label={title || "Drawer panel"}
         className={cn(
-          "absolute top-0 bottom-0 flex flex-col bg-[#fcf9f4] w-full max-w-sm sm:max-w-md shadow-2xl transition-transform duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)]",
+          "absolute top-0 bottom-0 flex flex-col bg-[#f7f7f5] w-full max-w-sm sm:max-w-md shadow-2xl transition-transform duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)]",
           side === "right" ? "right-0" : "left-0",
           side === "right"
             ? open
@@ -75,15 +75,15 @@ export function Drawer({
         )}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-[#ebe3d5]">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-[#e5e5e3]">
           {title && (
-            <h2 className="font-[family-name:var(--font-playfair)] text-lg font-medium text-[#2b1e1a]">
+            <h2 className="font-[family-name:var(--font-playfair)] text-lg font-medium text-[#1a1a1a]">
               {title}
             </h2>
           )}
           <button
             onClick={onClose}
-            className="ml-auto w-10 h-10 flex items-center justify-center text-[#534343] hover:text-[#2b1e1a] hover:bg-[#f0ede9] transition-colors"
+            className="ml-auto w-10 h-10 flex items-center justify-center text-[#444444] hover:text-[#1a1a1a] hover:bg-[#f5f5f3] transition-colors"
             aria-label="Close panel"
           >
             <X className="w-5 h-5" />

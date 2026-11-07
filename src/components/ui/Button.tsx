@@ -13,16 +13,16 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variants: Record<Variant, string> = {
-  primary: "bg-[#5c1d24] text-white hover:bg-[#2b1e1a] border border-transparent focus-visible:ring-2 focus-visible:ring-[#5c1d24]",
-  secondary: "bg-transparent text-[#2b1e1a] border border-[#c5a880] hover:bg-[#faf7f2] focus-visible:ring-2 focus-visible:ring-[#c5a880]",
-  ghost: "bg-transparent text-[#5c1d24] border border-transparent hover:bg-[#f0ede9] focus-visible:ring-2 focus-visible:ring-[#5c1d24]",
+  primary: "bg-[#5c1d24] text-white hover:bg-[#1a1a1a] border border-transparent focus-visible:ring-2 focus-visible:ring-[#5c1d24]",
+  secondary: "bg-transparent text-[#1a1a1a] border border-[#c5a880] hover:bg-[#f7f7f5] focus-visible:ring-2 focus-visible:ring-[#c5a880]",
+  ghost: "bg-transparent text-[#5c1d24] border border-transparent hover:bg-[#f5f5f3] focus-visible:ring-2 focus-visible:ring-[#5c1d24]",
   danger: "bg-[#ba1a1a] text-white border border-transparent hover:bg-red-800 focus-visible:ring-2 focus-visible:ring-red-600",
 };
 
 const sizes: Record<Size, string> = {
-  sm: "px-4 py-2 text-xs tracking-widest uppercase font-semibold min-h-[36px]",
-  md: "px-8 py-3 text-xs tracking-widest uppercase font-semibold min-h-[48px]",
-  lg: "px-12 py-4 text-sm tracking-widest uppercase font-semibold min-h-[56px]",
+  sm: "px-4 py-2 text-sm font-medium min-h-[36px]",
+  md: "px-8 py-3 text-sm font-medium min-h-[48px]",
+  lg: "px-12 py-4 text-base font-medium min-h-[56px]",
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(

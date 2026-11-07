@@ -13,7 +13,7 @@ export default async function AdminLayout({
   if (!user || user.role === "CUSTOMER") redirect("/account");
 
   return (
-    <div className="flex min-h-screen bg-[#f6f3ee]">
+    <div className="flex min-h-screen bg-[#f5f5f3] admin-clean">
       {/* Responsive Sidebar (Desktop fixed / Mobile slide-out) */}
       <AdminSidebar />
 

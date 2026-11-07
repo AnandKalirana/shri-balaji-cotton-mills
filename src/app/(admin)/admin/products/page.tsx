@@ -8,9 +8,10 @@ import { api } from "@/lib/api-client";
 import { Notice } from "@/components/ui/Notice";
 import { Button } from "@/components/ui/Button";
 import type { Product } from "@/lib/types";
+import { ProductFilters, filterProducts, EMPTY_FILTERS, type ProductFilterState } from "@/components/admin/ProductFilters";
 
 const FALLBACK_IMG = "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800";
-const card = "bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)]";
+const card = "bg-white border border-[#e5e5e3]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)]";
 
 const fetchProducts = () => api<{ products: Product[]; demo: boolean }>("/api/admin/products");
 
@@ -23,6 +24,8 @@ export default function AdminProductsPage() {
   const [busyId, setBusyId] = useState<string | null>(null);
   const [message, setMessage] = useState<{ tone: "success" | "error"; text: string } | null>(null);
   const [importing, setImporting] = useState(false);
+  const [filters, setFilters] = useState<ProductFilterState>(EMPTY_FILTERS);
+  const shown = filterProducts(list, filters);
 
   const apply = useCallback((res: Awaited<ReturnType<typeof fetchProducts>>) => {
     if (res.ok) {
@@ -99,7 +102,7 @@ export default function AdminProductsPage() {
         <button onClick={() => savePrice(p)} disabled={busyId === p.id} className="w-8 h-8 rounded-full bg-[#5c1d24] text-white flex items-center justify-center disabled:opacity-50" aria-label="Save price">
           <Check className="w-3.5 h-3.5" />
         </button>
-        <button onClick={() => setEditingId(null)} className="w-8 h-8 rounded-full text-[#534343] hover:bg-[#2b1e1a]/5 flex items-center justify-center" aria-label="Cancel">
+        <button onClick={() => setEditingId(null)} className="w-8 h-8 rounded-full text-[#444444] hover:bg-[#1a1a1a]/5 flex items-center justify-center" aria-label="Cancel">
           <X className="w-3.5 h-3.5" />
         </button>
       </div>
@@ -108,7 +111,7 @@ export default function AdminProductsPage() {
         <span className="font-semibold">{formatPrice(p.price)}</span>
         <button
           onClick={() => { setEditingId(p.id); setTempPrice(String(p.price)); setMessage(null); }}
-          className="w-7 h-7 rounded-full flex items-center justify-center text-[#867273] hover:text-[#2b1e1a] hover:bg-[#2b1e1a]/5"
+          className="w-7 h-7 rounded-full flex items-center justify-center text-[#6f6f6f] hover:text-[#1a1a1a] hover:bg-[#1a1a1a]/5"
           aria-label={`Edit price of ${p.name}`}
         >
           <Edit2 className="w-3 h-3" />
@@ -126,16 +129,16 @@ export default function AdminProductsPage() {
     </button>
   );
 
-  if (loading) return <div className="py-24 text-center text-sm text-[#867273]">Loading…</div>;
+  if (loading) return <div className="py-24 text-center text-sm text-[#6f6f6f]">Loading…</div>;
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="font-[family-name:var(--font-playfair)] text-xl sm:text-2xl font-medium text-[#2b1e1a]">
+          <h2 className="font-[family-name:var(--font-playfair)] text-xl sm:text-2xl font-medium text-[#1a1a1a]">
             Products ({list.length})
           </h2>
-          <p className="text-xs text-[#867273]">Edit prices, hide pieces from the store, or add new ones.</p>
+          <p className="text-xs text-[#6f6f6f]">Edit prices, hide pieces from the store, or add new ones.</p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
         <Link href="/admin/products/import" className="text-sm font-semibold text-[#5c1d24] hover:underline">
@@ -143,7 +146,7 @@ export default function AdminProductsPage() {
         </Link>
         <Link
           href="/admin/products/new"
-          className="px-5 py-2.5 rounded-full bg-[#5c1d24] text-white text-sm font-semibold flex items-center justify-center gap-2 hover:bg-[#2b1e1a] active:scale-95 transition-all min-h-[44px]"
+          className="px-5 py-2.5 rounded-full bg-[#5c1d24] text-white text-sm font-semibold flex items-center justify-center gap-2 hover:bg-[#1a1a1a] active:scale-95 transition-[transform,background-color] min-h-[44px]"
         >
           <Plus className="w-4 h-4 text-[#c5a880]" />
           <span>Add product</span>
@@ -166,18 +169,29 @@ export default function AdminProductsPage() {
       )}
       {message && <Notice tone={message.tone}>{message.text}</Notice>}
 
+      <ProductFilters products={list} shown={shown.length} value={filters} onChange={setFilters} mode="products" />
+
+      {shown.length === 0 && list.length > 0 && (
+        <div className={`${card} py-12 text-center text-sm text-[#6f6f6f]`}>
+          No products match these filters.{" "}
+          <button type="button" onClick={() => setFilters(EMPTY_FILTERS)} className="font-medium text-[#1a1a1a] underline">
+            Clear filters
+          </button>
+        </div>
+      )}
+
       {/* Mobile cards */}
       <div className="md:hidden space-y-3">
-        {list.map((p) => (
+        {shown.map((p) => (
           <div key={p.id} className={`${card} p-4 flex gap-4 items-start`}>
-            <div className="relative w-20 h-24 shrink-0 rounded-xl overflow-hidden bg-[#f6f3ee]">
+            <div className="relative w-20 h-24 shrink-0 rounded-xl overflow-hidden bg-[#f5f5f3]">
               <Image src={p.images?.[0] || FALLBACK_IMG} alt={p.name} fill sizes="80px" className="object-cover" />
             </div>
             <div className="flex-1 min-w-0">
-              <span className="text-[11px] text-[#867273]">{p.department}</span>
-              <h4 className="font-semibold text-sm text-[#2b1e1a] truncate">{p.name}</h4>
+              <span className="text-[11px] text-[#6f6f6f]">{p.department}</span>
+              <h4 className="font-semibold text-sm text-[#1a1a1a] truncate">{p.name}</h4>
               <div className="mt-2 text-sm text-[#5c1d24]"><PriceCell p={p} /></div>
-              <div className="mt-2 flex items-center justify-between text-xs text-[#534343]">
+              <div className="mt-2 flex items-center justify-between text-xs text-[#444444]">
                 <span>Stock: <strong>{p.stockQty}</strong></span>
                 <VisibilityButton p={p} />
               </div>
@@ -189,7 +203,7 @@ export default function AdminProductsPage() {
       {/* Desktop table */}
       <div className={`hidden md:block ${card} overflow-hidden`}>
         <table className="w-full text-left text-sm">
-          <thead className="bg-[#fcf9f4] text-xs font-medium text-[#867273] border-b border-[#ebe3d5]/70">
+          <thead className="bg-[#f7f7f5] text-xs font-medium text-[#6f6f6f] border-b border-[#e5e5e3]/70">
             <tr>
               <th className="py-3.5 px-6">Product</th>
               <th className="py-3.5 px-6">Category</th>
@@ -199,19 +213,19 @@ export default function AdminProductsPage() {
               <th className="py-3.5 px-6 text-right">Store</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#ebe3d5]/70 text-[#2b1e1a]">
-            {list.map((p) => (
-              <tr key={p.id} className="hover:bg-[#faf7f2] transition-colors">
+          <tbody className="divide-y divide-[#e5e5e3]/70 text-[#1a1a1a]">
+            {shown.map((p) => (
+              <tr key={p.id} className="hover:bg-[#f7f7f5] transition-colors">
                 <td className="py-4 px-6">
                   <div className="flex items-center gap-3">
-                    <div className="relative w-12 h-14 shrink-0 rounded-lg overflow-hidden bg-[#f6f3ee]">
+                    <div className="relative w-12 h-14 shrink-0 rounded-lg overflow-hidden bg-[#f5f5f3]">
                       <Image src={p.images?.[0] || FALLBACK_IMG} alt="" fill sizes="48px" className="object-cover" />
                     </div>
                     <p className="font-semibold">{p.name}</p>
                   </div>
                 </td>
-                <td className="py-4 px-6 text-[#534343]">{p.department}</td>
-                <td className="py-4 px-6 text-[#534343]">{p.fabricType}</td>
+                <td className="py-4 px-6 text-[#444444]">{p.department}</td>
+                <td className="py-4 px-6 text-[#444444]">{p.fabricType}</td>
                 <td className="py-4 px-6"><PriceCell p={p} /></td>
                 <td className="py-4 px-6">
                   <span className={`font-semibold ${p.stockQty <= 5 ? "text-amber-700" : "text-emerald-800"}`}>
