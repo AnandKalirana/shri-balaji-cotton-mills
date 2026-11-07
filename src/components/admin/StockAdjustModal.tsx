@@ -72,24 +72,24 @@ export function StockAdjustModal({
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-[#2b1e1a]/70 backdrop-blur-xs"
+        className="fixed inset-0 bg-[#1a1a1a]/70 backdrop-blur-xs"
         onClick={onClose}
       />
 
       {/* Sheet / Modal Container */}
-      <div className="relative w-full sm:max-w-md bg-[#fcf9f4] border-t sm:border border-[#ebe3d5] p-6 shadow-2xl z-10 max-h-[90vh] overflow-y-auto">
+      <div className="relative w-full sm:max-w-md bg-[#f7f7f5] border-t sm:border border-[#e5e5e3] p-6 shadow-2xl z-10 max-h-[90vh] overflow-y-auto">
         <div className="flex items-start justify-between gap-4 mb-4">
           <div>
-            <span className="text-[10px] tracking-[0.14em] uppercase font-semibold text-[#867273]">
+            <span className="text-xs font-medium text-[#6f6f6f]">
               Rapid Stock Adjuster
             </span>
-            <h3 className="font-[family-name:var(--font-playfair)] text-lg font-medium text-[#2b1e1a] line-clamp-1">
+            <h3 className="font-[family-name:var(--font-playfair)] text-lg font-medium text-[#1a1a1a] line-clamp-1">
               {productName}
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="w-10 h-10 flex items-center justify-center text-[#534343] hover:bg-[#f0ede9]"
+            className="w-10 h-10 flex items-center justify-center text-[#444444] hover:bg-[#f5f5f3]"
             aria-label="Close"
           >
             <X className="w-5 h-5" />
@@ -97,17 +97,17 @@ export function StockAdjustModal({
         </div>
 
         {/* Current vs New Status */}
-        <div className="bg-[#f0ede9] p-4 border border-[#ebe3d5] mb-6 flex items-center justify-between">
+        <div className="bg-[#f5f5f3] p-4 border border-[#e5e5e3] mb-6 flex items-center justify-between">
           <div>
-            <p className="text-[10px] text-[#867273] uppercase tracking-wider">
+            <p className="text-xs text-[#6f6f6f]">
               Previous Balance
             </p>
-            <p className="text-sm font-semibold text-[#2b1e1a]">
+            <p className="text-sm font-semibold text-[#1a1a1a]">
               {currentStock} {isFabric ? "metres" : "units"}
             </p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] text-[#867273] uppercase tracking-wider">
+            <p className="text-xs text-[#6f6f6f]">
               Adjustment
             </p>
             <p
@@ -116,7 +116,7 @@ export function StockAdjustModal({
                   ? "text-emerald-700"
                   : delta < 0
                   ? "text-[#ba1a1a]"
-                  : "text-[#534343]"
+                  : "text-[#444444]"
               }`}
             >
               {delta > 0 ? `+${delta}` : delta} {isFabric ? "m" : "pcs"}
@@ -125,8 +125,8 @@ export function StockAdjustModal({
         </div>
 
         {/* Large Mobile Stepper */}
-        <div className="flex flex-col items-center justify-center py-4 bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] mb-4">
-          <p className="text-xs text-[#867273] mb-2 font-medium uppercase tracking-wider">
+        <div className="flex flex-col items-center justify-center py-4 bg-white border border-[#e5e5e3]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] mb-4">
+          <p className="text-xs text-[#6f6f6f] mb-2 font-medium">
             Target Stock
           </p>
           <Stepper
@@ -145,7 +145,7 @@ export function StockAdjustModal({
               <button
                 key={amt}
                 onClick={() => setStock((prev) => prev + amt)}
-                className="px-3 py-1.5 text-xs bg-[#f6f3ee] border border-[#ebe3d5] hover:border-[#c5a880] text-[#2b1e1a] font-semibold active:bg-[#e5e2dd]"
+                className="px-3 py-1.5 text-xs bg-[#f5f5f3] border border-[#e5e5e3] hover:border-[#c5a880] text-[#1a1a1a] font-semibold active:bg-[#e5e2dd]"
               >
                 +{amt}{isFabric ? "m" : ""}
               </button>
@@ -155,13 +155,13 @@ export function StockAdjustModal({
 
         {/* Audit Reason Selector */}
         <div className="mb-6">
-          <label className="block text-[11px] tracking-[0.14em] uppercase font-semibold text-[#534343] mb-1.5">
+          <label className="block text-xs font-medium text-[#444444] mb-1.5">
             Audit Ledger Note
           </label>
           <select
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            className="w-full bg-white border border-[#c5a880] px-3 py-3 text-sm text-[#2b1e1a] focus:outline-none"
+            className="w-full bg-white border border-[#c5a880] px-3 py-3 text-sm text-[#1a1a1a] focus:outline-none"
           >
             <option value="Showroom floor recount">Showroom floor recount</option>
             <option value="Received new loom delivery">Received new loom delivery</option>

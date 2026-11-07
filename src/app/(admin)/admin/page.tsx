@@ -51,7 +51,7 @@ export default function AdminOverviewPage() {
       <div className="flex items-center gap-3 overflow-x-auto scrollbar-none pb-1">
         <button
           onClick={() => productsList[0] && setSelectedProduct(productsList[0])}
-          className="px-4 py-2.5 bg-[#5c1d24] text-white text-xs tracking-wider uppercase font-semibold flex items-center gap-2 whitespace-nowrap active:bg-[#2b1e1a] shrink-0 min-h-[44px]"
+          className="px-4 py-2.5 bg-[#5c1d24] text-white text-xs font-medium flex items-center gap-2 whitespace-nowrap active:bg-[#1a1a1a] shrink-0 min-h-[44px]"
         >
           <Sliders className="w-4 h-4 text-[#c5a880]" />
           <span>Quick Stock Adjust</span>
@@ -59,7 +59,7 @@ export default function AdminOverviewPage() {
 
         <Link
           href="/admin/products/new"
-          className="px-4 py-2.5 bg-white border border-[#c5a880] text-[#2b1e1a] text-xs tracking-wider uppercase font-semibold flex items-center gap-2 whitespace-nowrap active:bg-[#faf7f2] shrink-0 min-h-[44px]"
+          className="px-4 py-2.5 bg-white border border-[#c5a880] text-[#1a1a1a] text-xs font-medium flex items-center gap-2 whitespace-nowrap active:bg-[#f7f7f5] shrink-0 min-h-[44px]"
         >
           <Plus className="w-4 h-4 text-[#5c1d24]" />
           <span>Add New Fabric</span>
@@ -67,7 +67,7 @@ export default function AdminOverviewPage() {
 
         <Link
           href="/admin/orders"
-          className="px-4 py-2.5 bg-white border border-[#ebe3d5]/70 rounded-full text-[#534343] text-xs tracking-wider uppercase font-semibold flex items-center gap-2 whitespace-nowrap hover:border-[#c5a880] shrink-0 min-h-[44px]"
+          className="px-4 py-2.5 bg-white border border-[#e5e5e3]/70 rounded-full text-[#444444] text-xs font-medium flex items-center gap-2 whitespace-nowrap hover:border-[#c5a880] shrink-0 min-h-[44px]"
         >
           <ShoppingBag className="w-4 h-4" />
           <span>Process Orders</span>
@@ -103,20 +103,20 @@ export default function AdminOverviewPage() {
       </div>
 
       {/* 3. Recent Orders Section: Mobile Cards vs Desktop Table */}
-      <div className="bg-white border border-[#ebe3d5]/70 rounded-2xl overflow-hidden shadow-[0_1px_2px_rgba(43,30,26,0.04)]">
-        <div className="p-4 sm:p-6 border-b border-[#ebe3d5] flex items-center justify-between">
+      <div className="bg-white border border-[#e5e5e3]/70 rounded-2xl overflow-hidden shadow-[0_1px_2px_rgba(43,30,26,0.04)]">
+        <div className="p-4 sm:p-6 border-b border-[#e5e5e3] flex items-center justify-between">
           <div>
-            <h2 className="font-[family-name:var(--font-playfair)] text-lg sm:text-xl font-medium text-[#2b1e1a]">
+            <h2 className="font-[family-name:var(--font-playfair)] text-lg sm:text-xl font-medium text-[#1a1a1a]">
               Recent Showroom Orders
             </h2>
-            <p className="text-xs text-[#867273] mt-0.5">
+            <p className="text-xs text-[#6f6f6f] mt-0.5">
               Live patron orders requiring inspection and courier dispatch
             </p>
           </div>
 
           <Link
             href="/admin/orders"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[#5c1d24] hover:underline"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-[#5c1d24] hover:underline"
           >
             <span>View All</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -124,7 +124,7 @@ export default function AdminOverviewPage() {
         </div>
 
         {/* Mobile View: High-density touch cards (< 768px) */}
-        <div className="md:hidden divide-y divide-[#ebe3d5]">
+        <div className="md:hidden divide-y divide-[#e5e5e3]">
           {orders.slice(0, 5).map((order) => (
             <MobileOrderCard key={order.id} order={order} />
           ))}
@@ -133,7 +133,7 @@ export default function AdminOverviewPage() {
         {/* Desktop View: Controlled data table (>= 768px) */}
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-[#fcf9f4] text-[10px] tracking-wider uppercase font-semibold text-[#867273] border-b border-[#ebe3d5]">
+            <thead className="bg-[#f7f7f5] text-xs font-medium text-[#6f6f6f] border-b border-[#e5e5e3]">
               <tr>
                 <th className="py-3 px-6">Order ID</th>
                 <th className="py-3 px-6">Patron</th>
@@ -143,24 +143,24 @@ export default function AdminOverviewPage() {
                 <th className="py-3 px-6 text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#ebe3d5] text-sm text-[#2b1e1a]">
+            <tbody className="divide-y divide-[#e5e5e3] text-sm text-[#1a1a1a]">
               {orders.slice(0, 5).map((order) => (
-                <tr key={order.id} className="hover:bg-[#faf7f2] transition-colors">
+                <tr key={order.id} className="hover:bg-[#f7f7f5] transition-colors">
                   <td className="py-4 px-6 font-semibold text-[#5c1d24]">
                     {order.orderNumber}
                   </td>
                   <td className="py-4 px-6">
                     <p className="font-medium">{order.customer?.name || "Patron"}</p>
-                    <p className="text-xs text-[#867273]">{order.customer?.phone}</p>
+                    <p className="text-xs text-[#6f6f6f]">{order.customer?.phone}</p>
                   </td>
-                  <td className="py-4 px-6 text-xs text-[#534343]">
+                  <td className="py-4 px-6 text-xs text-[#444444]">
                     {new Date(order.createdAt).toLocaleDateString("en-IN", {
                       day: "numeric",
                       month: "short",
                     })}
                   </td>
                   <td className="py-4 px-6">
-                    <span className="px-2.5 py-1 text-[10px] tracking-wider uppercase font-semibold bg-blue-50 text-blue-800 border border-blue-200">
+                    <span className="px-2.5 py-1 text-xs font-medium bg-blue-50 text-blue-800 border border-blue-200">
                       {order.status}
                     </span>
                   </td>
@@ -183,19 +183,19 @@ export default function AdminOverviewPage() {
       </div>
 
       {/* 4. Fabric Inventory Quick Balance Ledger */}
-      <div className="bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-4 sm:p-6">
+      <div className="bg-white border border-[#e5e5e3]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-4 sm:p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="font-[family-name:var(--font-playfair)] text-base sm:text-lg font-medium text-[#2b1e1a]">
+            <h3 className="font-[family-name:var(--font-playfair)] text-base sm:text-lg font-medium text-[#1a1a1a]">
               Live Loom & Fabric Balances
             </h3>
-            <p className="text-xs text-[#867273]">
+            <p className="text-xs text-[#6f6f6f]">
               Tap any fabric row to quickly adjust stock metres from your phone
             </p>
           </div>
           <Link
             href="/admin/inventory"
-            className="text-xs font-semibold uppercase tracking-wider text-[#5c1d24] hover:underline"
+            className="text-xs font-medium text-[#5c1d24] hover:underline"
           >
             Full Ledger →
           </Link>
@@ -206,21 +206,21 @@ export default function AdminOverviewPage() {
             <button
               key={prod.id}
               onClick={() => setSelectedProduct(prod)}
-              className="p-3 text-left bg-[#fcf9f4] border border-[#ebe3d5] hover:border-[#c5a880] transition-colors flex items-center justify-between gap-3 active:bg-[#f0ede9]"
+              className="p-3 text-left bg-[#f7f7f5] border border-[#e5e5e3] hover:border-[#c5a880] transition-colors flex items-center justify-between gap-3 active:bg-[#f5f5f3]"
             >
               <div className="min-w-0">
-                <p className="text-xs font-medium text-[#2b1e1a] truncate">
+                <p className="text-xs font-medium text-[#1a1a1a] truncate">
                   {prod.name}
                 </p>
-                <p className="text-[11px] text-[#867273]">
+                <p className="text-[11px] text-[#6f6f6f]">
                   {prod.fabricType}
                 </p>
               </div>
               <div className="text-right shrink-0">
-                <span className="text-xs font-bold text-[#5c1d24]">
+                <span className="text-xs font-semibold text-[#5c1d24]">
                   {prod.stockQty} {prod.pricePerMetre ? "metres" : "pcs"}
                 </span>
-                <span className="block text-[10px] text-[#867273]">Tap to adjust</span>
+                <span className="block text-[10px] text-[#6f6f6f]">Tap to adjust</span>
               </div>
             </button>
           ))}

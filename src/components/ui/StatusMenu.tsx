@@ -68,12 +68,12 @@ export function StatusMenu({ value, options, onChange, disabled, ariaLabel }: St
         aria-haspopup="listbox"
         aria-expanded={open}
         className={cn(
-          "inline-flex items-center gap-2 pl-4 pr-3 py-2 rounded-full bg-[#2b1e1a]/[0.06] hover:bg-[#2b1e1a]/10 text-[13px] font-medium text-[#2b1e1a] transition-colors min-h-[36px] disabled:opacity-50",
+          "inline-flex items-center gap-2 pl-4 pr-3 py-2 rounded-full bg-[#1a1a1a]/[0.06] hover:bg-[#1a1a1a]/10 text-[13px] font-medium text-[#1a1a1a] transition-colors min-h-[36px] disabled:opacity-50",
           "focus-visible:outline-2 focus-visible:outline-[#5c1d24]"
         )}
       >
         {current}
-        <ChevronDown className={cn("w-3.5 h-3.5 text-[#867273] transition-transform", open && "rotate-180")} />
+        <ChevronDown className={cn("w-3.5 h-3.5 text-[#6f6f6f] transition-transform", open && "rotate-180")} />
       </button>
 
       {open && (
@@ -81,7 +81,7 @@ export function StatusMenu({ value, options, onChange, disabled, ariaLabel }: St
           ref={menuRef}
           role="listbox"
           style={{ top: pos.top, right: pos.right }}
-          className="fixed z-50 min-w-[180px] p-1.5 rounded-2xl bg-[#fcf9f4]/95 backdrop-blur-xl border border-[#ebe3d5] shadow-[0_20px_50px_-20px_rgba(43,30,26,0.4)] text-left"
+          className="fixed z-50 min-w-[180px] p-1.5 rounded-2xl bg-[#f7f7f5]/95 backdrop-blur-xl border border-[#e5e5e3] shadow-[0_20px_50px_-20px_rgba(43,30,26,0.4)] text-left"
         >
           {options.map((o) => (
             <li key={o.value} role="option" aria-selected={o.value === value}>
@@ -91,7 +91,7 @@ export function StatusMenu({ value, options, onChange, disabled, ariaLabel }: St
                   setOpen(false);
                   if (o.value !== value) onChange(o.value);
                 }}
-                className="w-full flex items-center justify-between gap-3 px-3 py-2 rounded-xl text-sm text-[#2b1e1a] hover:bg-[#2b1e1a]/5 transition-colors"
+                className="w-full flex items-center justify-between gap-3 px-3 py-2 rounded-xl text-sm text-[#1a1a1a] hover:bg-[#1a1a1a]/5 transition-colors"
               >
                 {o.label}
                 {o.value === value && <Check className="w-4 h-4 text-[#5c1d24]" />}

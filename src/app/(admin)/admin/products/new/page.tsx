@@ -11,7 +11,7 @@ import { api } from "@/lib/api-client";
 import { categories } from "@/lib/data";
 
 const card =
-  "bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-5 sm:p-6";
+  "bg-white border border-[#e5e5e3]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-5 sm:p-6";
 
 export default function AdminNewProductPage() {
   const router = useRouter();
@@ -75,23 +75,23 @@ export default function AdminNewProductPage() {
     }
   };
 
-  const label = "block text-[11px] tracking-[0.14em] uppercase font-semibold text-[#534343] mb-1";
+  const label = "block text-xs font-medium text-[#444444] mb-1";
 
   return (
     <div className="max-w-3xl space-y-6">
       <div className="flex items-center gap-3">
         <Link
           href="/admin/products"
-          className="w-10 h-10 rounded-full flex items-center justify-center text-[#534343] hover:bg-[#2b1e1a]/5 active:scale-95 transition-all"
+          className="w-10 h-10 rounded-full flex items-center justify-center text-[#444444] hover:bg-[#1a1a1a]/5 active:scale-95 transition-[transform,background-color]"
           aria-label="Back to products"
         >
           <ArrowLeft className="w-4 h-4" />
         </Link>
         <div>
-          <h2 className="font-[family-name:var(--font-playfair)] text-xl sm:text-2xl font-medium text-[#2b1e1a]">
+          <h2 className="font-[family-name:var(--font-playfair)] text-xl sm:text-2xl font-medium text-[#1a1a1a]">
             Add a product
           </h2>
-          <p className="text-xs text-[#867273]">New fabrics, kurta sets, kurtis, blouses or shapewear appear on the store straight away.</p>
+          <p className="text-xs text-[#6f6f6f]">New fabrics, kurta sets, kurtis, blouses or shapewear appear on the store straight away.</p>
         </div>
       </div>
 
@@ -130,7 +130,7 @@ export default function AdminNewProductPage() {
                 id="category"
                 value={form.category}
                 onChange={(e) => set("category", e.target.value)}
-                className="w-full bg-transparent border-0 border-b border-[#c5a880] py-3 text-sm text-[#2b1e1a] focus:outline-none focus:border-[#5c1d24]"
+                className="w-full bg-transparent border-0 border-b border-[#c5a880] py-3 text-sm text-[#1a1a1a] focus:outline-none focus:border-[#5c1d24]"
               >
                 {categories.map((c) => (
                   <option key={c.id} value={c.slug}>{c.name}</option>
@@ -152,7 +152,7 @@ export default function AdminNewProductPage() {
             placeholder="e.g. 95% Cotton, 5% Lycra"
           />
 
-          <label className="flex items-center gap-3 pt-2 text-sm text-[#2b1e1a] cursor-pointer">
+          <label className="flex items-center gap-3 pt-2 text-sm text-[#1a1a1a] cursor-pointer">
             <input
               type="checkbox"
               checked={form.isFabric}
@@ -161,7 +161,7 @@ export default function AdminNewProductPage() {
             />
             <span>
               Also sold by the metre
-              <span className="block text-xs text-[#867273]">Customers can choose a length or a full thaan roll.</span>
+              <span className="block text-xs text-[#6f6f6f]">Customers can choose a length or a full thaan roll.</span>
             </span>
           </label>
 
@@ -223,7 +223,7 @@ export default function AdminNewProductPage() {
               onChange={(e) => set("description", e.target.value)}
               placeholder="Describe the weave, motifs and drape…"
               required
-              className="w-full bg-transparent border border-[#c5a880] rounded-2xl p-3 text-sm text-[#2b1e1a] focus:outline-none focus:border-[#5c1d24]"
+              className="w-full bg-transparent border border-[#c5a880] rounded-2xl p-3 text-sm text-[#1a1a1a] focus:outline-none focus:border-[#5c1d24]"
             />
           </div>
         </div>

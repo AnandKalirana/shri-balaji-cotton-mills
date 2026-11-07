@@ -39,12 +39,12 @@ export function ImageField({ label, value, onChange, helper, camera }: ImageFiel
 
   return (
     <div>
-      <label className="block text-[11px] tracking-[0.14em] uppercase font-semibold text-[#534343] mb-2">
+      <label className="block text-xs font-medium text-[#444444] mb-2">
         {label}
       </label>
 
       <div className="flex items-start gap-4">
-        <div className="relative w-28 h-28 shrink-0 rounded-2xl bg-[#f0ede9] overflow-hidden flex items-center justify-center">
+        <div className="relative w-28 h-28 shrink-0 rounded-2xl bg-[#f5f5f3] overflow-hidden flex items-center justify-center">
           {value && !linkProblem ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={value} alt="" className="w-full h-full object-cover" />
@@ -64,7 +64,7 @@ export function ImageField({ label, value, onChange, helper, camera }: ImageFiel
               type="button"
               onClick={() => inputRef.current?.click()}
               disabled={uploading}
-              className="px-4 py-2 rounded-full bg-[#5c1d24] text-white text-xs font-semibold hover:bg-[#2b1e1a] active:scale-95 transition-all disabled:opacity-50 min-h-[36px]"
+              className="px-4 py-2 rounded-full bg-[#5c1d24] text-white text-xs font-semibold hover:bg-[#1a1a1a] active:scale-95 transition-[transform,background-color] disabled:opacity-50 min-h-[36px]"
             >
               {value ? "Replace photo" : camera ? "Take or choose photo" : "Upload photo"}
             </button>
@@ -73,7 +73,7 @@ export function ImageField({ label, value, onChange, helper, camera }: ImageFiel
                 type="button"
                 onClick={() => onChange("")}
                 aria-label="Remove image"
-                className="w-9 h-9 rounded-full flex items-center justify-center text-[#534343] hover:bg-[#2b1e1a]/5"
+                className="w-9 h-9 rounded-full flex items-center justify-center text-[#444444] hover:bg-[#1a1a1a]/5"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -88,14 +88,14 @@ export function ImageField({ label, value, onChange, helper, camera }: ImageFiel
               onChange(e.target.value.trim());
             }}
             placeholder={value.startsWith("/uploads/") ? "Uploaded ✓  (or paste an https:// link)" : "…or paste an image link (https://)"}
-            className="w-full bg-transparent border-0 border-b border-[#c5a880] py-2 text-sm text-[#2b1e1a] placeholder:text-[#867273] focus:outline-none focus:border-[#5c1d24]"
+            className="w-full bg-transparent border-0 border-b border-[#c5a880] py-2 text-sm text-[#1a1a1a] placeholder:text-[#6f6f6f] focus:outline-none focus:border-[#5c1d24]"
           />
           {(error || linkProblem) && (
             <p role="alert" className="text-xs text-[#ba1a1a]">
               {error || linkProblem}
             </p>
           )}
-          {helper && !error && !linkProblem && <p className="text-xs text-[#867273]">{helper}</p>}
+          {helper && !error && !linkProblem && <p className="text-xs text-[#6f6f6f]">{helper}</p>}
         </div>
       </div>
 

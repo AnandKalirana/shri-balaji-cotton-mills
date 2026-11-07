@@ -70,27 +70,27 @@ export default function AdminOrderDetailPage({
   };
 
   if (loadError) return <Notice tone="error">{loadError}</Notice>;
-  if (!order) return <div className="py-24 text-center text-sm text-[#867273]">Loading…</div>;
+  if (!order) return <div className="py-24 text-center text-sm text-[#6f6f6f]">Loading…</div>;
 
   return (
     <div className="max-w-4xl space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-3 pb-4 border-b border-[#ebe3d5]">
+      <div className="flex items-center gap-3 pb-4 border-b border-[#e5e5e3]">
         <Link
           href="/admin/orders"
-          className="w-10 h-10 flex items-center justify-center text-[#534343] hover:bg-[#f0ede9] border border-[#ebe3d5]"
+          className="w-10 h-10 flex items-center justify-center text-[#444444] hover:bg-[#f5f5f3] border border-[#e5e5e3]"
           aria-label="Back to orders"
         >
           <ArrowLeft className="w-4 h-4" />
         </Link>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <h2 className="font-[family-name:var(--font-playfair)] text-xl sm:text-2xl font-medium text-[#2b1e1a]">
+            <h2 className="font-[family-name:var(--font-playfair)] text-xl sm:text-2xl font-medium text-[#1a1a1a]">
               {order.orderNumber}
             </h2>
             <StatusBadge status={order.status} />
           </div>
-          <p className="text-xs text-[#867273]">
+          <p className="text-xs text-[#6f6f6f]">
             Placed on{" "}
             {new Date(order.createdAt).toLocaleDateString("en-IN", {
               day: "numeric",
@@ -107,28 +107,28 @@ export default function AdminOrderDetailPage({
         {/* Left Column (Items & Pricing) */}
         <div className="md:col-span-7 space-y-6">
           {/* Items card */}
-          <div className="bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-5 sm:p-6">
-            <h3 className="text-xs tracking-[0.14em] uppercase font-semibold text-[#5c1d24] mb-4 pb-2 border-b border-[#ebe3d5]">
+          <div className="bg-white border border-[#e5e5e3]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-5 sm:p-6">
+            <h3 className="text-xs font-medium text-[#5c1d24] mb-4 pb-2 border-b border-[#e5e5e3]">
               Fabric & Textile Items ({order.items.length})
             </h3>
 
-            <div className="divide-y divide-[#ebe3d5]">
+            <div className="divide-y divide-[#e5e5e3]">
               {order.items.map((item, idx) => (
                 <div key={idx} className="py-3 flex justify-between gap-4 text-xs">
                   <div>
-                    <p className="font-semibold text-sm text-[#2b1e1a]">
+                    <p className="font-semibold text-sm text-[#1a1a1a]">
                       {item.product.name}
                     </p>
-                    <p className="text-[#867273] mt-0.5">
+                    <p className="text-[#6f6f6f] mt-0.5">
                       {item.metres
                         ? `Precision Cut: ${item.metres} metres`
                         : `Quantity: ${item.quantity}`}
                     </p>
-                    <p className="text-[11px] text-[#534343]">
+                    <p className="text-[11px] text-[#444444]">
                       Type: {item.product.fabricType}
                     </p>
                   </div>
-                  <span className="font-bold text-sm text-[#2b1e1a] shrink-0">
+                  <span className="font-semibold text-sm text-[#1a1a1a] shrink-0">
                     {formatPrice(item.product.price * item.quantity)}
                   </span>
                 </div>
@@ -136,29 +136,29 @@ export default function AdminOrderDetailPage({
             </div>
 
             {/* Total */}
-            <div className="pt-4 mt-4 border-t border-[#ebe3d5] flex justify-between items-baseline">
-              <span className="text-xs uppercase tracking-wider font-semibold text-[#867273]">
+            <div className="pt-4 mt-4 border-t border-[#e5e5e3] flex justify-between items-baseline">
+              <span className="text-xs font-medium text-[#6f6f6f]">
                 Total Paid / Collectible
               </span>
-              <span className="text-xl font-bold text-[#5c1d24]">
+              <span className="text-xl font-semibold text-[#5c1d24]">
                 {formatPrice(order.total)}
               </span>
             </div>
           </div>
 
           {/* Customer Details */}
-          <div className="bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-5 sm:p-6 space-y-3">
-            <h3 className="text-xs tracking-[0.14em] uppercase font-semibold text-[#5c1d24] pb-2 border-b border-[#ebe3d5]">
+          <div className="bg-white border border-[#e5e5e3]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-5 sm:p-6 space-y-3">
+            <h3 className="text-xs font-medium text-[#5c1d24] pb-2 border-b border-[#e5e5e3]">
               Patron & Delivery Information
             </h3>
 
-            <p className="text-sm font-semibold text-[#2b1e1a]">
+            <p className="text-sm font-semibold text-[#1a1a1a]">
               {order.customer?.name}
             </p>
 
-            <div className="space-y-2 text-xs text-[#534343]">
+            <div className="space-y-2 text-xs text-[#444444]">
               <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-[#867273]" />
+                <Phone className="w-4 h-4 text-[#6f6f6f]" />
                 <a
                   href={`tel:${order.customer?.phone}`}
                   className="hover:text-[#5c1d24] font-medium"
@@ -168,7 +168,7 @@ export default function AdminOrderDetailPage({
               </div>
 
               <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-[#867273]" />
+                <Mail className="w-4 h-4 text-[#6f6f6f]" />
                 <a
                   href={`mailto:${order.customer?.email}`}
                   className="hover:text-[#5c1d24]"
@@ -178,7 +178,7 @@ export default function AdminOrderDetailPage({
               </div>
 
               <div className="flex items-start gap-2 pt-1">
-                <MapPin className="w-4 h-4 text-[#867273] shrink-0 mt-0.5" />
+                <MapPin className="w-4 h-4 text-[#6f6f6f] shrink-0 mt-0.5" />
                 <span>
                   {order.shippingAddress?.street}, {order.shippingAddress?.city},{" "}
                   {order.shippingAddress?.state} — {order.shippingAddress?.pincode}
@@ -192,20 +192,20 @@ export default function AdminOrderDetailPage({
         <div className="md:col-span-5 space-y-6">
           <form
             onSubmit={handleUpdate}
-            className="bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-5 sm:p-6 space-y-4"
+            className="bg-white border border-[#e5e5e3]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-5 sm:p-6 space-y-4"
           >
-            <h3 className="text-xs tracking-[0.14em] uppercase font-semibold text-[#5c1d24] pb-2 border-b border-[#ebe3d5]">
+            <h3 className="text-xs font-medium text-[#5c1d24] pb-2 border-b border-[#e5e5e3]">
               Fulfillment Controls
             </h3>
 
             <div>
-              <label className="block text-[11px] tracking-[0.14em] uppercase font-semibold text-[#534343] mb-1">
+              <label className="block text-xs font-medium text-[#444444] mb-1">
                 Order Status
               </label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                className="w-full bg-[#fcf9f4] border border-[#c5a880] p-3 text-sm text-[#2b1e1a] focus:outline-none"
+                className="w-full bg-[#f7f7f5] border border-[#c5a880] p-3 text-sm text-[#1a1a1a] focus:outline-none"
               >
                 <option value="confirmed">Confirmed</option>
                 <option value="processing">Processing & Loom Packaging</option>

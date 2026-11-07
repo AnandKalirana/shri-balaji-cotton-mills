@@ -9,7 +9,7 @@ import { DEFAULT_HERO, DEFAULT_SETTINGS } from "@/lib/hero";
 import { Check, Sparkles, Image as ImageIcon, Sliders, ExternalLink } from "lucide-react";
 
 const card =
-  "bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-5 sm:p-6 space-y-4";
+  "bg-white border border-[#e5e5e3]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-5 sm:p-6 space-y-4";
 
 export default function AdminCmsPage() {
   const [loading, setLoading] = useState(true);
@@ -98,16 +98,16 @@ export default function AdminCmsPage() {
     }
   };
 
-  if (loading) return <div className="py-24 text-center text-sm text-[#867273]">Loading…</div>;
+  if (loading) return <div className="py-24 text-center text-sm text-[#6f6f6f]">Loading…</div>;
 
   return (
     <div className="space-y-6 max-w-4xl">
       <div className="pb-2 flex items-end justify-between gap-4 flex-wrap">
         <div>
-          <h2 className="font-[family-name:var(--font-playfair)] text-xl sm:text-2xl font-medium text-[#2b1e1a]">
+          <h2 className="font-[family-name:var(--font-playfair)] text-xl sm:text-2xl font-medium text-[#1a1a1a]">
             Content & storefront settings
           </h2>
-          <p className="text-xs text-[#867273]">
+          <p className="text-xs text-[#6f6f6f]">
             Edit the announcement bar, homepage banner and shipping rules. Changes go live as soon as you publish.
           </p>
         </div>
@@ -133,9 +133,9 @@ export default function AdminCmsPage() {
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-[#c5a880]" />
-              <h3 className="text-xs tracking-[0.14em] uppercase font-semibold text-[#5c1d24]">Top announcement bar</h3>
+              <h3 className="text-xs font-medium text-[#5c1d24]">Top announcement bar</h3>
             </div>
-            <label className="flex items-center gap-2 text-sm text-[#2b1e1a] cursor-pointer">
+            <label className="flex items-center gap-2 text-sm text-[#1a1a1a] cursor-pointer">
               <input
                 type="checkbox"
                 checked={enableAnnouncement}
@@ -158,9 +158,9 @@ export default function AdminCmsPage() {
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <ImageIcon className="w-4 h-4 text-[#c5a880]" />
-              <h3 className="text-xs tracking-[0.14em] uppercase font-semibold text-[#5c1d24]">Homepage banner</h3>
+              <h3 className="text-xs font-medium text-[#5c1d24]">Homepage banner</h3>
             </div>
-            <label className="flex items-center gap-2 text-sm text-[#2b1e1a] cursor-pointer">
+            <label className="flex items-center gap-2 text-sm text-[#1a1a1a] cursor-pointer">
               <input
                 type="checkbox"
                 checked={bannerActive}
@@ -184,7 +184,7 @@ export default function AdminCmsPage() {
             helper="Leave empty to use the desktop image on phones too."
           />
 
-          <label className="flex items-start gap-2 text-sm text-[#2b1e1a] cursor-pointer">
+          <label className="flex items-start gap-2 text-sm text-[#1a1a1a] cursor-pointer">
             <input
               type="checkbox"
               checked={imageOnly}
@@ -193,7 +193,7 @@ export default function AdminCmsPage() {
             />
             <span>
               My image already has text on it
-              <span className="block text-xs text-[#867273]">
+              <span className="block text-xs text-[#6f6f6f]">
                 Shows the picture on its own, with no headline over it. The headline below is still needed for screen readers, and the button shows under the image.
               </span>
             </span>
@@ -201,7 +201,7 @@ export default function AdminCmsPage() {
 
           <Input label="Small label above headline" value={eyebrow} onChange={(e) => setEyebrow(e.target.value)} />
           <div>
-            <label htmlFor="banner-title" className="text-[11px] tracking-[0.14em] uppercase font-semibold text-[#534343]">
+            <label htmlFor="banner-title" className="text-xs font-medium text-[#444444]">
               Headline
             </label>
             <textarea
@@ -209,9 +209,9 @@ export default function AdminCmsPage() {
               rows={2}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="mt-1 w-full bg-transparent border-0 border-b border-[#c5a880] py-3 text-sm text-[#2b1e1a] focus:outline-none focus:border-[#5c1d24] resize-none"
+              className="mt-1 w-full bg-transparent border-0 border-b border-[#c5a880] py-3 text-sm text-[#1a1a1a] focus:outline-none focus:border-[#5c1d24] resize-none"
             />
-            <p className="text-xs text-[#867273]">Press Enter to start a new line in the headline.</p>
+            <p className="text-xs text-[#6f6f6f]">Press Enter to start a new line in the headline.</p>
           </div>
           <Input label="Subtitle" value={subtitle} onChange={(e) => setSubtitle(e.target.value)} />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -224,7 +224,7 @@ export default function AdminCmsPage() {
         <div className={card}>
           <div className="flex items-center gap-2">
             <Sliders className="w-4 h-4 text-[#c5a880]" />
-            <h3 className="text-xs tracking-[0.14em] uppercase font-semibold text-[#5c1d24]">Shipping & payment limits</h3>
+            <h3 className="text-xs font-medium text-[#5c1d24]">Shipping & payment limits</h3>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input

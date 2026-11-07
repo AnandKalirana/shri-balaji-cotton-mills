@@ -8,7 +8,7 @@ import { DEFAULT_SETTINGS } from "@/lib/hero";
 import { Building2, Check, Store, Truck } from "lucide-react";
 
 const card =
-  "bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-5 sm:p-6 space-y-4";
+  "bg-white border border-[#e5e5e3]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-5 sm:p-6 space-y-4";
 
 export default function AdminSettingsPage() {
   const [loading, setLoading] = useState(true);
@@ -85,22 +85,22 @@ export default function AdminSettingsPage() {
     }
   };
 
-  if (loading) return <div className="py-24 text-center text-sm text-[#867273]">Loading…</div>;
+  if (loading) return <div className="py-24 text-center text-sm text-[#6f6f6f]">Loading…</div>;
 
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
-        <h2 className="font-[family-name:var(--font-playfair)] text-xl sm:text-2xl font-medium text-[#2b1e1a]">
+        <h2 className="font-[family-name:var(--font-playfair)] text-xl sm:text-2xl font-medium text-[#1a1a1a]">
           Store settings
         </h2>
-        <p className="text-xs text-[#867273]">Contact details, shipping and payment options.</p>
+        <p className="text-xs text-[#6f6f6f]">Contact details, shipping and payment options.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className={card}>
           <div className="flex items-center gap-2">
             <Store className="w-4 h-4 text-[#c5a880]" />
-            <h3 className="text-xs tracking-[0.14em] uppercase font-semibold text-[#5c1d24]">Store & contact</h3>
+            <h3 className="text-xs font-medium text-[#5c1d24]">Store & contact</h3>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input label="Store name" value={storeName} onChange={(e) => setStoreName(e.target.value)} />
@@ -112,9 +112,9 @@ export default function AdminSettingsPage() {
         <div className={card}>
           <div className="flex items-center gap-2">
             <Building2 className="w-4 h-4 text-[#c5a880]" />
-            <h3 className="text-xs tracking-[0.14em] uppercase font-semibold text-[#5c1d24]">Business details</h3>
+            <h3 className="text-xs font-medium text-[#5c1d24]">Business details</h3>
           </div>
-          <p className="text-xs text-[#867273]">
+          <p className="text-xs text-[#6f6f6f]">
             Shown in the footer, on the Contact page and in the policy pages. Anything left blank is simply hidden.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -128,7 +128,7 @@ export default function AdminSettingsPage() {
             />
           </div>
           <div className="flex flex-col gap-1">
-            <label htmlFor="shop-address" className="text-[11px] tracking-[0.14em] uppercase font-semibold text-[#534343]">
+            <label htmlFor="shop-address" className="text-xs font-medium text-[#444444]">
               Shop address
             </label>
             <textarea
@@ -137,7 +137,7 @@ export default function AdminSettingsPage() {
               value={biz.address}
               onChange={setB("address")}
               maxLength={300}
-              className="w-full bg-transparent border-0 border-b border-[#c5a880] px-0 py-3 text-sm text-[#2b1e1a] focus:outline-none focus:border-b-[1.5px] focus:border-[#5c1d24] resize-none"
+              className="w-full bg-transparent border-0 border-b border-[#c5a880] px-0 py-3 text-sm text-[#1a1a1a] focus:outline-none focus:border-b-[1.5px] focus:border-[#5c1d24] resize-none"
             />
           </div>
           <Input label="Opening hours" value={biz.businessHours} onChange={setB("businessHours")} />
@@ -151,7 +151,7 @@ export default function AdminSettingsPage() {
         <div className={card}>
           <div className="flex items-center gap-2">
             <Truck className="w-4 h-4 text-[#c5a880]" />
-            <h3 className="text-xs tracking-[0.14em] uppercase font-semibold text-[#5c1d24]">Shipping & payment</h3>
+            <h3 className="text-xs font-medium text-[#5c1d24]">Shipping & payment</h3>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input
@@ -171,12 +171,12 @@ export default function AdminSettingsPage() {
           </div>
           <label className="pt-2 flex items-center justify-between gap-4 cursor-pointer">
             <span>
-              <span className="block text-sm font-semibold text-[#2b1e1a]">Cash on delivery</span>
-              <span className="block text-xs text-[#867273]">Let customers pay when the parcel arrives.</span>
+              <span className="block text-sm font-semibold text-[#1a1a1a]">Cash on delivery</span>
+              <span className="block text-xs text-[#6f6f6f]">Let customers pay when the parcel arrives.</span>
             </span>
             <input type="checkbox" checked={enableCod} onChange={(e) => setEnableCod(e.target.checked)} className="w-5 h-5 accent-[#5c1d24]" />
           </label>
-          <p className="text-xs text-[#867273]">
+          <p className="text-xs text-[#6f6f6f]">
             GST is set on each product (5% by default for textiles), not here.
           </p>
         </div>

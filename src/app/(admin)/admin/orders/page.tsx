@@ -61,7 +61,7 @@ export default function AdminOrdersPage() {
   const filteredOrders =
     filter === "all" ? orders : orders.filter((o) => o.status === filter);
 
-  if (loading) return <div className="py-24 text-center text-sm text-[#867273]">Loading…</div>;
+  if (loading) return <div className="py-24 text-center text-sm text-[#6f6f6f]">Loading…</div>;
 
   return (
     <div className="space-y-6">
@@ -75,10 +75,10 @@ export default function AdminOrdersPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
         <div>
-          <h2 className="font-[family-name:var(--font-playfair)] text-xl sm:text-2xl font-medium text-[#2b1e1a]">
+          <h2 className="font-[family-name:var(--font-playfair)] text-xl sm:text-2xl font-medium text-[#1a1a1a]">
             Showroom orders ({filteredOrders.length})
           </h2>
-          <p className="text-xs text-[#867273]">
+          <p className="text-xs text-[#6f6f6f]">
             Track fulfilment, courier dispatches and deliveries
           </p>
         </div>
@@ -97,14 +97,14 @@ export default function AdminOrdersPage() {
         {filteredOrders.map((order) => (
           <div
             key={order.id}
-            className="bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-4 space-y-3"
+            className="bg-white border border-[#e5e5e3]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] p-4 space-y-3"
           >
             <div className="flex items-start justify-between">
               <div>
-                <span className="text-xs font-bold text-[#5c1d24] tracking-wider block">
+                <span className="text-xs font-semibold text-[#5c1d24] tracking-wider block">
                   {order.orderNumber}
                 </span>
-                <p className="text-sm font-semibold text-[#2b1e1a] mt-0.5">
+                <p className="text-sm font-semibold text-[#1a1a1a] mt-0.5">
                   {order.customer?.name || "Patron"}
                 </p>
               </div>
@@ -112,15 +112,15 @@ export default function AdminOrdersPage() {
             </div>
 
             {/* Customer Details */}
-            <div className="text-xs text-[#534343] space-y-1 bg-[#fcf9f4] p-3 rounded-xl">
+            <div className="text-xs text-[#444444] space-y-1 bg-[#f7f7f5] p-3 rounded-xl">
               <div className="flex items-center gap-2">
-                <Phone className="w-3.5 h-3.5 text-[#867273]" />
+                <Phone className="w-3.5 h-3.5 text-[#6f6f6f]" />
                 <a href={`tel:${order.customer?.phone}`} className="hover:underline">
                   {order.customer?.phone}
                 </a>
               </div>
               <div className="flex items-center gap-2">
-                <MapPin className="w-3.5 h-3.5 text-[#867273]" />
+                <MapPin className="w-3.5 h-3.5 text-[#6f6f6f]" />
                 <span>
                   {order.shippingAddress?.city}, {order.shippingAddress?.state}
                 </span>
@@ -128,10 +128,10 @@ export default function AdminOrdersPage() {
             </div>
 
             {/* Items Summary & Quick Status Switcher */}
-            <div className="flex items-center justify-between pt-3 border-t border-[#ebe3d5]/70">
+            <div className="flex items-center justify-between pt-3 border-t border-[#e5e5e3]/70">
               <div>
-                <span className="text-xs text-[#867273]">Total: </span>
-                <span className="text-sm font-bold text-[#2b1e1a]">
+                <span className="text-xs text-[#6f6f6f]">Total: </span>
+                <span className="text-sm font-semibold text-[#1a1a1a]">
                   {formatPrice(order.total)}
                 </span>
               </div>
@@ -142,7 +142,7 @@ export default function AdminOrdersPage() {
                   <button
                     disabled={demo || updatingId === order.id}
                     onClick={() => handleQuickStatusChange(order.id, "processing")}
-                    className="px-4 py-2 rounded-full text-xs bg-[#f0ede9] text-[#2b1e1a] font-semibold hover:bg-[#5c1d24] hover:text-white active:scale-95 transition-all disabled:opacity-50"
+                    className="px-4 py-2 rounded-full text-xs bg-[#f5f5f3] text-[#1a1a1a] font-semibold hover:bg-[#5c1d24] hover:text-white active:scale-95 transition-[transform,background-color] disabled:opacity-50"
                   >
                     Pack
                   </button>
@@ -151,7 +151,7 @@ export default function AdminOrdersPage() {
                   <button
                     disabled={demo || updatingId === order.id}
                     onClick={() => handleQuickStatusChange(order.id, "shipped")}
-                    className="px-4 py-2 rounded-full text-xs bg-[#5c1d24] text-white font-semibold hover:bg-[#2b1e1a] active:scale-95 transition-all disabled:opacity-50"
+                    className="px-4 py-2 rounded-full text-xs bg-[#5c1d24] text-white font-semibold hover:bg-[#1a1a1a] active:scale-95 transition-[transform,background-color] disabled:opacity-50"
                   >
                     Ship
                   </button>
@@ -160,7 +160,7 @@ export default function AdminOrdersPage() {
                   <button
                     disabled={demo || updatingId === order.id}
                     onClick={() => handleQuickStatusChange(order.id, "delivered")}
-                    className="px-4 py-2 rounded-full text-xs bg-emerald-800 text-white font-semibold hover:bg-emerald-900 active:scale-95 transition-all disabled:opacity-50"
+                    className="px-4 py-2 rounded-full text-xs bg-emerald-800 text-white font-semibold hover:bg-emerald-900 active:scale-95 transition-[transform,background-color] disabled:opacity-50"
                   >
                     Deliver
                   </button>
@@ -172,9 +172,9 @@ export default function AdminOrdersPage() {
       </div>
 
       {/* Desktop Data Table (>= 768px) */}
-      <div className="hidden md:block bg-white border border-[#ebe3d5]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] overflow-x-auto">
+      <div className="hidden md:block bg-white border border-[#e5e5e3]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)] overflow-x-auto">
         <table className="w-full text-left text-xs">
-          <thead className="bg-[#fcf9f4] text-xs font-medium text-[#867273] border-b border-[#ebe3d5]/70">
+          <thead className="bg-[#f7f7f5] text-xs font-medium text-[#6f6f6f] border-b border-[#e5e5e3]/70">
             <tr>
               <th className="py-3.5 px-6">Order</th>
               <th className="py-3.5 px-6">Customer</th>
@@ -184,23 +184,23 @@ export default function AdminOrdersPage() {
               <th className="py-3.5 px-6 text-right">Update status</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#ebe3d5]/70 text-sm text-[#2b1e1a]">
+          <tbody className="divide-y divide-[#e5e5e3]/70 text-sm text-[#1a1a1a]">
             {filteredOrders.map((order) => (
-              <tr key={order.id} className="hover:bg-[#faf7f2] transition-colors">
+              <tr key={order.id} className="hover:bg-[#f7f7f5] transition-colors">
                 <td className="py-5 px-6 font-semibold text-[#5c1d24]">
                   {order.orderNumber}
                 </td>
                 <td className="py-5 px-6">
                   <p className="font-medium">{order.customer?.name || "Patron"}</p>
-                  <p className="text-xs text-[#867273]">{order.customer?.email}</p>
+                  <p className="text-xs text-[#6f6f6f]">{order.customer?.email}</p>
                 </td>
-                <td className="py-5 px-6 text-xs text-[#534343]">
+                <td className="py-5 px-6 text-xs text-[#444444]">
                   {order.shippingAddress?.city}, {order.shippingAddress?.state}
                 </td>
                 <td className="py-5 px-6">
                   <StatusBadge status={order.status} />
                 </td>
-                <td className="py-5 px-6 font-bold">
+                <td className="py-5 px-6 font-semibold">
                   {formatPrice(order.total)}
                 </td>
                 <td className="py-5 px-6 text-right space-x-2">
