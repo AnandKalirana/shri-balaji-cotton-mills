@@ -137,6 +137,10 @@ export default function AdminProductsPage() {
           </h2>
           <p className="text-xs text-[#867273]">Edit prices, hide pieces from the store, or add new ones.</p>
         </div>
+        <div className="flex items-center gap-3 flex-wrap">
+        <Link href="/admin/products/import" className="text-sm font-semibold text-[#5c1d24] hover:underline">
+          Import from file
+        </Link>
         <Link
           href="/admin/products/new"
           className="px-5 py-2.5 rounded-full bg-[#5c1d24] text-white text-sm font-semibold flex items-center justify-center gap-2 hover:bg-[#2b1e1a] active:scale-95 transition-all min-h-[44px]"
@@ -144,6 +148,7 @@ export default function AdminProductsPage() {
           <Plus className="w-4 h-4 text-[#c5a880]" />
           <span>Add product</span>
         </Link>
+        </div>
       </div>
 
       {demo && (

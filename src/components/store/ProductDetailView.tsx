@@ -156,6 +156,9 @@ export function ProductDetailView({ product }: { product: Product }) {
               <div className="flex items-baseline justify-between gap-2">
                 <span className="text-2xl sm:text-3xl font-semibold text-[#1a1a1a]">
                   {formatPrice(currentPrice)}
+                  {product.mrp && !isFabric && (
+                    <span className="ml-3 text-base font-normal text-[#6f6f6f] line-through tabular-nums">{formatPrice(product.mrp)}</span>
+                  )}
                 </span>
                 {product.pricePerMetre && !isFullThaan && (
                   <span className="text-xs text-[#444444]">

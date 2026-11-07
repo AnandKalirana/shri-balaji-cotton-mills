@@ -7,6 +7,8 @@ export interface Product {
   category: string;
   department: string;
   price: number;
+  /** Original price, shown crossed out when the selling price is lower. */
+  mrp?: number;
   pricePerMetre?: number;
   images: string[];
   description: string;
