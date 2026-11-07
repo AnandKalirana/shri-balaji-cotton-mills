@@ -117,7 +117,7 @@ export function ShutterSection() {
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       aria-label="Department Showcase Shutter"
-      className="relative w-full h-[650px] sm:h-[720px] md:h-[800px] overflow-hidden bg-[#2b1e1a] text-white select-none"
+      className="relative w-full h-[650px] sm:h-[720px] md:h-[800px] overflow-hidden bg-[#1a1a1a] text-white select-none"
     >
       {/* Background Slides with AnimatePresence */}
       <AnimatePresence initial={false} custom={direction}>
@@ -147,7 +147,7 @@ export function ShutterSection() {
           style={{ backgroundImage: `url(${activeDept.bgImage})` }}
         >
           {/* Architectural Dark Scrim Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#2b1e1a] via-[#2b1e1a]/65 to-[#2b1e1a]/30" />
+          <div className="absolute inset-0 bg-black/40" />
         </motion.div>
       </AnimatePresence>
 
@@ -180,7 +180,7 @@ export function ShutterSection() {
           <div className="flex items-center gap-4 flex-wrap">
             <Link
               href={`/category/${activeDept.slug}`}
-              className="px-8 py-3.5 rounded-full bg-[#5c1d24] text-white text-xs font-medium hover:bg-white hover:text-[#2b1e1a] transition-colors border border-transparent min-h-[48px] flex items-center justify-center"
+              className="px-8 py-3.5 bg-white text-[#1a1a1a] text-sm font-medium hover:bg-[#1a1a1a] hover:text-white transition-colors border border-transparent min-h-[48px] flex items-center justify-center"
             >
               Explore Collection
             </Link>
@@ -205,7 +205,7 @@ export function ShutterSection() {
                 className={cn(
                   "px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors touch-target",
                   currentIndex === idx
-                    ? "bg-[#c5a880] text-[#2b1e1a]"
+                    ? "bg-[#c5a880] text-[#1a1a1a]"
                     : "text-[#d8c2bb] hover:text-white bg-white/10"
                 )}
               >

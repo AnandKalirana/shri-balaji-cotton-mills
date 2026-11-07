@@ -62,3 +62,13 @@ h1, h2, h3, h4, h5, h6 {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Storefront only: plain sans headings. The admin keeps its own type. */
+.store-clean h1,
+.store-clean h2,
+.store-clean h3,
+.store-clean h4 {
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
