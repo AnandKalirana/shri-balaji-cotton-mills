@@ -43,7 +43,7 @@ export function StoreFooter(props: StoreFooterProps) {
     { label: "YouTube", href: youtubeUrl },
   ].filter((x) => x.href);
   return (
-    <footer className="bg-[#281b17] text-[#faf7f2] mt-auto border-t border-[#53433e]">
+    <footer className="bg-[#111111] text-[#faf7f2] mt-auto border-t border-[#333333]">
       {/* Main footer */}
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 py-12 md:py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
@@ -62,7 +62,7 @@ export function StoreFooter(props: StoreFooterProps) {
                     href={x.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-4 h-9 rounded-full inline-flex items-center border border-[#53433e] text-xs tracking-wide text-[#d8c2bb] hover:border-[#c5a880] hover:text-[#c5a880] transition-colors"
+                    className="px-4 h-9 rounded-full inline-flex items-center border border-[#333333] text-xs tracking-wide text-[#d8c2bb] hover:border-[#c5a880] hover:text-[#c5a880] transition-colors"
                   >
                     {x.label}
                   </a>
@@ -136,16 +136,16 @@ export function StoreFooter(props: StoreFooterProps) {
                   <a href={`mailto:${email}`} className="hover:text-white transition-colors">{email}</a>
                 </div>
               )}
-              {businessHours && <p className="pt-2 text-xs text-[#867273]">{businessHours}</p>}
+              {businessHours && <p className="pt-2 text-xs text-[#6f6f6f]">{businessHours}</p>}
             </div>
           </div>
         </div>
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t border-[#53433e]">
+      <div className="border-t border-[#333333]">
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="text-xs text-[#867273]">
+          <p className="text-xs text-[#6f6f6f]">
             © {new Date().getFullYear()} {legalName || storeName}. All rights reserved.
             {gstin && <span className="ml-2">GSTIN: {gstin}</span>}
           </p>

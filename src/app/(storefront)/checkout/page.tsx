@@ -139,33 +139,33 @@ export default function CheckoutPage() {
 
   if (orderComplete) {
     return (
-      <div className="min-h-[70vh] flex items-center justify-center bg-[#fcf9f4] px-4 py-16">
+      <div className="min-h-[70vh] flex items-center justify-center bg-[#ffffff] px-4 py-16">
         <div className="max-w-md w-full bg-white border border-[#c5a880] p-8 text-center shadow-lg">
           <CheckCircle2 className="w-14 h-14 text-emerald-700 mx-auto mb-4" />
-          <span className="text-xs font-medium text-[#867273]">
+          <span className="text-xs font-medium text-[#6f6f6f]">
             Order Confirmed
           </span>
-          <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-medium text-[#2b1e1a] mt-1 mb-2">
+          <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-medium text-[#1a1a1a] mt-1 mb-2">
             Thank you for your order
           </h2>
-          <p className="text-xs text-[#534343] mb-6">
+          <p className="text-xs text-[#444444] mb-6">
             We are getting your order ready and will update you when it ships.
           </p>
 
-          <div className="bg-[#f0ede9] p-4 border border-[#ebe3d5] mb-6 text-left">
+          <div className="bg-[#f5f5f3] p-4 border border-[#e5e5e3] mb-6 text-left">
             <div className="flex justify-between text-xs mb-1">
-              <span className="text-[#867273]">Order Reference:</span>
+              <span className="text-[#6f6f6f]">Order Reference:</span>
               <span className="font-semibold text-[#5c1d24]">{orderComplete.orderNumber}</span>
             </div>
             <div className="flex justify-between text-xs">
-              <span className="text-[#867273]">Order details for:</span>
-              <span className="font-medium text-[#2b1e1a]">{formData.email}</span>
+              <span className="text-[#6f6f6f]">Order details for:</span>
+              <span className="font-medium text-[#1a1a1a]">{formData.email}</span>
             </div>
           </div>
 
           <Link
             href="/"
-            className="inline-flex w-full py-3.5 bg-[#5c1d24] text-white text-xs font-medium justify-center hover:bg-[#2b1e1a]"
+            className="inline-flex w-full py-3.5 bg-[#5c1d24] text-white text-xs font-medium justify-center hover:bg-[#1a1a1a]"
           >
             Back to Home
           </Link>
@@ -177,10 +177,10 @@ export default function CheckoutPage() {
   if (items.length === 0) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center px-4 py-16">
-        <h2 className="font-[family-name:var(--font-playfair)] text-2xl text-[#2b1e1a] mb-2">
+        <h2 className="font-[family-name:var(--font-playfair)] text-2xl text-[#1a1a1a] mb-2">
           Your Cart is Empty
         </h2>
-        <p className="text-xs text-[#867273] mb-6">
+        <p className="text-xs text-[#6f6f6f] mb-6">
           Add textiles or sarees before proceeding to checkout.
         </p>
         <Link
@@ -194,9 +194,9 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fcf9f4] py-8 sm:py-12">
+    <div className="min-h-screen bg-[#ffffff] py-8 sm:py-12">
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-10">
-        <h1 className="font-[family-name:var(--font-playfair)] text-2xl sm:text-3xl font-medium text-[#2b1e1a] mb-8 pb-4 border-b border-[#ebe3d5]">
+        <h1 className="font-[family-name:var(--font-playfair)] text-2xl sm:text-3xl font-medium text-[#1a1a1a] mb-8 pb-4 border-b border-[#e5e5e3]">
           Checkout & Delivery
         </h1>
 
@@ -211,8 +211,8 @@ export default function CheckoutPage() {
             {/* Left 7 Columns: Shipping Address & Payment Selection */}
             <div className="lg:col-span-7 space-y-8">
               {/* Shipping Address */}
-              <div className="bg-white border border-[#ebe3d5] p-5 sm:p-6">
-                <h3 className="text-xs font-medium text-[#5c1d24] mb-4 pb-2 border-b border-[#ebe3d5]">
+              <div className="bg-white border border-[#e5e5e3] p-5 sm:p-6">
+                <h3 className="text-xs font-medium text-[#5c1d24] mb-4 pb-2 border-b border-[#e5e5e3]">
                   1. Shipping & Contact Information
                 </h3>
 
@@ -267,14 +267,14 @@ export default function CheckoutPage() {
                     />
 
                     <div>
-                      <label className="block text-xs font-medium text-[#534343] mb-1">
+                      <label className="block text-xs font-medium text-[#444444] mb-1">
                         State *
                       </label>
                       <select
                         name="state"
                         value={formData.state}
                         onChange={handleChange}
-                        className="w-full bg-transparent border-0 border-b border-[#c5a880] py-3 text-sm text-[#2b1e1a] focus:outline-none"
+                        className="w-full bg-transparent border-0 border-b border-[#c5a880] py-3 text-sm text-[#1a1a1a] focus:outline-none"
                       >
                         {[
                           "Uttar Pradesh",
@@ -306,8 +306,8 @@ export default function CheckoutPage() {
               </div>
 
               {/* Payment Method */}
-              <div className="bg-white border border-[#ebe3d5] p-5 sm:p-6">
-                <h3 className="text-xs font-medium text-[#5c1d24] mb-4 pb-2 border-b border-[#ebe3d5]">
+              <div className="bg-white border border-[#e5e5e3] p-5 sm:p-6">
+                <h3 className="text-xs font-medium text-[#5c1d24] mb-4 pb-2 border-b border-[#e5e5e3]">
                   2. Payment Method
                 </h3>
 
@@ -317,7 +317,7 @@ export default function CheckoutPage() {
                     className={`flex items-start gap-3 p-4 border cursor-pointer transition-colors ${
                       paymentMethod === "RAZORPAY"
                         ? "border-[#5c1d24] bg-[#faf7f2]"
-                        : "border-[#ebe3d5] hover:border-[#c5a880]"
+                        : "border-[#e5e5e3] hover:border-[#c5a880]"
                     }`}
                   >
                     <input
@@ -328,10 +328,10 @@ export default function CheckoutPage() {
                       className="mt-1"
                     />
                     <div>
-                      <span className="text-sm font-semibold text-[#2b1e1a] block">
+                      <span className="text-sm font-semibold text-[#1a1a1a] block">
                         Online Payment via Razorpay
                       </span>
-                      <p className="text-xs text-[#867273] mt-0.5">
+                      <p className="text-xs text-[#6f6f6f] mt-0.5">
                         UPI (GPay, PhonePe, Paytm), Credit/Debit Cards, Netbanking with 256-bit encryption.
                       </p>
                     </div>
@@ -344,7 +344,7 @@ export default function CheckoutPage() {
                     className={`flex items-start gap-3 p-4 border cursor-pointer transition-colors ${
                       paymentMethod === "COD"
                         ? "border-[#5c1d24] bg-[#faf7f2]"
-                        : "border-[#ebe3d5] hover:border-[#c5a880]"
+                        : "border-[#e5e5e3] hover:border-[#c5a880]"
                     }`}
                   >
                     <input
@@ -355,10 +355,10 @@ export default function CheckoutPage() {
                       className="mt-1"
                     />
                     <div>
-                      <span className="text-sm font-semibold text-[#2b1e1a] block">
+                      <span className="text-sm font-semibold text-[#1a1a1a] block">
                         Cash on Delivery (COD)
                       </span>
-                      <p className="text-xs text-[#867273] mt-0.5">
+                      <p className="text-xs text-[#6f6f6f] mt-0.5">
                         Pay in cash when your order arrives. Available for orders up to {formatPrice(codMaxOrderLimit)}.
                       </p>
                     </div>
@@ -370,21 +370,21 @@ export default function CheckoutPage() {
             </div>
 
             {/* Right 5 Columns: Order Summary */}
-            <div className="lg:col-span-5 bg-white border border-[#ebe3d5] p-5 sm:p-6 sticky top-24">
-              <h3 className="text-xs font-medium text-[#5c1d24] mb-4 pb-2 border-b border-[#ebe3d5]">
+            <div className="lg:col-span-5 bg-white border border-[#e5e5e3] p-5 sm:p-6 sticky top-24">
+              <h3 className="text-xs font-medium text-[#5c1d24] mb-4 pb-2 border-b border-[#e5e5e3]">
                 Order Summary ({items.length} items)
               </h3>
 
-              <div className="divide-y divide-[#ebe3d5] max-h-60 overflow-y-auto mb-4">
+              <div className="divide-y divide-[#e5e5e3] max-h-60 overflow-y-auto mb-4">
                 {items.map((item) => (
                   <div key={item.product.id} className="py-2.5 flex justify-between gap-3 text-xs">
                     <div>
-                      <p className="font-medium text-[#2b1e1a] line-clamp-1">{item.product.name}</p>
-                      <p className="text-[#867273]">
+                      <p className="font-medium text-[#1a1a1a] line-clamp-1">{item.product.name}</p>
+                      <p className="text-[#6f6f6f]">
                         {item.metres ? `${item.metres}m cut` : `Qty: ${item.quantity}`}
                       </p>
                     </div>
-                    <span className="font-semibold text-[#2b1e1a] shrink-0">
+                    <span className="font-semibold text-[#1a1a1a] shrink-0">
                       {formatPrice(item.product.price * item.quantity)}
                     </span>
                   </div>
@@ -392,7 +392,7 @@ export default function CheckoutPage() {
               </div>
 
               {/* Cost Breakdown */}
-              <div className="space-y-2 border-t border-[#ebe3d5] pt-4 text-xs text-[#534343]">
+              <div className="space-y-2 border-t border-[#e5e5e3] pt-4 text-xs text-[#444444]">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
                   <span>{formatPrice(cartTotal)}</span>
@@ -405,7 +405,7 @@ export default function CheckoutPage() {
                   <span>Insured Express Shipping</span>
                   <span>{shippingFee === 0 ? "FREE" : formatPrice(shippingFee)}</span>
                 </div>
-                <div className="flex justify-between text-base font-semibold text-[#2b1e1a] border-t border-[#ebe3d5] pt-3">
+                <div className="flex justify-between text-base font-semibold text-[#1a1a1a] border-t border-[#e5e5e3] pt-3">
                   <span>Total Payable</span>
                   <span className="text-[#5c1d24]">{formatPrice(finalPayable)}</span>
                 </div>
@@ -427,7 +427,7 @@ export default function CheckoutPage() {
                 <ArrowRight className="w-4 h-4 ml-1" />
               </Button>
 
-              <div className="mt-4 flex items-center justify-center gap-2 text-[11px] text-[#867273]">
+              <div className="mt-4 flex items-center justify-center gap-2 text-[11px] text-[#6f6f6f]">
                 <ShieldCheck className="w-4 h-4 text-emerald-700" />
                 <span>Protected by Razorpay SSL 256-bit Encryption</span>
               </div>

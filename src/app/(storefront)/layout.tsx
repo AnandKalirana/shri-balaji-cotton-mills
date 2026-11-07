@@ -13,7 +13,7 @@ export default async function StorefrontLayout({
 }) {
   const settings = await getStoreSettings();
   return (
-    <div className="flex flex-col min-h-screen bg-[#fcf9f4]">
+    <div className="flex flex-col min-h-screen bg-white store-clean">
       <StoreHeader
         storeName={settings.storeName}
         announcement={settings.enableAnnouncement ? settings.announcementText : null}

@@ -30,11 +30,11 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
     "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800";
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-2xl bg-white border border-[#ebe3d5]/70 shadow-[0_1px_2px_rgba(43,30,26,0.04)] hover:border-[#c5a880] transition-colors duration-200 ease-out">
+    <div className="group relative flex flex-col bg-white">
       {/* Image Container with 4:5 aspect ratio */}
       <Link
         href={`/product/${product.slug}`}
-        className="relative block w-full aspect-[4/5] overflow-hidden bg-[#f6f3ee]"
+        className="relative block w-full aspect-[4/5] overflow-hidden bg-[#f3f3f1]"
       >
         <Image
           src={imageSrc}
@@ -68,7 +68,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 
         {/* Out of Stock Overlay */}
         {!product.inStock && (
-          <div className="absolute inset-0 bg-[#2b1e1a]/60 flex items-center justify-center">
+          <div className="absolute inset-0 bg-[#1a1a1a]/60 flex items-center justify-center">
             <span className="text-xs font-medium text-white px-3 py-1 rounded-full border border-white">
               Archive Only
             </span>
@@ -80,7 +80,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           <button
             onClick={handleQuickAdd}
             aria-label={`Quick add ${product.name} to cart`}
-            className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 w-11 h-11 rounded-full bg-[#5c1d24] text-white flex items-center justify-center hover:bg-[#2b1e1a] active:scale-90 transition-all duration-300 shadow-lg sm:opacity-0 sm:group-hover:opacity-100 touch-manipulation"
+            className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 w-11 h-11 rounded-full bg-white text-[#1a1a1a] flex items-center justify-center hover:bg-[#1a1a1a] hover:text-white active:scale-90 transition-all duration-300 shadow-lg sm:opacity-0 sm:group-hover:opacity-100 touch-manipulation"
           >
             <ShoppingBag className="w-4 h-4" />
           </button>
@@ -88,37 +88,33 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
       </Link>
 
       {/* Details Area */}
-      <div className="p-4 sm:p-5 flex flex-col flex-1 justify-between gap-3 bg-[#fcf9f4]">
+      <div className="pt-3 pb-1 flex flex-col flex-1 justify-between gap-2 bg-white">
         <div>
           {/* Category / Fabric Type */}
-          <p className="text-xs font-medium text-[#867273]">
+          <p className="text-xs font-medium text-[#6f6f6f]">
             {product.fabricType || product.department}
           </p>
 
           {/* Title */}
           <Link href={`/product/${product.slug}`}>
-            <h3 className="font-[family-name:var(--font-playfair)] text-base sm:text-lg font-medium text-[#2b1e1a] hover:text-[#5c1d24] transition-colors mt-1 line-clamp-2 leading-snug">
+            <h3 className="font-[family-name:var(--font-playfair)] text-sm sm:text-base font-medium text-[#1a1a1a] hover:underline mt-1 line-clamp-2 leading-snug">
               {product.name}
             </h3>
           </Link>
         </div>
 
         {/* Price & Metre specs */}
-        <div className="pt-2 border-t border-[#ebe3d5] flex items-baseline justify-between gap-2">
+        <div className="flex items-baseline justify-between gap-2">
           <div>
-            <span className="text-base font-semibold text-[#2b1e1a]">
+            <span className="text-sm font-medium text-[#1a1a1a] tabular-nums">
               {formatPrice(product.price)}
             </span>
             {product.pricePerMetre && (
-              <span className="block text-[11px] text-[#867273]">
+              <span className="block text-[11px] text-[#6f6f6f]">
                 {formatPrice(product.pricePerMetre)} / metre
               </span>
             )}
           </div>
-
-          <span className="text-xs font-medium text-[#5c1d24] group-hover:underline">
-            View Fabric →
-          </span>
         </div>
       </div>
     </div>

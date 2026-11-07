@@ -27,8 +27,8 @@ export default async function HomePage() {
   return (
     <div className="flex flex-col">
       {/* 1. Hero Showcase */}
-      <section className="relative min-h-[580px] sm:min-h-[680px] lg:min-h-[780px] flex items-center justify-center bg-[#2b1e1a] text-white overflow-hidden">
-        {/* Background Editorial Image */}
+      <section className="relative min-h-[560px] sm:min-h-[640px] lg:min-h-[720px] flex items-center justify-center bg-[#d9d5cf] text-white overflow-hidden">
+        {/* Full-bleed photo */}
         <div className="absolute inset-0 z-0">
           <Image
             src={hero.desktopImg}
@@ -36,7 +36,7 @@ export default async function HomePage() {
             fill
             priority
             sizes="100vw"
-            className={`object-cover object-center opacity-45 scale-105 ${hero.mobileImg !== hero.desktopImg ? "hidden md:block" : ""}`}
+            className={`object-cover object-center ${hero.mobileImg !== hero.desktopImg ? "hidden md:block" : ""}`}
           />
           {hero.mobileImg !== hero.desktopImg && (
             <Image
@@ -45,21 +45,19 @@ export default async function HomePage() {
               fill
               priority
               sizes="100vw"
-              className="object-cover object-center opacity-45 scale-105 md:hidden"
+              className="object-cover object-center md:hidden"
             />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#2b1e1a] via-[#2b1e1a]/70 to-[#2b1e1a]/35" />
+          <div className="absolute inset-0 bg-black/30" />
         </div>
 
         {/* Hero Content */}
-        <Reveal y={32} className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center py-16 sm:py-24">
+        <Reveal y={16} className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 text-center py-16 sm:py-24">
           {hero.eyebrow.trim() && (
-            <span className="inline-flex items-center text-[#f0dcb8] text-xs sm:text-xs font-medium mb-6">
-              {hero.eyebrow}
-            </span>
+            <p className="text-xs sm:text-sm font-medium text-white mb-3">{hero.eyebrow}</p>
           )}
 
-          <h1 className="font-[family-name:var(--font-playfair)] text-4xl sm:text-5xl md:text-7xl font-normal text-[#faf7f2] tracking-tight leading-[1.1] mb-6">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl text-white leading-[1.1] mb-5">
             {heroLines.map((line, i) => (
               <span key={i}>
                 {i > 0 && <br className="hidden sm:block" />}
@@ -69,32 +67,26 @@ export default async function HomePage() {
             ))}
           </h1>
 
-          <p className="text-sm sm:text-base md:text-lg text-[#f3e8e3] font-normal max-w-2xl mx-auto leading-relaxed mb-8 sm:mb-10">
+          <p className="text-sm sm:text-base text-white/90 max-w-xl mx-auto leading-relaxed mb-8">
             {hero.subtitle}
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               href={hero.ctaLink}
-              className="w-full sm:w-auto sm:min-w-[240px] px-8 py-4 rounded-full bg-[#5c1d24] text-white text-xs font-medium hover:bg-white hover:text-[#2b1e1a] active:scale-[0.98] transition-all min-h-[52px] flex items-center justify-center border border-transparent shadow-[0_10px_30px_-10px_rgba(92,29,36,0.8)]"
+              className="w-full sm:w-auto sm:min-w-[200px] px-8 py-3 bg-white text-[#1a1a1a] text-sm font-medium hover:bg-[#1a1a1a] hover:text-white transition-colors min-h-[48px] flex items-center justify-center"
             >
               {hero.ctaText}
             </Link>
 
             <Link
               href="/category/fabrics"
-              className="w-full sm:w-auto sm:min-w-[240px] px-8 py-4 rounded-full bg-transparent text-[#faf7f2] text-xs font-medium border border-white/30 hover:bg-[#faf7f2] hover:text-[#2b1e1a] active:scale-[0.98] transition-all min-h-[52px] flex items-center justify-center"
+              className="w-full sm:w-auto sm:min-w-[200px] px-8 py-3 bg-white text-[#1a1a1a] text-sm font-medium hover:bg-[#1a1a1a] hover:text-white transition-colors min-h-[48px] flex items-center justify-center"
             >
-              Order Fabric by Metre
+              Order fabric by the metre
             </Link>
           </div>
         </Reveal>
-
-        {/* Scroll cue */}
-        <div aria-hidden className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 text-white/60">
-          <span className="text-xs">Scroll</span>
-          <span className="block w-px h-8 bg-gradient-to-b from-white/60 to-transparent" />
-        </div>
       </section>
 
       {/* 2. Signature Upward Shutter Section */}
@@ -102,19 +94,19 @@ export default async function HomePage() {
 
       {/* 3. Featured Masterpieces Grid */}
       <section className="py-16 sm:py-24 max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 w-full">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 sm:mb-14 border-b border-[#ebe3d5] pb-6">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 sm:mb-14 pb-2">
           <div>
             <span className="text-xs sm:text-xs font-medium text-[#5c1d24]">
               Handpicked for You
             </span>
-            <h2 className="font-[family-name:var(--font-playfair)] text-2xl sm:text-4xl font-normal text-[#2b1e1a] mt-1">
+            <h2 className="font-[family-name:var(--font-playfair)] text-2xl sm:text-4xl font-normal text-[#1a1a1a] mt-1">
               Featured Products
             </h2>
           </div>
 
           <Link
             href="/category/fabrics"
-            className="inline-flex items-center gap-2 text-xs font-medium text-[#5c1d24] hover:text-[#2b1e1a] transition-colors"
+            className="inline-flex items-center gap-2 text-xs font-medium text-[#5c1d24] hover:text-[#1a1a1a] transition-colors"
           >
             <span>View All Products</span>
             <ArrowRight className="w-4 h-4" />
@@ -132,7 +124,7 @@ export default async function HomePage() {
       </section>
 
       {/* 4. Fabric by the Metre Highlight (Dual Inventory Banner) */}
-      <section className="bg-[#f0ede9] border-y border-[#ebe3d5] py-16 sm:py-20">
+      <section className="bg-[#f5f5f3] py-16 sm:py-20">
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Text column */}
@@ -140,23 +132,23 @@ export default async function HomePage() {
               <span className="text-xs font-medium text-[#5c1d24]">
                 Fabric by the Metre
               </span>
-              <h2 className="font-[family-name:var(--font-playfair)] text-3xl sm:text-4xl font-normal text-[#2b1e1a] mt-2 mb-4 leading-tight">
+              <h2 className="font-[family-name:var(--font-playfair)] text-3xl sm:text-4xl font-normal text-[#1a1a1a] mt-2 mb-4 leading-tight">
                 Order by the Metre or Complete Thaan
               </h2>
-              <p className="text-sm sm:text-base text-[#534343] leading-relaxed mb-6">
+              <p className="text-sm sm:text-base text-[#444444] leading-relaxed mb-6">
                 Order fabric in cuts as small as 0.5m. Boutiques and tailors can also order full rolls (thaans) of 25m or 50m at wholesale rates.
               </p>
 
               <div className="space-y-3 mb-8">
-                <div className="flex items-center gap-3 text-xs sm:text-sm text-[#2b1e1a]">
+                <div className="flex items-center gap-3 text-xs sm:text-sm text-[#1a1a1a]">
                   <span className="w-5 h-5 bg-[#5c1d24] text-white flex items-center justify-center rounded-none"><Check size={14} strokeWidth={1.5} /></span>
                   <span>Cut to length from 0.5 metre, with a neat pinked edge</span>
                 </div>
-                <div className="flex items-center gap-3 text-xs sm:text-sm text-[#2b1e1a]">
+                <div className="flex items-center gap-3 text-xs sm:text-sm text-[#1a1a1a]">
                   <span className="w-5 h-5 bg-[#5c1d24] text-white flex items-center justify-center rounded-none"><Check size={14} strokeWidth={1.5} /></span>
                   <span>Automatic 12% savings on uncut standard thaan bolts (25m)</span>
                 </div>
-                <div className="flex items-center gap-3 text-xs sm:text-sm text-[#2b1e1a]">
+                <div className="flex items-center gap-3 text-xs sm:text-sm text-[#1a1a1a]">
                   <span className="w-5 h-5 bg-[#5c1d24] text-white flex items-center justify-center rounded-none"><Check size={14} strokeWidth={1.5} /></span>
                   <span>Quality-checked fabric, cut fresh for every order</span>
                 </div>
@@ -164,7 +156,7 @@ export default async function HomePage() {
 
               <Link
                 href="/category/fabrics"
-                className="inline-flex px-8 py-3.5 rounded-full bg-[#2b1e1a] text-white text-xs font-medium hover:bg-[#5c1d24] transition-colors min-h-[48px] items-center justify-center"
+                className="inline-flex px-8 py-3.5 bg-[#1a1a1a] text-white text-xs font-medium hover:bg-[#5c1d24] transition-colors min-h-[48px] items-center justify-center"
               >
                 Browse Fabrics by Metre
               </Link>
@@ -183,45 +175,45 @@ export default async function HomePage() {
       </section>
 
       {/* 5. Trust & Heritage Pillars */}
-      <section className="py-14 sm:py-16 max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 border-b border-[#ebe3d5]">
+      <section className="py-14 sm:py-16 max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="flex items-start gap-4">
-            <div className="w-10 h-10 shrink-0 bg-[#f0ede9] border border-[#c5a880] flex items-center justify-center text-[#5c1d24]">
+            <div className="w-6 h-6 shrink-0 flex items-center justify-center text-[#1a1a1a]">
               <Shield className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="font-semibold text-sm text-[#2b1e1a]">Quality You Can Trust</h4>
-              <p className="text-xs text-[#867273] mt-1">Carefully checked cotton, silk and stretch fabrics in every order.</p>
+              <h4 className="font-semibold text-sm text-[#1a1a1a]">Quality You Can Trust</h4>
+              <p className="text-xs text-[#6f6f6f] mt-1">Carefully checked cotton, silk and stretch fabrics in every order.</p>
             </div>
           </div>
 
           <div className="flex items-start gap-4">
-            <div className="w-10 h-10 shrink-0 bg-[#f0ede9] border border-[#c5a880] flex items-center justify-center text-[#5c1d24]">
+            <div className="w-6 h-6 shrink-0 flex items-center justify-center text-[#1a1a1a]">
               <Truck className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="font-semibold text-sm text-[#2b1e1a]">Pan-India Delivery</h4>
-              <p className="text-xs text-[#867273] mt-1">Free delivery above ₹2,000 via trusted couriers with live tracking.</p>
+              <h4 className="font-semibold text-sm text-[#1a1a1a]">Pan-India Delivery</h4>
+              <p className="text-xs text-[#6f6f6f] mt-1">Free delivery above ₹2,000 via trusted couriers with live tracking.</p>
             </div>
           </div>
 
           <div className="flex items-start gap-4">
-            <div className="w-10 h-10 shrink-0 bg-[#f0ede9] border border-[#c5a880] flex items-center justify-center text-[#5c1d24]">
+            <div className="w-6 h-6 shrink-0 flex items-center justify-center text-[#1a1a1a]">
               <Compass className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="font-semibold text-sm text-[#2b1e1a]">Cut to Your Length</h4>
-              <p className="text-xs text-[#867273] mt-1">Order the exact metres you need for kurtas, blouses or suits.</p>
+              <h4 className="font-semibold text-sm text-[#1a1a1a]">Cut to Your Length</h4>
+              <p className="text-xs text-[#6f6f6f] mt-1">Order the exact metres you need for kurtas, blouses or suits.</p>
             </div>
           </div>
 
           <div className="flex items-start gap-4">
-            <div className="w-10 h-10 shrink-0 bg-[#f0ede9] border border-[#c5a880] flex items-center justify-center text-[#5c1d24]">
+            <div className="w-6 h-6 shrink-0 flex items-center justify-center text-[#1a1a1a]">
               <MessageCircle className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="font-semibold text-sm text-[#2b1e1a]">WhatsApp Support</h4>
-              <p className="text-xs text-[#867273] mt-1">Ask us about sizes, fabrics and orders on WhatsApp.</p>
+              <h4 className="font-semibold text-sm text-[#1a1a1a]">WhatsApp Support</h4>
+              <p className="text-xs text-[#6f6f6f] mt-1">Ask us about sizes, fabrics and orders on WhatsApp.</p>
             </div>
           </div>
         </div>

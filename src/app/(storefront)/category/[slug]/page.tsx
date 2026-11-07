@@ -35,9 +35,9 @@ export default async function CategoryPage({
   const { products: categoryProducts } = await getProducts({ category: slug });
 
   return (
-    <div className="min-h-screen bg-[#fcf9f4]">
+    <div className="min-h-screen bg-[#ffffff]">
       {/* Category Banner */}
-      <section className="bg-[#281b17] text-[#faf7f2] py-12 sm:py-16 md:py-20 border-b border-[#53433e]">
+      <section className="bg-[#111111] text-[#faf7f2] py-12 sm:py-16 md:py-20 border-b border-[#333333]">
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10">
           <div className="flex items-center gap-2 text-xs font-medium text-[#c5a880] mb-3">
             <Link href="/" className="hover:underline">Home</Link>
@@ -58,8 +58,8 @@ export default async function CategoryPage({
       {/* Product Grid Area */}
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 py-10 sm:py-14">
         {/* Sub-header / Filters */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 mb-8 border-b border-[#ebe3d5]">
-          <p className="text-xs font-medium text-[#867273]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 mb-8 border-b border-[#e5e5e3]">
+          <p className="text-xs font-medium text-[#6f6f6f]">
             Displaying {categoryProducts.length} Heirloom Creations
           </p>
 
@@ -72,7 +72,7 @@ export default async function CategoryPage({
                 className={`px-3 py-1.5 text-xs font-medium whitespace-nowrap transition-colors border ${
                   c.slug === slug
                     ? "bg-[#5c1d24] text-white border-[#5c1d24]"
-                    : "border-[#ebe3d5] text-[#534343] hover:border-[#c5a880]"
+                    : "border-[#e5e5e3] text-[#444444] hover:border-[#c5a880]"
                 }`}
               >
                 {c.name}
@@ -84,10 +84,10 @@ export default async function CategoryPage({
         {/* Adaptive Grid */}
         {categoryProducts.length === 0 ? (
           <div className="py-20 text-center">
-            <p className="font-[family-name:var(--font-playfair)] text-xl text-[#2b1e1a] mb-2">
+            <p className="font-[family-name:var(--font-playfair)] text-xl text-[#1a1a1a] mb-2">
               New Looms in Preparation
             </p>
-            <p className="text-xs text-[#867273] mb-6">
+            <p className="text-xs text-[#6f6f6f] mb-6">
               Our master weavers are currently finishing this batch. Check back soon.
             </p>
             <Link

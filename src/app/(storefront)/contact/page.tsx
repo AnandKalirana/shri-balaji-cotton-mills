@@ -15,7 +15,7 @@ export default async function ContactPage() {
           <div className="flex items-start gap-3">
             <Phone className="w-5 h-5 text-[#5c1d24] mt-0.5" />
             <div>
-              <p className="font-semibold text-[#2b1e1a]">Phone / WhatsApp</p>
+              <p className="font-semibold text-[#1a1a1a]">Phone / WhatsApp</p>
               <a href={`tel:${s.supportPhone.replace(/[^+\d]/g, "")}`} className="hover:underline">{s.supportPhone}</a>
             </div>
           </div>
@@ -24,7 +24,7 @@ export default async function ContactPage() {
           <div className="flex items-start gap-3">
             <Mail className="w-5 h-5 text-[#5c1d24] mt-0.5" />
             <div>
-              <p className="font-semibold text-[#2b1e1a]">Email</p>
+              <p className="font-semibold text-[#1a1a1a]">Email</p>
               <a href={`mailto:${s.supportEmail}`} className="hover:underline">{s.supportEmail}</a>
             </div>
           </div>
@@ -33,9 +33,9 @@ export default async function ContactPage() {
           <div className="flex items-start gap-3">
             <MapPin className="w-5 h-5 text-[#5c1d24] mt-0.5" />
             <div>
-              <p className="font-semibold text-[#2b1e1a]">{s.legalName || s.storeName}</p>
+              <p className="font-semibold text-[#1a1a1a]">{s.legalName || s.storeName}</p>
               <p className="whitespace-pre-line">{s.address}</p>
-              {s.gstin && <p className="mt-1 text-xs text-[#867273]">GSTIN: {s.gstin}</p>}
+              {s.gstin && <p className="mt-1 text-xs text-[#6f6f6f]">GSTIN: {s.gstin}</p>}
             </div>
           </div>
         )}
@@ -43,7 +43,7 @@ export default async function ContactPage() {
           <div className="flex items-start gap-3">
             <Clock className="w-5 h-5 text-[#5c1d24] mt-0.5" />
             <div>
-              <p className="font-semibold text-[#2b1e1a]">Opening hours</p>
+              <p className="font-semibold text-[#1a1a1a]">Opening hours</p>
               <p>{s.businessHours}</p>
             </div>
           </div>
