@@ -73,7 +73,7 @@ export function StoreFooter(props: StoreFooterProps) {
 
           {/* Shop */}
           <div>
-            <h3 className="text-[11px] tracking-[0.14em] uppercase font-semibold text-[#c5a880] mb-4">
+            <h3 className="text-xs font-medium text-[#c5a880] mb-4">
               Shop
             </h3>
             <ul className="space-y-3">
@@ -92,7 +92,7 @@ export function StoreFooter(props: StoreFooterProps) {
 
           {/* Help */}
           <div>
-            <h3 className="text-[11px] tracking-[0.14em] uppercase font-semibold text-[#c5a880] mb-4">
+            <h3 className="text-xs font-medium text-[#c5a880] mb-4">
               Customer Services
             </h3>
             <ul className="space-y-3">
@@ -114,7 +114,7 @@ export function StoreFooter(props: StoreFooterProps) {
 
           {/* Contact */}
           <div>
-            <h3 className="text-[11px] tracking-[0.14em] uppercase font-semibold text-[#c5a880] mb-4">
+            <h3 className="text-xs font-medium text-[#c5a880] mb-4">
               Contact Us
             </h3>
             <div className="space-y-3 text-sm text-[#d8c2bb]">

@@ -32,7 +32,7 @@ export function CartDrawer() {
           <div className="flex items-center justify-between text-xs text-[#534343] mb-1.5">
             <span>
               {remainingForFree === 0
-                ? "✓ Complimentary insured shipping unlocked!"
+                ? "Complimentary insured shipping applied"
                 : `Add ${formatPrice(remainingForFree)} more for free shipping`}
             </span>
             <span className="font-semibold text-[#5c1d24]">
@@ -41,7 +41,7 @@ export function CartDrawer() {
           </div>
           <div className="w-full h-1.5 bg-[#ebe3d5]">
             <div
-              className="h-full bg-[#5c1d24] transition-all duration-500"
+              className="h-full bg-[#5c1d24] transition-[width] duration-500"
               style={{ width: `${progressToFreeShipping}%` }}
             />
           </div>
@@ -59,7 +59,7 @@ export function CartDrawer() {
               </p>
               <button
                 onClick={toggleCart}
-                className="inline-flex px-6 py-3 text-xs tracking-widest uppercase font-semibold border border-[#c5a880] text-[#2b1e1a] hover:bg-[#faf7f2]"
+                className="inline-flex px-6 py-3 text-xs font-medium border border-[#c5a880] text-[#2b1e1a] hover:bg-[#faf7f2]"
               >
                 Continue Browsing
               </button>
@@ -147,10 +147,10 @@ export function CartDrawer() {
         {items.length > 0 && (
           <div className="pt-4 mt-4 border-t border-[#ebe3d5]">
             <div className="flex justify-between items-baseline mb-4">
-              <span className="text-xs tracking-wider uppercase font-semibold text-[#534343]">
+              <span className="text-xs font-medium text-[#534343]">
                 Estimated Subtotal
               </span>
-              <span className="text-lg font-bold text-[#2b1e1a]">
+              <span className="text-lg font-semibold text-[#2b1e1a]">
                 {formatPrice(cartTotal)}
               </span>
             </div>
@@ -161,7 +161,7 @@ export function CartDrawer() {
             <Link
               href="/checkout"
               onClick={toggleCart}
-              className="w-full py-4 bg-[#5c1d24] hover:bg-[#2b1e1a] text-white text-xs tracking-widest uppercase font-semibold flex items-center justify-center gap-2 transition-colors min-h-[48px]"
+              className="w-full py-4 bg-[#5c1d24] hover:bg-[#2b1e1a] text-white text-xs font-medium flex items-center justify-center gap-2 transition-colors min-h-[48px]"
             >
               <span>Proceed to Checkout</span>
               <ArrowRight className="w-4 h-4" />

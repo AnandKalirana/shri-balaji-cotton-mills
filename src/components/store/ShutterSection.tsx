@@ -155,7 +155,7 @@ export function ShutterSection() {
       <div className="relative z-10 h-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 flex flex-col justify-between py-10 sm:py-16">
         {/* Top Header & Department Counter */}
         <div className="flex items-center justify-between border-b border-[#c5a880]/30 pb-4">
-          <span className="text-[10px] sm:text-[11px] tracking-[0.2em] uppercase font-semibold text-[#c5a880]">
+          <span className="text-xs sm:text-xs font-medium text-[#c5a880]">
             Shop by Category
           </span>
           <span className="text-xs tracking-widest text-[#d8c2bb]">
@@ -165,7 +165,7 @@ export function ShutterSection() {
 
         {/* Center Editorial Headlines */}
         <div className="max-w-2xl py-6">
-          <p className="text-[11px] tracking-[0.18em] uppercase font-semibold text-[#c5a880] mb-2 sm:mb-3">
+          <p className="text-xs font-medium text-[#c5a880] mb-2 sm:mb-3">
             {activeDept.name}
           </p>
 
@@ -180,7 +180,7 @@ export function ShutterSection() {
           <div className="flex items-center gap-4 flex-wrap">
             <Link
               href={`/category/${activeDept.slug}`}
-              className="px-8 py-3.5 rounded-full bg-[#5c1d24] text-white text-xs tracking-[0.14em] uppercase font-semibold hover:bg-white hover:text-[#2b1e1a] transition-colors border border-transparent min-h-[48px] flex items-center justify-center"
+              className="px-8 py-3.5 rounded-full bg-[#5c1d24] text-white text-xs font-medium hover:bg-white hover:text-[#2b1e1a] transition-colors border border-transparent min-h-[48px] flex items-center justify-center"
             >
               Explore Collection
             </Link>
@@ -203,10 +203,10 @@ export function ShutterSection() {
                   setCurrentIndex(idx);
                 }}
                 className={cn(
-                  "px-4 py-1.5 rounded-full text-[10px] tracking-wider uppercase font-semibold whitespace-nowrap transition-colors touch-target",
+                  "px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors touch-target",
                   currentIndex === idx
                     ? "bg-[#c5a880] text-[#2b1e1a]"
-                    : "text-[#d8c2bb] hover:text-white bg-white/10 backdrop-blur-md"
+                    : "text-[#d8c2bb] hover:text-white bg-white/10"
                 )}
               >
                 {dept.name}

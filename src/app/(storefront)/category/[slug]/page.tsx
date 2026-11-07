@@ -39,7 +39,7 @@ export default async function CategoryPage({
       {/* Category Banner */}
       <section className="bg-[#281b17] text-[#faf7f2] py-12 sm:py-16 md:py-20 border-b border-[#53433e]">
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10">
-          <div className="flex items-center gap-2 text-[11px] tracking-widest uppercase font-semibold text-[#c5a880] mb-3">
+          <div className="flex items-center gap-2 text-xs font-medium text-[#c5a880] mb-3">
             <Link href="/" className="hover:underline">Home</Link>
             <span>/</span>
             <span>Collections</span>
@@ -59,7 +59,7 @@ export default async function CategoryPage({
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 py-10 sm:py-14">
         {/* Sub-header / Filters */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 mb-8 border-b border-[#ebe3d5]">
-          <p className="text-xs tracking-wider uppercase font-semibold text-[#867273]">
+          <p className="text-xs font-medium text-[#867273]">
             Displaying {categoryProducts.length} Heirloom Creations
           </p>
 
@@ -69,7 +69,7 @@ export default async function CategoryPage({
               <Link
                 key={c.id}
                 href={`/category/${c.slug}`}
-                className={`px-3 py-1.5 text-[11px] tracking-wider uppercase font-semibold whitespace-nowrap transition-colors border ${
+                className={`px-3 py-1.5 text-xs font-medium whitespace-nowrap transition-colors border ${
                   c.slug === slug
                     ? "bg-[#5c1d24] text-white border-[#5c1d24]"
                     : "border-[#ebe3d5] text-[#534343] hover:border-[#c5a880]"
@@ -92,7 +92,7 @@ export default async function CategoryPage({
             </p>
             <Link
               href="/"
-              className="inline-flex px-6 py-3 border border-[#c5a880] text-xs uppercase tracking-widest font-semibold hover:bg-[#faf7f2]"
+              className="inline-flex px-6 py-3 border border-[#c5a880] text-xs font-medium hover:bg-[#faf7f2]"
             >
               Back to Home
             </Link>

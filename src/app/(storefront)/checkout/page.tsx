@@ -142,7 +142,7 @@ export default function CheckoutPage() {
       <div className="min-h-[70vh] flex items-center justify-center bg-[#fcf9f4] px-4 py-16">
         <div className="max-w-md w-full bg-white border border-[#c5a880] p-8 text-center shadow-lg">
           <CheckCircle2 className="w-14 h-14 text-emerald-700 mx-auto mb-4" />
-          <span className="text-[10px] tracking-[0.2em] uppercase font-semibold text-[#867273]">
+          <span className="text-xs font-medium text-[#867273]">
             Order Confirmed
           </span>
           <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-medium text-[#2b1e1a] mt-1 mb-2">
@@ -165,7 +165,7 @@ export default function CheckoutPage() {
 
           <Link
             href="/"
-            className="inline-flex w-full py-3.5 bg-[#5c1d24] text-white text-xs tracking-widest uppercase font-semibold justify-center hover:bg-[#2b1e1a]"
+            className="inline-flex w-full py-3.5 bg-[#5c1d24] text-white text-xs font-medium justify-center hover:bg-[#2b1e1a]"
           >
             Back to Home
           </Link>
@@ -185,7 +185,7 @@ export default function CheckoutPage() {
         </p>
         <Link
           href="/"
-          className="px-6 py-3 border border-[#c5a880] text-xs uppercase tracking-widest font-semibold hover:bg-[#faf7f2]"
+          className="px-6 py-3 border border-[#c5a880] text-xs font-medium hover:bg-[#faf7f2]"
         >
           Explore Collections
         </Link>
@@ -212,7 +212,7 @@ export default function CheckoutPage() {
             <div className="lg:col-span-7 space-y-8">
               {/* Shipping Address */}
               <div className="bg-white border border-[#ebe3d5] p-5 sm:p-6">
-                <h3 className="text-xs tracking-[0.14em] uppercase font-semibold text-[#5c1d24] mb-4 pb-2 border-b border-[#ebe3d5]">
+                <h3 className="text-xs font-medium text-[#5c1d24] mb-4 pb-2 border-b border-[#ebe3d5]">
                   1. Shipping & Contact Information
                 </h3>
 
@@ -267,7 +267,7 @@ export default function CheckoutPage() {
                     />
 
                     <div>
-                      <label className="block text-[11px] tracking-[0.14em] uppercase font-semibold text-[#534343] mb-1">
+                      <label className="block text-xs font-medium text-[#534343] mb-1">
                         State *
                       </label>
                       <select
@@ -307,7 +307,7 @@ export default function CheckoutPage() {
 
               {/* Payment Method */}
               <div className="bg-white border border-[#ebe3d5] p-5 sm:p-6">
-                <h3 className="text-xs tracking-[0.14em] uppercase font-semibold text-[#5c1d24] mb-4 pb-2 border-b border-[#ebe3d5]">
+                <h3 className="text-xs font-medium text-[#5c1d24] mb-4 pb-2 border-b border-[#ebe3d5]">
                   2. Payment Method
                 </h3>
 
@@ -371,7 +371,7 @@ export default function CheckoutPage() {
 
             {/* Right 5 Columns: Order Summary */}
             <div className="lg:col-span-5 bg-white border border-[#ebe3d5] p-5 sm:p-6 sticky top-24">
-              <h3 className="text-xs tracking-[0.14em] uppercase font-semibold text-[#5c1d24] mb-4 pb-2 border-b border-[#ebe3d5]">
+              <h3 className="text-xs font-medium text-[#5c1d24] mb-4 pb-2 border-b border-[#ebe3d5]">
                 Order Summary ({items.length} items)
               </h3>
 
@@ -405,7 +405,7 @@ export default function CheckoutPage() {
                   <span>Insured Express Shipping</span>
                   <span>{shippingFee === 0 ? "FREE" : formatPrice(shippingFee)}</span>
                 </div>
-                <div className="flex justify-between text-base font-bold text-[#2b1e1a] border-t border-[#ebe3d5] pt-3">
+                <div className="flex justify-between text-base font-semibold text-[#2b1e1a] border-t border-[#ebe3d5] pt-3">
                   <span>Total Payable</span>
                   <span className="text-[#5c1d24]">{formatPrice(finalPayable)}</span>
                 </div>

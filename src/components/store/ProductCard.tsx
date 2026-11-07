@@ -30,7 +30,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
     "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800";
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-2xl bg-white border border-[#ebe3d5]/70 shadow-[0_1px_2px_rgba(43,30,26,0.04)] hover:shadow-[0_24px_48px_-24px_rgba(43,30,26,0.35)] hover:-translate-y-1 transition-all duration-500 ease-out">
+    <div className="group relative flex flex-col overflow-hidden rounded-2xl bg-white border border-[#ebe3d5]/70 shadow-[0_1px_2px_rgba(43,30,26,0.04)] hover:border-[#c5a880] transition-colors duration-200 ease-out">
       {/* Image Container with 4:5 aspect ratio */}
       <Link
         href={`/product/${product.slug}`}
@@ -42,7 +42,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
           priority={priority}
-          className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+          className="object-cover object-center "
         />
 
         {/* Badge */}
@@ -61,7 +61,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           }}
           aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
           aria-pressed={wishlisted}
-          className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center text-[#5c1d24] hover:bg-white active:scale-90 transition-all"
+          className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-white flex items-center justify-center text-[#5c1d24] hover:bg-white active:scale-90 transition-all"
         >
           <Heart className={wishlisted ? "w-4 h-4 fill-[#5c1d24]" : "w-4 h-4"} />
         </button>
@@ -69,7 +69,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
         {/* Out of Stock Overlay */}
         {!product.inStock && (
           <div className="absolute inset-0 bg-[#2b1e1a]/60 flex items-center justify-center">
-            <span className="text-[11px] tracking-[0.14em] uppercase font-semibold text-white px-3 py-1 rounded-full border border-white">
+            <span className="text-xs font-medium text-white px-3 py-1 rounded-full border border-white">
               Archive Only
             </span>
           </div>
@@ -91,7 +91,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
       <div className="p-4 sm:p-5 flex flex-col flex-1 justify-between gap-3 bg-[#fcf9f4]">
         <div>
           {/* Category / Fabric Type */}
-          <p className="text-[10px] tracking-[0.14em] uppercase font-semibold text-[#867273]">
+          <p className="text-xs font-medium text-[#867273]">
             {product.fabricType || product.department}
           </p>
 
@@ -116,7 +116,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             )}
           </div>
 
-          <span className="text-[11px] tracking-wider uppercase font-semibold text-[#5c1d24] group-hover:underline">
+          <span className="text-xs font-medium text-[#5c1d24] group-hover:underline">
             View Fabric →
           </span>
         </div>
