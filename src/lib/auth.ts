@@ -32,15 +32,28 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
   return bcrypt.compare(password, hash);
 }
 
+let dummyHash: string | null = null;
+/** Spends the same time as a real check, so an unknown email can't be told apart by how fast login answers. */
+export async function burnPasswordCheck(password: string): Promise<void> {
+  dummyHash ??= await bcrypt.hash("not-a-real-password", 12);
+  await bcrypt.compare(password, dummyHash);
+}
+
+/** Owners and staff stay signed in for 1 day, customers for 7. */
+const DAY = 60 * 60 * 24;
+export function sessionSeconds(role: SessionUser["role"]): number {
+  return role === "CUSTOMER" ? 7 * DAY : DAY;
+}
+
 /** Sign JWT session token */
 export function signSessionToken(payload: SessionUser): string {
-  return jwt.sign(payload, jwtSecret(), { expiresIn: "7d" });
+  return jwt.sign(payload, jwtSecret(), { expiresIn: sessionSeconds(payload.role), algorithm: "HS256" });
 }
 
 /** Verify JWT session token */
 export function verifySessionToken(token: string): SessionUser | null {
   try {
-    return jwt.verify(token, jwtSecret()) as SessionUser;
+    return jwt.verify(token, jwtSecret(), { algorithms: ["HS256"] }) as SessionUser;
   } catch {
     return null;
   }
@@ -67,7 +80,7 @@ export async function setSessionCookie(user: SessionUser) {
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",
-    maxAge: 60 * 60 * 24 * 7, // 7 days
+    maxAge: sessionSeconds(user.role),
   });
 }
 

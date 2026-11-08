@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin, auditUserId, dbErrorResponse } from "@/lib/admin-guard";
+import { logAdmin } from "@/lib/admin-log";
 import { revalidateStore } from "@/lib/revalidate";
 
 const schema = z.object({
@@ -64,6 +65,7 @@ export async function POST(req: Request) {
 
     if ("error" in result) return NextResponse.json({ error: result.error }, { status: 404 });
     revalidateStore();
+    await logAdmin(guard.user, "stock.adjust", "Stock was adjusted");
     return NextResponse.json({ success: true, newBalance });
   } catch (error) {
     return dbErrorResponse(error);

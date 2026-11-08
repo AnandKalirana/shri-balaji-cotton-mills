@@ -17,17 +17,18 @@ import {
 import { useUIStore } from "@/store";
 import { cn } from "@/lib/utils";
 
+// ownerOnly pages are hidden from staff accounts (the server refuses them too).
 const navItems = [
-  { href: "/admin", label: "Overview", icon: LayoutDashboard },
-  { href: "/admin/orders", label: "Orders", icon: ShoppingBag },
-  { href: "/admin/products", label: "Products", icon: Package },
-  { href: "/admin/inventory", label: "Fabric & Stock", icon: Layers },
-  { href: "/admin/cms", label: "Banners & CMS", icon: ImageIcon },
-  { href: "/admin/coupons", label: "Coupons", icon: Tag },
-  { href: "/admin/settings", label: "Settings", icon: Settings },
+  { href: "/admin", label: "Overview", icon: LayoutDashboard, ownerOnly: false },
+  { href: "/admin/orders", label: "Orders", icon: ShoppingBag, ownerOnly: false },
+  { href: "/admin/products", label: "Products", icon: Package, ownerOnly: false },
+  { href: "/admin/inventory", label: "Fabric & Stock", icon: Layers, ownerOnly: false },
+  { href: "/admin/cms", label: "Banners & CMS", icon: ImageIcon, ownerOnly: true },
+  { href: "/admin/coupons", label: "Coupons", icon: Tag, ownerOnly: true },
+  { href: "/admin/settings", label: "Settings", icon: Settings, ownerOnly: true },
 ];
 
-export function AdminSidebar() {
+export function AdminSidebar({ role = "ADMIN" }: { role?: "ADMIN" | "STAFF" | "CUSTOMER" }) {
   const pathname = usePathname();
   const { adminSidebarOpen, closeAdminSidebar } = useUIStore();
 
@@ -55,7 +56,7 @@ export function AdminSidebar() {
 
         {/* Navigation Links */}
         <nav className="p-4 space-y-1" aria-label="Admin navigation">
-          {navItems.map((item) => {
+          {navItems.filter((item) => role === "ADMIN" || !item.ownerOnly).map((item) => {
             const Icon = item.icon;
             const isActive =
               item.href === "/admin"

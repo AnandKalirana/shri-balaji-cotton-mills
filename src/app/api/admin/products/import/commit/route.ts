@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { requireAdmin, auditUserId, dbErrorResponse } from "@/lib/admin-guard";
+import { requireOwner, auditUserId, dbErrorResponse } from "@/lib/admin-guard";
+import { logAdmin } from "@/lib/admin-log";
 import { ensureCategory, uniqueSlug } from "@/lib/seed-catalog";
 import { copyRemoteImage } from "@/lib/store-image";
 import { revalidateStore } from "@/lib/revalidate";
@@ -29,7 +30,7 @@ const bodySchema = z.object({ rows: z.array(rowSchema).min(1).max(5) });
 type Result = { line: number; name: string; status: "created" | "skipped" | "failed"; message: string; slug?: string };
 
 export async function POST(req: Request) {
-  const guard = await requireAdmin();
+  const guard = await requireOwner();
   if (guard.error) return guard.error;
 
   const parsed = bodySchema.safeParse(await req.json().catch(() => null));
@@ -162,6 +163,9 @@ export async function POST(req: Request) {
     }
   }
 
-  if (results.some((r) => r.status === "created")) revalidateStore();
+  if (results.some((r) => r.status === "created")) {
+    revalidateStore();
+    await logAdmin(guard.user, "product.import", `${results.filter((r) => r.status === "created").length} products imported`);
+  }
   return NextResponse.json({ results });
 }

@@ -343,3 +343,23 @@ model Review {
   createdAt DateTime @default(now())
 }
 
+
+// Counts attempts per key (for example "login:ip:1.2.3.4") so repeated tries can be slowed down.
+model RateLimit {
+  key       String   @id
+  count     Int      @default(0)
+  resetAt   DateTime
+  updatedAt DateTime @updatedAt
+}
+
+// Who changed what in the admin area.
+model AdminLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  userEmail String
+  action    String
+  detail    String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}

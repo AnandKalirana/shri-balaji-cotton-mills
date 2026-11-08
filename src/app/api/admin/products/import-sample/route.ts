@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireAdmin, dbErrorResponse } from "@/lib/admin-guard";
+import { requireOwner, dbErrorResponse } from "@/lib/admin-guard";
 import { importSampleCatalog } from "@/lib/seed-catalog";
 import { revalidateStore } from "@/lib/revalidate";
 
 export async function POST() {
-  const guard = await requireAdmin();
+  const guard = await requireOwner();
   if (guard.error) return guard.error;
   try {
     const created = await importSampleCatalog(prisma);

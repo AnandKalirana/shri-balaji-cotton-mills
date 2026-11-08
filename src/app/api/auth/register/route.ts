@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hashPassword, setSessionCookie } from "@/lib/auth";
+import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { z } from "zod";
 
 const registerSchema = z.object({
-  fullName: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Invalid email address"),
-  phone: z.string().min(10, "Phone number must be at least 10 digits").optional(),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  fullName: z.string().trim().min(2, "Name must be at least 2 characters").max(80),
+  email: z.string().trim().email("Invalid email address").max(120),
+  phone: z.string().trim().regex(/^(\+91[\s-]?)?[6-9]\d{9}$/, "Enter a valid 10-digit mobile number").optional(),
+  password: z.string().min(10, "Password must be at least 10 characters").max(72, "Password is too long"),
 });
 
 export async function POST(req: Request) {
@@ -22,7 +23,16 @@ export async function POST(req: Request) {
       );
     }
 
-    const { fullName, email, phone, password } = parsed.data;
+    const { fullName, email: rawEmail, phone, password } = parsed.data;
+    const email = rawEmail.toLowerCase();
+
+    const limited = await rateLimit(`register:ip:${clientIp(req)}`, 6, 60 * 60);
+    if (!limited.ok) {
+      return NextResponse.json(
+        { error: "Too many accounts created from this connection. Please try again later." },
+        { status: 429, headers: { "Retry-After": String(limited.retryAfter) } }
+      );
+    }
 
     // Check if user already exists
     const existing = await prisma.user.findFirst({
@@ -40,7 +50,7 @@ export async function POST(req: Request) {
     const user = await prisma.user.create({
       data: {
         fullName,
-        email: email.toLowerCase(),
+        email,
         phone: phone || null,
         passwordHash,
         role: "CUSTOMER",
@@ -60,9 +70,10 @@ export async function POST(req: Request) {
       success: true,
       user: sessionPayload,
     });
-  } catch (error: any) {
+  } catch (error) {
+    console.error("[register]", error instanceof Error ? error.message : error);
     return NextResponse.json(
-      { error: error.message || "Failed to register" },
+      { error: "We couldn't create your account right now. Please try again." },
       { status: 500 }
     );
   }

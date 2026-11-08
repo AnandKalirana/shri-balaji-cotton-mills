@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireAdmin } from "@/lib/admin-guard";
+import { requireOwner } from "@/lib/admin-guard";
 import { getProducts, mapOrder, demoOrders } from "@/lib/catalog";
 import { dashboardStats as demoStats } from "@/lib/data";
 
 export async function GET() {
-  const guard = await requireAdmin();
+  const guard = await requireOwner();
   if (guard.error) return guard.error;
 
   const { products, demo: demoCatalog } = await getProducts({ includeInactive: true });

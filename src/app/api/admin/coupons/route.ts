@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { requireAdmin, dbErrorResponse } from "@/lib/admin-guard";
+import { requireOwner, dbErrorResponse } from "@/lib/admin-guard";
+import { logAdmin } from "@/lib/admin-log";
 
 export async function GET() {
-  const guard = await requireAdmin();
+  const guard = await requireOwner();
   if (guard.error) return guard.error;
   try {
     const rows = await prisma.coupon.findMany({ orderBy: { validFrom: "desc" } });
@@ -36,7 +37,7 @@ const schema = z.object({
 });
 
 export async function POST(req: Request) {
-  const guard = await requireAdmin();
+  const guard = await requireOwner();
   if (guard.error) return guard.error;
 
   const parsed = schema.safeParse(await req.json().catch(() => null));
@@ -60,6 +61,7 @@ export async function POST(req: Request) {
         validUntil: end,
       },
     });
+    await logAdmin(guard.user, "coupon.create", created.id);
     return NextResponse.json({ success: true, id: created.id });
   } catch (error) {
     return dbErrorResponse(error);

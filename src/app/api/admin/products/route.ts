@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { requireAdmin, auditUserId, dbErrorResponse } from "@/lib/admin-guard";
+import { requireAdmin, requireOwner, auditUserId, dbErrorResponse } from "@/lib/admin-guard";
+import { logAdmin } from "@/lib/admin-log";
 import { getProducts } from "@/lib/catalog";
 import { ensureCategory, uniqueSlug } from "@/lib/seed-catalog";
 import { validateImageRef } from "@/lib/images";
@@ -44,7 +45,7 @@ const createSchema = z
   });
 
 export async function POST(req: Request) {
-  const guard = await requireAdmin();
+  const guard = await requireOwner();
   if (guard.error) return guard.error;
 
   const parsed = createSchema.safeParse(await req.json().catch(() => null));
@@ -102,6 +103,7 @@ export async function POST(req: Request) {
     }
 
     revalidateStore();
+    await logAdmin(guard.user, "product.create", slug);
     return NextResponse.json({ success: true, id: product.id, slug });
   } catch (error) {
     return dbErrorResponse(error);

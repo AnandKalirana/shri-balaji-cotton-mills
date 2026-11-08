@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { requireAdmin, dbErrorResponse } from "@/lib/admin-guard";
+import { requireOwner, dbErrorResponse } from "@/lib/admin-guard";
+import { logAdmin } from "@/lib/admin-log";
 import { getStoreSettings } from "@/lib/catalog";
 import { revalidateStore } from "@/lib/revalidate";
 
 export async function GET() {
-  const guard = await requireAdmin();
+  const guard = await requireOwner();
   if (guard.error) return guard.error;
   return NextResponse.json({ settings: await getStoreSettings() });
 }
@@ -33,7 +34,7 @@ const schema = z.object({
 });
 
 export async function PUT(req: Request) {
-  const guard = await requireAdmin();
+  const guard = await requireOwner();
   if (guard.error) return guard.error;
 
   const parsed = schema.safeParse(await req.json().catch(() => null));
@@ -48,6 +49,7 @@ export async function PUT(req: Request) {
       create: { id: "default", ...parsed.data },
     });
     revalidateStore();
+    await logAdmin(guard.user, "settings.update", "Store settings were saved");
     return NextResponse.json({ success: true, settings: saved });
   } catch (error) {
     return dbErrorResponse(error);

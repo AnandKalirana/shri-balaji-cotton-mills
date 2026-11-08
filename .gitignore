@@ -42,3 +42,6 @@ yarn-error.log*
 next-env.d.ts
 public/uploads/
 .tmp-prisma/
+
+# Security audit findings (private: the repository is public)
+.security-audit/
