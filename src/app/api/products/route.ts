@@ -11,6 +11,7 @@ export async function GET(req: Request) {
     });
     return NextResponse.json({ products });
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Search failed" }, { status: 500 });
+    console.error("[products]", error instanceof Error ? error.message : error);
+    return NextResponse.json({ error: "Search failed. Please try again." }, { status: 500 });
   }
 }

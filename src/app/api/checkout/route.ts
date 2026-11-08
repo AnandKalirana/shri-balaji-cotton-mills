@@ -5,6 +5,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { getStoreSettings } from "@/lib/catalog";
 import { CheckoutError, priceCart, releaseExpiredOrders, reserveStock } from "@/lib/checkout";
 import { createRazorpayOrder, razorpayConfigured, RazorpayKeyError } from "@/lib/razorpay";
+import { clientIp, rateLimit } from "@/lib/rate-limit";
 
 const schema = z.object({
   paymentMethod: z.enum(["RAZORPAY", "COD"]),
@@ -50,6 +51,15 @@ export async function POST(req: Request) {
   }
   const { paymentMethod, customer, address, items } = parsed.data;
 
+  // Stops bots and pranksters from flooding orders (each order holds stock).
+  const limited = await rateLimit(`checkout:ip:${clientIp(req)}`, 15, 60 * 60);
+  if (!limited.ok) {
+    return NextResponse.json(
+      { error: "Too many orders from this connection. Please try again in a little while." },
+      { status: 429, headers: { "Retry-After": String(limited.retryAfter) } }
+    );
+  }
+
   try {
     const settings = await getStoreSettings();
     if (paymentMethod === "COD" && !settings.enableCod) {
@@ -63,6 +73,31 @@ export async function POST(req: Request) {
     }
 
     await releaseExpiredOrders(prisma);
+
+    // Per phone number: a few Cash on Delivery orders a day, and a few unpaid online orders at a time.
+    const phone = customer.phone.replace(/[\s-]/g, "").replace(/^\+91/, "");
+    const phoneVariants = [phone, `+91${phone}`, `+91 ${phone}`];
+    if (paymentMethod === "COD") {
+      const codToday = await prisma.order.count({
+        where: {
+          customerPhone: { in: phoneVariants },
+          paymentMethod: "COD",
+          orderStatus: { not: "CANCELLED" },
+          createdAt: { gt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+        },
+      });
+      if (codToday >= 3) {
+        return NextResponse.json(
+          { error: "This phone number has reached today's limit for Cash on Delivery orders. Please pay online or call the store." },
+          { status: 429 }
+        );
+      }
+    } else {
+      const unpaid = await prisma.order.count({ where: { customerPhone: { in: phoneVariants }, orderStatus: "PENDING_PAYMENT" } });
+      if (unpaid >= 5) {
+        return NextResponse.json({ error: "Please complete or wait for your earlier unpaid orders before placing another." }, { status: 429 });
+      }
+    }
     const user = await getCurrentUser();
     const userId = user ? (await prisma.user.findUnique({ where: { id: user.id }, select: { id: true } }))?.id ?? null : null;
 

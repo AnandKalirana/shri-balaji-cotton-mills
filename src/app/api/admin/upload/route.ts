@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 import { randomUUID } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { requireAdmin } from "@/lib/admin-guard";
+import { requireOwner } from "@/lib/admin-guard";
 import { supabaseConfigured, uploadToSupabase } from "@/lib/supabase-storage";
+import { sniffImage } from "@/lib/image-sniff";
 
 const MAX_BYTES = 5 * 1024 * 1024;
 const TYPES: Record<string, string> = {
@@ -17,7 +18,7 @@ const TYPES: Record<string, string> = {
  * Uses Supabase Storage when configured, otherwise public/uploads (local development only).
  */
 export async function POST(req: Request) {
-  const guard = await requireAdmin();
+  const guard = await requireOwner();
   if (guard.error) return guard.error;
 
   const form = await req.formData().catch(() => null);
@@ -29,8 +30,13 @@ export async function POST(req: Request) {
   if (!ext) return NextResponse.json({ error: "Only JPG, PNG or WebP images are allowed." }, { status: 400 });
   if (file.size > MAX_BYTES) return NextResponse.json({ error: "Image must be 5 MB or smaller." }, { status: 400 });
 
-  const name = `${Date.now()}-${randomUUID().slice(0, 8)}.${ext}`;
   const bytes = await file.arrayBuffer();
+  // The file's own bytes decide its type, not the name or type the browser claims.
+  const real = sniffImage(new Uint8Array(bytes));
+  if (!real || real !== file.type) {
+    return NextResponse.json({ error: "That file isn't a real JPG, PNG or WebP image." }, { status: 400 });
+  }
+  const name = `${Date.now()}-${randomUUID().slice(0, 8)}.${ext}`;
 
   if (supabaseConfigured()) {
     try {

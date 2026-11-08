@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 import readXlsxFile from "read-excel-file/node";
 import { prisma } from "@/lib/prisma";
-import { requireAdmin, dbErrorResponse } from "@/lib/admin-guard";
+import { requireOwner, dbErrorResponse } from "@/lib/admin-guard";
 import { categories } from "@/lib/data";
 import { MAX_IMPORT_BYTES, parseCsv, parseTable } from "@/lib/product-import";
 
 /** Reads an uploaded .xlsx or .csv file and reports what would be imported. Saves nothing. */
 export async function POST(req: Request) {
-  const guard = await requireAdmin();
+  const guard = await requireOwner();
   if (guard.error) return guard.error;
 
   const form = await req.formData().catch(() => null);
@@ -39,13 +39,18 @@ export async function POST(req: Request) {
   const { rows, warnings } = parseTable(table, { category, stock });
 
   try {
-    const skus = rows.flatMap((r) => (r.row?.designNo ? [`SBCM-${r.row.designNo}`.toUpperCase()] : []));
-    const taken = skus.length
-      ? new Set((await prisma.productVariant.findMany({ where: { sku: { in: skus } }, select: { sku: true } })).map((v) => v.sku))
-      : new Set<string>();
+    const bases = [...new Set(rows.flatMap((r) => (r.row?.designNo ? [`SBCM-${r.row.designNo}`.toUpperCase()] : [])))];
+    // A product counts as already imported if it has the plain code or any size/colour code that starts with it.
+    const found = bases.length
+      ? await prisma.productVariant.findMany({
+          where: { OR: bases.flatMap((b) => [{ sku: b }, { sku: { startsWith: `${b}-` } }]) },
+          select: { sku: true },
+        })
+      : [];
+    const isTaken = (base: string) => found.some((v) => v.sku === base || v.sku.startsWith(`${base}-`));
     const existing = rows.filter((r) => r.row).map((r) => ({
       line: r.line,
-      duplicate: r.row!.designNo ? taken.has(`SBCM-${r.row!.designNo}`.toUpperCase()) : false,
+      duplicate: r.row!.designNo ? isTaken(`SBCM-${r.row!.designNo}`.toUpperCase()) : false,
     }));
     const dup = new Set(existing.filter((e) => e.duplicate).map((e) => e.line));
 

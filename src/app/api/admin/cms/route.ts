@@ -1,14 +1,15 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { requireAdmin, dbErrorResponse } from "@/lib/admin-guard";
+import { requireOwner, dbErrorResponse } from "@/lib/admin-guard";
+import { logAdmin } from "@/lib/admin-log";
 import { getActiveBanner, getStoreSettings } from "@/lib/catalog";
 import { DEFAULT_HERO } from "@/lib/hero";
 import { validateImageRef } from "@/lib/images";
 import { revalidateStore } from "@/lib/revalidate";
 
 export async function GET() {
-  const guard = await requireAdmin();
+  const guard = await requireOwner();
   if (guard.error) return guard.error;
 
   const [banner, settings] = await Promise.all([getActiveBanner(), getStoreSettings()]);
@@ -48,7 +49,7 @@ const saveSchema = z.object({
 });
 
 export async function PUT(req: Request) {
-  const guard = await requireAdmin();
+  const guard = await requireOwner();
   if (guard.error) return guard.error;
 
   const parsed = saveSchema.safeParse(await req.json().catch(() => null));
@@ -71,6 +72,7 @@ export async function PUT(req: Request) {
       return [s, b] as const;
     });
     revalidateStore();
+    await logAdmin(guard.user, "cms.update", "Banner or announcement was saved");
     return NextResponse.json({ success: true, settings: savedSettings, banner: savedBanner });
   } catch (error) {
     return dbErrorResponse(error);

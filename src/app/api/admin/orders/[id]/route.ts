@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin, dbErrorResponse } from "@/lib/admin-guard";
+import { logAdmin } from "@/lib/admin-log";
 import { mapOrder, demoOrders } from "@/lib/catalog";
 import { toDbStatus } from "@/lib/order-status";
 
@@ -65,6 +66,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
         ...(courierPartner !== undefined ? { courierPartner: courierPartner || null } : {}),
       },
     });
+    await logAdmin(guard.user, "order.update", `${updated.orderNumber} -> ${updated.orderStatus}${trackingNumber ? ", tracking added" : ""}`);
     return NextResponse.json({ success: true, status: updated.orderStatus });
   } catch (error) {
     return dbErrorResponse(error);

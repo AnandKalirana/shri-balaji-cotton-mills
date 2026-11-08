@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { requireAdmin, auditUserId, dbErrorResponse } from "@/lib/admin-guard";
+import { requireOwner, auditUserId, dbErrorResponse } from "@/lib/admin-guard";
+import { logAdmin } from "@/lib/admin-log";
 import { validateImageRef } from "@/lib/images";
 import { revalidateStore } from "@/lib/revalidate";
 import { colourHex } from "@/lib/colours";
@@ -20,7 +21,7 @@ function readColourImages(v: unknown): Record<string, string[]> {
 }
 
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const guard = await requireAdmin();
+  const guard = await requireOwner();
   if (guard.error) return guard.error;
   const { id } = await params;
   try {
@@ -58,7 +59,7 @@ const putSchema = z.object({
 });
 
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const guard = await requireAdmin();
+  const guard = await requireOwner();
   if (guard.error) return guard.error;
   const { id } = await params;
 
@@ -169,6 +170,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     });
 
     revalidateStore();
+    await logAdmin(guard.user, "product.options", id);
     return NextResponse.json({ success: true });
   } catch (error) {
     return dbErrorResponse(error);
