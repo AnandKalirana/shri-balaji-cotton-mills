@@ -35,11 +35,11 @@ export default async function CategoryPage({
   const { products: categoryProducts } = await getProducts({ category: slug });
 
   return (
-    <div className="min-h-screen bg-[#ffffff]">
+    <div className="min-h-screen bg-white">
       {/* Category Banner */}
-      <section className="bg-[#111111] text-[#faf7f2] py-12 sm:py-16 md:py-20 border-b border-[#333333]">
+      <section className="bg-ink-deep text-cream py-12 sm:py-16 md:py-20 border-b border-charcoal">
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10">
-          <div className="flex items-center gap-2 text-xs font-medium text-[#c5a880] mb-3">
+          <div className="flex items-center gap-2 text-xs font-medium text-sand mb-3">
             <Link href="/" className="hover:underline">Home</Link>
             <span>/</span>
             <span>Collections</span>
@@ -49,7 +49,7 @@ export default async function CategoryPage({
             {category.name}
           </h1>
 
-          <p className="text-sm sm:text-base text-[#d8c2bb] max-w-2xl leading-relaxed">
+          <p className="text-sm sm:text-base text-blush max-w-2xl leading-relaxed">
             {category.description}
           </p>
         </div>
@@ -58,8 +58,8 @@ export default async function CategoryPage({
       {/* Product Grid Area */}
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 py-10 sm:py-14">
         {/* Sub-header / Filters */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 mb-8 border-b border-[#e5e5e3]">
-          <p className="text-xs font-medium text-[#6f6f6f]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 mb-8 border-b border-line">
+          <p className="text-xs font-medium text-muted">
             Displaying {categoryProducts.length} Heirloom Creations
           </p>
 
@@ -71,8 +71,8 @@ export default async function CategoryPage({
                 href={`/category/${c.slug}`}
                 className={`px-3 py-1.5 text-xs font-medium whitespace-nowrap transition-colors border ${
                   c.slug === slug
-                    ? "bg-[#5c1d24] text-white border-[#5c1d24]"
-                    : "border-[#e5e5e3] text-[#444444] hover:border-[#c5a880]"
+                    ? "bg-wine text-white border-wine"
+                    : "border-line text-graphite hover:border-sand"
                 }`}
               >
                 {c.name}
@@ -84,15 +84,15 @@ export default async function CategoryPage({
         {/* Adaptive Grid */}
         {categoryProducts.length === 0 ? (
           <div className="py-20 text-center">
-            <p className="font-[family-name:var(--font-playfair)] text-xl text-[#1a1a1a] mb-2">
+            <p className="font-[family-name:var(--font-playfair)] text-xl text-ink mb-2">
               New Looms in Preparation
             </p>
-            <p className="text-xs text-[#6f6f6f] mb-6">
+            <p className="text-xs text-muted mb-6">
               Our master weavers are currently finishing this batch. Check back soon.
             </p>
             <Link
               href="/"
-              className="inline-flex px-6 py-3 border border-[#c5a880] text-xs font-medium hover:bg-[#faf7f2]"
+              className="inline-flex px-6 py-3 border border-sand text-xs font-medium hover:bg-cream"
             >
               Back to Home
             </Link>

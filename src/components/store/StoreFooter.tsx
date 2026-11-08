@@ -43,7 +43,7 @@ export function StoreFooter(props: StoreFooterProps) {
     { label: "YouTube", href: youtubeUrl },
   ].filter((x) => x.href);
   return (
-    <footer className="bg-[#111111] text-[#faf7f2] mt-auto border-t border-[#333333]">
+    <footer className="bg-ink-deep text-cream mt-auto border-t border-charcoal">
       {/* Main footer */}
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 py-12 md:py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
@@ -51,7 +51,7 @@ export function StoreFooter(props: StoreFooterProps) {
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
             <Logo tone="light" alt={storeName} className="h-9 mb-4" />
-            <p className="text-sm text-[#d8c2bb] leading-relaxed max-w-xs">
+            <p className="text-sm text-blush leading-relaxed max-w-xs">
               Fabrics, kurta sets, kurtis, stretchy blouses, saree shapewear and men&apos;s wear, delivered across India.
             </p>
             {socials.length > 0 && (
@@ -62,7 +62,7 @@ export function StoreFooter(props: StoreFooterProps) {
                     href={x.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-4 h-9 rounded-full inline-flex items-center border border-[#333333] text-xs tracking-wide text-[#d8c2bb] hover:border-[#c5a880] hover:text-[#c5a880] transition-colors"
+                    className="px-4 h-9 rounded-full inline-flex items-center border border-charcoal text-xs tracking-wide text-blush hover:border-sand hover:text-sand transition-colors"
                   >
                     {x.label}
                   </a>
@@ -73,7 +73,7 @@ export function StoreFooter(props: StoreFooterProps) {
 
           {/* Shop */}
           <div>
-            <h3 className="text-xs font-medium text-[#c5a880] mb-4">
+            <h3 className="text-xs font-medium text-sand mb-4">
               Shop
             </h3>
             <ul className="space-y-3">
@@ -81,7 +81,7 @@ export function StoreFooter(props: StoreFooterProps) {
                 <li key={cat.id}>
                   <Link
                     href={`/category/${cat.slug}`}
-                    className="text-sm text-[#d8c2bb] hover:text-white transition-colors"
+                    className="text-sm text-blush hover:text-white transition-colors"
                   >
                     {cat.name}
                   </Link>
@@ -92,7 +92,7 @@ export function StoreFooter(props: StoreFooterProps) {
 
           {/* Help */}
           <div>
-            <h3 className="text-xs font-medium text-[#c5a880] mb-4">
+            <h3 className="text-xs font-medium text-sand mb-4">
               Customer Services
             </h3>
             <ul className="space-y-3">
@@ -104,7 +104,7 @@ export function StoreFooter(props: StoreFooterProps) {
                 { label: "Contact Us", href: "/contact" },
               ].map((item) => (
                 <li key={item.href}>
-                  <Link href={item.href} className="text-sm text-[#d8c2bb] hover:text-white transition-colors">
+                  <Link href={item.href} className="text-sm text-blush hover:text-white transition-colors">
                     {item.label}
                   </Link>
                 </li>
@@ -114,44 +114,44 @@ export function StoreFooter(props: StoreFooterProps) {
 
           {/* Contact */}
           <div>
-            <h3 className="text-xs font-medium text-[#c5a880] mb-4">
+            <h3 className="text-xs font-medium text-sand mb-4">
               Contact Us
             </h3>
-            <div className="space-y-3 text-sm text-[#d8c2bb]">
+            <div className="space-y-3 text-sm text-blush">
               {address && (
                 <div className="flex items-start gap-2.5">
-                  <MapPin className="w-4 h-4 text-[#c5a880] shrink-0 mt-0.5" />
+                  <MapPin className="w-4 h-4 text-sand shrink-0 mt-0.5" />
                   <span className="whitespace-pre-line">{address}</span>
                 </div>
               )}
               {phone && (
                 <div className="flex items-center gap-2.5">
-                  <Phone className="w-4 h-4 text-[#c5a880] shrink-0" />
+                  <Phone className="w-4 h-4 text-sand shrink-0" />
                   <a href={`tel:${phone.replace(/[^+\d]/g, "")}`} className="hover:text-white transition-colors">{phone}</a>
                 </div>
               )}
               {email && (
                 <div className="flex items-center gap-2.5">
-                  <Mail className="w-4 h-4 text-[#c5a880] shrink-0" />
+                  <Mail className="w-4 h-4 text-sand shrink-0" />
                   <a href={`mailto:${email}`} className="hover:text-white transition-colors">{email}</a>
                 </div>
               )}
-              {businessHours && <p className="pt-2 text-xs text-[#6f6f6f]">{businessHours}</p>}
+              {businessHours && <p className="pt-2 text-xs text-muted">{businessHours}</p>}
             </div>
           </div>
         </div>
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t border-[#333333]">
+      <div className="border-t border-charcoal">
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="text-xs text-[#6f6f6f]">
+          <p className="text-xs text-muted">
             © {new Date().getFullYear()} {legalName || storeName}. All rights reserved.
             {gstin && <span className="ml-2">GSTIN: {gstin}</span>}
           </p>
           <div className="flex gap-4">
-            <Link href="/admin" className="text-xs text-[#c5a880] hover:underline">
-              Staff Login →
+            <Link href="/admin" className="text-xs text-sand hover:underline">
+              Staff login
             </Link>
           </div>
         </div>
