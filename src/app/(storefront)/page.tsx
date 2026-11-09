@@ -37,7 +37,7 @@ export default async function HomePage() {
       {hero.imageOnly && hero.desktopImg ? (
         <section>
           <h1 className="sr-only">{heroLines.join(" ")}</h1>
-          <div className="relative w-full bg-[#f8f3ea]">
+          <div className="relative w-full bg-cream-warm">
             <Image
               src={hero.desktopImg}
               alt=""
@@ -62,13 +62,13 @@ export default async function HomePage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 px-4 py-6">
             <Link
               href={hero.ctaLink}
-              className="w-full sm:w-auto sm:min-w-[200px] px-8 py-3 bg-[#1a1a1a] text-white text-sm font-medium hover:bg-[#5c1d24] transition-colors min-h-[48px] flex items-center justify-center"
+              className="w-full sm:w-auto sm:min-w-[200px] px-8 py-3 bg-ink text-white text-sm font-medium hover:bg-wine transition-colors min-h-[48px] flex items-center justify-center"
             >
               {hero.ctaText}
             </Link>
             <Link
               href="/category/fabrics"
-              className="w-full sm:w-auto sm:min-w-[200px] px-8 py-3 border border-[#1a1a1a] text-[#1a1a1a] text-sm font-medium hover:bg-[#1a1a1a] hover:text-white transition-colors min-h-[48px] flex items-center justify-center"
+              className="w-full sm:w-auto sm:min-w-[200px] px-8 py-3 border border-ink text-ink text-sm font-medium hover:bg-ink hover:text-white transition-colors min-h-[48px] flex items-center justify-center"
             >
               Order fabric by the metre
             </Link>
@@ -76,7 +76,7 @@ export default async function HomePage() {
         </section>
       ) : (
       <>
-      <section className="relative min-h-[560px] sm:min-h-[640px] lg:min-h-[720px] flex items-center justify-center bg-[#d9d5cf] text-white overflow-hidden">
+      <section className="relative min-h-[560px] sm:min-h-[640px] lg:min-h-[720px] flex items-center justify-center bg-stone text-white overflow-hidden">
         {/* Full-bleed photo (only when a real one is set) */}
         {hero.desktopImg ? (
           <div className="absolute inset-0 z-0">
@@ -101,7 +101,7 @@ export default async function HomePage() {
             <div className="absolute inset-0 bg-black/30" />
           </div>
         ) : (
-          <div className="absolute inset-0 z-0 bg-[#5c1d24]" />
+          <div className="absolute inset-0 z-0 bg-wine" />
         )}
 
         {/* Hero Content */}
@@ -127,14 +127,14 @@ export default async function HomePage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               href={hero.ctaLink}
-              className="w-full sm:w-auto sm:min-w-[200px] px-8 py-3 bg-white text-[#1a1a1a] text-sm font-medium hover:bg-[#1a1a1a] hover:text-white transition-colors min-h-[48px] flex items-center justify-center"
+              className="w-full sm:w-auto sm:min-w-[200px] px-8 py-3 bg-white text-ink text-sm font-medium hover:bg-ink hover:text-white transition-colors min-h-[48px] flex items-center justify-center"
             >
               {hero.ctaText}
             </Link>
 
             <Link
               href="/category/fabrics"
-              className="w-full sm:w-auto sm:min-w-[200px] px-8 py-3 bg-white text-[#1a1a1a] text-sm font-medium hover:bg-[#1a1a1a] hover:text-white transition-colors min-h-[48px] flex items-center justify-center"
+              className="w-full sm:w-auto sm:min-w-[200px] px-8 py-3 bg-white text-ink text-sm font-medium hover:bg-ink hover:text-white transition-colors min-h-[48px] flex items-center justify-center"
             >
               Order fabric by the metre
             </Link>
@@ -151,17 +151,17 @@ export default async function HomePage() {
       <section className="py-16 sm:py-24 max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 w-full">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 sm:mb-14 pb-2">
           <div>
-            <span className="text-xs sm:text-xs font-medium text-[#5c1d24]">
+            <span className="text-xs sm:text-xs font-medium text-wine">
               Handpicked for You
             </span>
-            <h2 className="font-[family-name:var(--font-playfair)] text-2xl sm:text-4xl font-normal text-[#1a1a1a] mt-1">
+            <h2 className="font-[family-name:var(--font-playfair)] text-2xl sm:text-4xl font-normal text-ink mt-1">
               Featured Products
             </h2>
           </div>
 
           <Link
             href="/category/fabrics"
-            className="inline-flex items-center gap-2 text-xs font-medium text-[#5c1d24] hover:text-[#1a1a1a] transition-colors"
+            className="inline-flex items-center gap-2 text-xs font-medium text-wine hover:text-ink transition-colors"
           >
             <span>View All Products</span>
             <ArrowRight className="w-4 h-4" />
@@ -179,39 +179,39 @@ export default async function HomePage() {
       </section>
 
       {/* 4. Fabric by the Metre Highlight (Dual Inventory Banner) */}
-      <section className="bg-[#f5f5f3] py-16 sm:py-20">
+      <section className="bg-mist py-16 sm:py-20">
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Text column */}
             <div className="lg:col-span-5">
-              <span className="text-xs font-medium text-[#5c1d24]">
+              <span className="text-xs font-medium text-wine">
                 Fabric by the Metre
               </span>
-              <h2 className="font-[family-name:var(--font-playfair)] text-3xl sm:text-4xl font-normal text-[#1a1a1a] mt-2 mb-4 leading-tight">
+              <h2 className="font-[family-name:var(--font-playfair)] text-3xl sm:text-4xl font-normal text-ink mt-2 mb-4 leading-tight">
                 Order by the Metre or Complete Thaan
               </h2>
-              <p className="text-sm sm:text-base text-[#444444] leading-relaxed mb-6">
+              <p className="text-sm sm:text-base text-graphite leading-relaxed mb-6">
                 Order fabric in cuts as small as 0.5m. Boutiques and tailors can also order full rolls (thaans) of 25m or 50m at wholesale rates.
               </p>
 
               <div className="space-y-3 mb-8">
-                <div className="flex items-center gap-3 text-xs sm:text-sm text-[#1a1a1a]">
-                  <span className="w-5 h-5 bg-[#5c1d24] text-white flex items-center justify-center rounded-none"><Check size={14} strokeWidth={1.5} /></span>
+                <div className="flex items-center gap-3 text-xs sm:text-sm text-ink">
+                  <span className="w-5 h-5 bg-wine text-white flex items-center justify-center rounded-none"><Check size={14} strokeWidth={1.5} /></span>
                   <span>Cut to length from 0.5 metre, with a neat pinked edge</span>
                 </div>
-                <div className="flex items-center gap-3 text-xs sm:text-sm text-[#1a1a1a]">
-                  <span className="w-5 h-5 bg-[#5c1d24] text-white flex items-center justify-center rounded-none"><Check size={14} strokeWidth={1.5} /></span>
+                <div className="flex items-center gap-3 text-xs sm:text-sm text-ink">
+                  <span className="w-5 h-5 bg-wine text-white flex items-center justify-center rounded-none"><Check size={14} strokeWidth={1.5} /></span>
                   <span>Automatic 12% savings on uncut standard thaan bolts (25m)</span>
                 </div>
-                <div className="flex items-center gap-3 text-xs sm:text-sm text-[#1a1a1a]">
-                  <span className="w-5 h-5 bg-[#5c1d24] text-white flex items-center justify-center rounded-none"><Check size={14} strokeWidth={1.5} /></span>
+                <div className="flex items-center gap-3 text-xs sm:text-sm text-ink">
+                  <span className="w-5 h-5 bg-wine text-white flex items-center justify-center rounded-none"><Check size={14} strokeWidth={1.5} /></span>
                   <span>Quality-checked fabric, cut fresh for every order</span>
                 </div>
               </div>
 
               <Link
                 href="/category/fabrics"
-                className="inline-flex px-8 py-3.5 bg-[#1a1a1a] text-white text-xs font-medium hover:bg-[#5c1d24] transition-colors min-h-[48px] items-center justify-center"
+                className="inline-flex px-8 py-3.5 bg-ink text-white text-xs font-medium hover:bg-wine transition-colors min-h-[48px] items-center justify-center"
               >
                 Browse Fabrics by Metre
               </Link>
@@ -233,42 +233,42 @@ export default async function HomePage() {
       <section className="py-14 sm:py-16 max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="flex items-start gap-4">
-            <div className="w-6 h-6 shrink-0 flex items-center justify-center text-[#1a1a1a]">
+            <div className="w-6 h-6 shrink-0 flex items-center justify-center text-ink">
               <Shield className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="font-semibold text-sm text-[#1a1a1a]">Quality You Can Trust</h4>
-              <p className="text-xs text-[#6f6f6f] mt-1">Carefully checked cotton, silk and stretch fabrics in every order.</p>
+              <h4 className="font-semibold text-sm text-ink">Quality You Can Trust</h4>
+              <p className="text-xs text-muted mt-1">Carefully checked cotton, silk and stretch fabrics in every order.</p>
             </div>
           </div>
 
           <div className="flex items-start gap-4">
-            <div className="w-6 h-6 shrink-0 flex items-center justify-center text-[#1a1a1a]">
+            <div className="w-6 h-6 shrink-0 flex items-center justify-center text-ink">
               <Truck className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="font-semibold text-sm text-[#1a1a1a]">Pan-India Delivery</h4>
-              <p className="text-xs text-[#6f6f6f] mt-1">Free delivery above ₹2,000 via trusted couriers with live tracking.</p>
+              <h4 className="font-semibold text-sm text-ink">Pan-India Delivery</h4>
+              <p className="text-xs text-muted mt-1">Free delivery above ₹2,000 via trusted couriers with live tracking.</p>
             </div>
           </div>
 
           <div className="flex items-start gap-4">
-            <div className="w-6 h-6 shrink-0 flex items-center justify-center text-[#1a1a1a]">
+            <div className="w-6 h-6 shrink-0 flex items-center justify-center text-ink">
               <Compass className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="font-semibold text-sm text-[#1a1a1a]">Cut to Your Length</h4>
-              <p className="text-xs text-[#6f6f6f] mt-1">Order the exact metres you need for kurtas, blouses or suits.</p>
+              <h4 className="font-semibold text-sm text-ink">Cut to Your Length</h4>
+              <p className="text-xs text-muted mt-1">Order the exact metres you need for kurtas, blouses or suits.</p>
             </div>
           </div>
 
           <div className="flex items-start gap-4">
-            <div className="w-6 h-6 shrink-0 flex items-center justify-center text-[#1a1a1a]">
+            <div className="w-6 h-6 shrink-0 flex items-center justify-center text-ink">
               <MessageCircle className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="font-semibold text-sm text-[#1a1a1a]">WhatsApp Support</h4>
-              <p className="text-xs text-[#6f6f6f] mt-1">Ask us about sizes, fabrics and orders on WhatsApp.</p>
+              <h4 className="font-semibold text-sm text-ink">WhatsApp Support</h4>
+              <p className="text-xs text-muted mt-1">Ask us about sizes, fabrics and orders on WhatsApp.</p>
             </div>
           </div>
         </div>

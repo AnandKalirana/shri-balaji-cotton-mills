@@ -44,7 +44,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
       {/* Image Container with 4:5 aspect ratio */}
       <Link
         href={`/product/${product.slug}`}
-        className="relative block w-full aspect-[4/5] overflow-hidden bg-[#f3f3f1]"
+        className="relative block w-full aspect-[4/5] overflow-hidden bg-fog"
       >
         <Image
           src={imageSrc}
@@ -71,14 +71,14 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           }}
           aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
           aria-pressed={wishlisted}
-          className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-white flex items-center justify-center text-[#5c1d24] hover:bg-white active:scale-90 transition-all"
+          className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-white flex items-center justify-center text-wine hover:bg-white active:scale-90 transition-[transform,background-color,color]"
         >
-          <Heart className={wishlisted ? "w-4 h-4 fill-[#5c1d24]" : "w-4 h-4"} />
+          <Heart className={wishlisted ? "w-4 h-4 fill-wine" : "w-4 h-4"} />
         </button>
 
         {/* Out of Stock Overlay */}
         {!product.inStock && (
-          <div className="absolute inset-0 bg-[#1a1a1a]/60 flex items-center justify-center">
+          <div className="absolute inset-0 bg-ink/60 flex items-center justify-center">
             <span className="text-xs font-medium text-white px-3 py-1 rounded-full border border-white">
               Archive Only
             </span>
@@ -90,7 +90,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           <button
             onClick={handleQuickAdd}
             aria-label={hasChoices ? `Choose size and colour for ${product.name}` : `Quick add ${product.name} to cart`}
-            className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 w-11 h-11 rounded-full bg-white text-[#1a1a1a] flex items-center justify-center hover:bg-[#1a1a1a] hover:text-white active:scale-90 transition-all duration-300 shadow-lg sm:opacity-0 sm:group-hover:opacity-100 touch-manipulation"
+            className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 w-11 h-11 rounded-full bg-white text-ink flex items-center justify-center hover:bg-ink hover:text-white active:scale-90 transition-[transform,background-color,color,opacity] duration-300 shadow-lg sm:opacity-0 sm:group-hover:opacity-100 touch-manipulation"
           >
             <ShoppingBag className="w-4 h-4" />
           </button>
@@ -101,13 +101,13 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
       <div className="pt-3 pb-1 flex flex-col flex-1 justify-between gap-2 bg-white">
         <div>
           {/* Category / Fabric Type */}
-          <p className="text-xs font-medium text-[#6f6f6f]">
+          <p className="text-xs font-medium text-muted">
             {product.fabricType || product.department}
           </p>
 
           {/* Title */}
           <Link href={`/product/${product.slug}`}>
-            <h3 className="font-[family-name:var(--font-playfair)] text-sm sm:text-base font-medium text-[#1a1a1a] hover:underline mt-1 line-clamp-2 leading-snug">
+            <h3 className="font-[family-name:var(--font-playfair)] text-sm sm:text-base font-medium text-ink hover:underline mt-1 line-clamp-2 leading-snug">
               {product.name}
             </h3>
           </Link>
@@ -123,22 +123,22 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
                 style={{ backgroundColor: c.hex }}
               />
             ))}
-            {colours.length > 5 && <span className="text-[11px] text-[#6f6f6f]">+{colours.length - 5}</span>}
-            <span className="text-[11px] text-[#6f6f6f] ml-1">{colours.length} colours</span>
+            {colours.length > 5 && <span className="text-[11px] text-muted">+{colours.length - 5}</span>}
+            <span className="text-[11px] text-muted ml-1">{colours.length} colours</span>
           </div>
         )}
 
         {/* Price & Metre specs */}
         <div className="flex items-baseline justify-between gap-2">
           <div>
-            <span className="text-sm font-medium text-[#1a1a1a] tabular-nums">
+            <span className="text-sm font-medium text-ink tabular-nums">
               {formatPrice(product.price)}
             </span>
             {product.mrp && (
-              <span className="ml-2 text-xs text-[#6f6f6f] line-through tabular-nums">{formatPrice(product.mrp)}</span>
+              <span className="ml-2 text-xs text-muted line-through tabular-nums">{formatPrice(product.mrp)}</span>
             )}
             {product.pricePerMetre && (
-              <span className="block text-[11px] text-[#6f6f6f]">
+              <span className="block text-[11px] text-muted">
                 {formatPrice(product.pricePerMetre)} / metre
               </span>
             )}
