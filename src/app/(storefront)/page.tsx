@@ -4,12 +4,12 @@ import { Reveal } from "@/components/ui/Reveal";
 import { HeroTone } from "@/components/store/HeroTone";
 import { ShutterSection } from "@/components/store/ShutterSection";
 import { ProductCard } from "@/components/store/ProductCard";
-import { getProducts, getActiveBanner } from "@/lib/catalog";
+import { getProducts, getActiveBanner, getCategoryImages } from "@/lib/catalog";
 import { DEFAULT_HERO } from "@/lib/hero";
 import { ArrowRight, Check, MessageCircle, Shield, Compass, Truck } from "lucide-react";
 
 export default async function HomePage() {
-  const [{ products }, banner] = await Promise.all([getProducts(), getActiveBanner()]);
+  const [{ products }, banner, categoryImages] = await Promise.all([getProducts(), getActiveBanner(), getCategoryImages()]);
   const hero = banner
     ? {
         eyebrow: banner.eyebrow ?? "",
@@ -22,6 +22,10 @@ export default async function HomePage() {
         imageOnly: Boolean((banner as { imageOnly?: boolean }).imageOnly),
       }
     : DEFAULT_HERO;
+  // Stock photos are never shown: a banner with no real photo gets a plain wine background.
+  const realImg = (u: string) => (u && !u.includes("images.unsplash.com") ? u : "");
+  hero.desktopImg = realImg(hero.desktopImg);
+  hero.mobileImg = realImg(hero.mobileImg) || hero.desktopImg;
   const heroLines = hero.title.split("\n");
   const featuredProducts = products.slice(0, 4);
   const fabricProducts = products.filter((p) => p.pricePerMetre).slice(0, 4);
@@ -29,8 +33,8 @@ export default async function HomePage() {
   return (
     <div className="flex flex-col">
       {/* 1. Hero Showcase */}
-      <HeroTone light={hero.imageOnly} />
-      {hero.imageOnly ? (
+      <HeroTone light={hero.imageOnly && Boolean(hero.desktopImg)} />
+      {hero.imageOnly && hero.desktopImg ? (
         <section>
           <h1 className="sr-only">{heroLines.join(" ")}</h1>
           <div className="relative w-full bg-cream-warm">
@@ -73,28 +77,32 @@ export default async function HomePage() {
       ) : (
       <>
       <section className="relative min-h-[560px] sm:min-h-[640px] lg:min-h-[720px] flex items-center justify-center bg-stone text-white overflow-hidden">
-        {/* Full-bleed photo */}
-        <div className="absolute inset-0 z-0">
-          <Image
-            src={hero.desktopImg}
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            className={`object-cover object-center ${hero.mobileImg !== hero.desktopImg ? "hidden md:block" : ""}`}
-          />
-          {hero.mobileImg !== hero.desktopImg && (
+        {/* Full-bleed photo (only when a real one is set) */}
+        {hero.desktopImg ? (
+          <div className="absolute inset-0 z-0">
             <Image
-              src={hero.mobileImg}
+              src={hero.desktopImg}
               alt=""
               fill
               priority
               sizes="100vw"
-              className="object-cover object-center md:hidden"
+              className={`object-cover object-center ${hero.mobileImg !== hero.desktopImg ? "hidden md:block" : ""}`}
             />
-          )}
-          <div className="absolute inset-0 bg-black/30" />
-        </div>
+            {hero.mobileImg !== hero.desktopImg && (
+              <Image
+                src={hero.mobileImg}
+                alt=""
+                fill
+                priority
+                sizes="100vw"
+                className="object-cover object-center md:hidden"
+              />
+            )}
+            <div className="absolute inset-0 bg-black/30" />
+          </div>
+        ) : (
+          <div className="absolute inset-0 z-0 bg-wine" />
+        )}
 
         {/* Hero Content */}
         <Reveal y={16} className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 text-center py-16 sm:py-24">
@@ -137,7 +145,7 @@ export default async function HomePage() {
       )}
 
       {/* 2. Signature Upward Shutter Section */}
-      <ShutterSection />
+      <ShutterSection images={categoryImages} />
 
       {/* 3. Featured Masterpieces Grid */}
       <section className="py-16 sm:py-24 max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 w-full">

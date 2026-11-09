@@ -37,7 +37,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 
   const imageSrc =
     product.images?.[0] ||
-    "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800";
+    "/placeholder.png";
 
   return (
     <div className="group relative flex flex-col bg-white">

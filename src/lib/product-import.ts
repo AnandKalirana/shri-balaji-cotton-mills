@@ -4,6 +4,8 @@ import { categories } from "@/lib/data";
 export interface ImportRow {
   line: number;
   designNo: string;
+  /** Design number plus category, so 101 in kurta sets and 101 in shapewear stay different products. */
+  code: string;
   name: string;
   mrp?: number;
   price: number;
@@ -113,9 +115,13 @@ function urls(v: unknown): string[] {
   return [...new Set(found)].slice(0, 6);
 }
 
+/** Other spellings people use in sheets for the categories we have. */
+const CATEGORY_ALIASES: Record<string, string> = { kurta: "kurti", kurtas: "kurti", kurtis: "kurti", fabric: "fabrics" };
+
 function categorySlug(v: string, fallback: string): string | null {
   if (!v) return fallback;
   const n = norm(v);
+  if (CATEGORY_ALIASES[n]) return CATEGORY_ALIASES[n];
   const hit = categories.find((c) => norm(c.slug) === n || norm(c.name) === n);
   return hit ? hit.slug : null;
 }
@@ -157,8 +163,12 @@ export function parseTable(table: unknown[][], defaults: ImportDefaults): { rows
     const designNo = text(get("designNo")).replace(/\s+/g, "");
     const category = categorySlug(text(get("category")), defaults.category);
     const stockCell = money(get("stock"));
-    const sizes = list(get("sizes"));
-    const colours = list(get("colours"));
+    const isFabric = category === "fabrics";
+    // Fabric is sold by the metre: there are no sizes ("Per Metre" in the sheet is not a size).
+    // The colour names are kept in the description, because the photo shows one colourway.
+    const sizes = isFabric ? [] : list(get("sizes"));
+    const allColours = list(get("colours"));
+    const colours = isFabric ? [] : allColours;
 
     if (name.length < 2) errors.push("Product name is missing.");
     if (name.length > 140) errors.push("Product name is longer than 140 characters.");
@@ -170,6 +180,11 @@ export function parseTable(table: unknown[][], defaults: ImportDefaults): { rows
 
     const details = text(get("description"));
     const parts = [details || name];
+    if (isFabric) {
+      parts.push("Sold per metre.");
+      if (allColours.length) parts.push(`Colour shown: ${allColours[0]}.`);
+      if (allColours.length > 1) parts.push(`Also made in: ${allColours.slice(1).join(", ")}. Message us on WhatsApp to order another colour.`);
+    }
     if (designNo) parts.push(`Design no. ${designNo}`);
     const description = parts.join("\n\n").slice(0, 4000);
 
@@ -181,6 +196,7 @@ export function parseTable(table: unknown[][], defaults: ImportDefaults): { rows
         : {
             line,
             designNo,
+            code: designNo && category ? `${category}-${designNo}` : "",
             name,
             mrp,
             price: price!,
