@@ -144,7 +144,7 @@ export function parseTable(table: unknown[][], defaults: ImportDefaults): { rows
   }
   if (col.name === undefined) warnings.push("No product name column found. Add a column called “Product Name”.");
   if (col.price === undefined) warnings.push("No price column found. Add a column called “Selling Price”.");
-  if (col.images === undefined) warnings.push("No photo column found. Add a column called “Image URL”.");
+  if (col.images === undefined) warnings.push("No photo column found. Add a column called “Image URL”, or upload the photo files on this screen.");
 
   const rows: ParsedRow[] = [];
   const dataRows = table.slice(1, MAX_IMPORT_ROWS + 1);
@@ -173,7 +173,6 @@ export function parseTable(table: unknown[][], defaults: ImportDefaults): { rows
     if (name.length < 2) errors.push("Product name is missing.");
     if (name.length > 140) errors.push("Product name is longer than 140 characters.");
     if (!price || price <= 0) errors.push("Selling price is missing or not a number.");
-    if (!images.length) errors.push("No photo link found.");
     if (category === null) errors.push(`Unknown category “${text(get("category"))}”.`);
     if (stockCell !== undefined && (stockCell < 0 || !Number.isInteger(stockCell))) errors.push("Stock must be a whole number, 0 or more.");
     if (mrp !== undefined && price && mrp <= price) mrp = undefined; // no discount to show
@@ -222,6 +221,49 @@ export function parseTable(table: unknown[][], defaults: ImportDefaults): { rows
     } else seen.add(k);
   }
   return { rows, warnings };
+}
+
+/**
+ * Matches photo file names to design numbers. "5001.jpg" is the main photo of design 5001,
+ * and "5001-2.jpg", "5001_back.jpg" or "5001 (2).jpg" are extra photos of the same design.
+ * Returns, for each design number, its file names in order, plus the names that matched nothing.
+ */
+export function matchPhotos(fileNames: string[], designNos: string[]): { byDesign: Map<string, string[]>; unmatched: string[] } {
+  const key = (d: string) => d.toLowerCase().replace(/\s+/g, "");
+  const designs = [...new Set(designNos.filter(Boolean))].sort((a, b) => b.length - a.length); // longest first: "5001" beats "5"
+  const found = new Map<string, { name: string; rest: string }[]>();
+  const unmatched: string[] = [];
+
+  for (const name of fileNames) {
+    const stem = key(name.replace(/\.[a-z0-9]+$/i, ""));
+    let hit: { design: string; rest: string } | null = null;
+    for (const d of designs) {
+      const k = key(d);
+      if (stem === k) {
+        hit = { design: d, rest: "" };
+        break;
+      }
+      const m = stem.startsWith(k) && /^[-_(.]/.test(stem.slice(k.length));
+      if (m) {
+        hit = { design: d, rest: stem.slice(k.length) };
+        break;
+      }
+    }
+    if (!hit) {
+      unmatched.push(name);
+      continue;
+    }
+    const list = found.get(hit.design) ?? [];
+    list.push({ name, rest: hit.rest });
+    found.set(hit.design, list);
+  }
+
+  const byDesign = new Map<string, string[]>();
+  for (const [d, list] of found) {
+    list.sort((a, b) => a.rest.localeCompare(b.rest, undefined, { numeric: true }));
+    byDesign.set(d, list.map((x) => x.name).slice(0, 6));
+  }
+  return { byDesign, unmatched };
 }
 
 export const TEMPLATE_CSV =

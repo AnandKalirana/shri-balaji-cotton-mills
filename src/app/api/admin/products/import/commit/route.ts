@@ -9,6 +9,16 @@ import { revalidateStore } from "@/lib/revalidate";
 import { colourHex } from "@/lib/colours";
 import { combos, variantSku } from "@/lib/variants";
 
+/** True for a photo already in our own Supabase storage (uploaded on the import screen): no need to download it again. */
+function isOwnStorageUrl(url: string): boolean {
+  try {
+    const own = process.env.SUPABASE_URL ? new URL(process.env.SUPABASE_URL).hostname : null;
+    return Boolean(own) && new URL(url).hostname === own;
+  } catch {
+    return false;
+  }
+}
+
 const rowSchema = z.object({
   line: z.number().int(),
   designNo: z.string().max(40),
@@ -106,7 +116,7 @@ export async function POST(req: Request) {
       let photoError = "";
       for (const url of d.images) {
         try {
-          stored.push(await copyRemoteImage(url));
+          stored.push(isOwnStorageUrl(url) ? url : await copyRemoteImage(url));
         } catch (e) {
           photoError = e instanceof Error ? e.message : "A photo couldn't be copied.";
           if (!stored.length) break;
