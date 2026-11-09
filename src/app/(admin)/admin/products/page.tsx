@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/Button";
 import type { Product } from "@/lib/types";
 import { ProductFilters, filterProducts, EMPTY_FILTERS, type ProductFilterState } from "@/components/admin/ProductFilters";
 
-const FALLBACK_IMG = "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800";
+const FALLBACK_IMG = "/placeholder.png";
 const card = "bg-white border border-[#e5e5e3]/70 rounded-2xl shadow-[0_1px_2px_rgba(43,30,26,0.04)]";
 
 const fetchProducts = () => api<{ products: Product[]; demo: boolean }>("/api/admin/products");

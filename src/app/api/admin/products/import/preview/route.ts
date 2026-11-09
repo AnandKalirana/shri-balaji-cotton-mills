@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { requireOwner, dbErrorResponse } from "@/lib/admin-guard";
 import { categories } from "@/lib/data";
 import { MAX_IMPORT_BYTES, parseCsv, parseTable } from "@/lib/product-import";
+import { variantSku } from "@/lib/variants";
 
 /** Reads an uploaded .xlsx or .csv file and reports what would be imported. Saves nothing. */
 export async function POST(req: Request) {
@@ -39,7 +40,8 @@ export async function POST(req: Request) {
   const { rows, warnings } = parseTable(table, { category, stock });
 
   try {
-    const bases = [...new Set(rows.flatMap((r) => (r.row?.designNo ? [`SBCM-${r.row.designNo}`.toUpperCase()] : [])))];
+    const ok = rows.flatMap((r) => (r.row ? [r.row] : []));
+    const bases = [...new Set(ok.flatMap((r) => (r.code && r.category !== "fabrics" ? [variantSku(r.code, "", "")] : [])))];
     // A product counts as already imported if it has the plain code or any size/colour code that starts with it.
     const found = bases.length
       ? await prisma.productVariant.findMany({
@@ -48,11 +50,16 @@ export async function POST(req: Request) {
         })
       : [];
     const isTaken = (base: string) => found.some((v) => v.sku === base || v.sku.startsWith(`${base}-`));
-    const existing = rows.filter((r) => r.row).map((r) => ({
-      line: r.line,
-      duplicate: r.row!.designNo ? isTaken(`SBCM-${r.row!.designNo}`.toUpperCase()) : false,
-    }));
-    const dup = new Set(existing.filter((e) => e.duplicate).map((e) => e.line));
+    // Fabrics are sold by the metre and have no variants, so they are matched by name.
+    const fabricNames = ok.filter((r) => r.category === "fabrics").map((r) => r.name);
+    const fabricsFound = fabricNames.length
+      ? await prisma.product.findMany({ where: { category: { slug: "fabrics" }, name: { in: fabricNames } }, select: { name: true } })
+      : [];
+    const dup = new Set(
+      ok
+        .filter((r) => (r.category === "fabrics" ? fabricsFound.some((f) => f.name === r.name) : r.code ? isTaken(variantSku(r.code, "", "")) : false))
+        .map((r) => r.line)
+    );
 
     return NextResponse.json({
       warnings,

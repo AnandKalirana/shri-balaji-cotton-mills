@@ -12,6 +12,7 @@ import { combos, variantSku } from "@/lib/variants";
 const rowSchema = z.object({
   line: z.number().int(),
   designNo: z.string().max(40),
+  code: z.string().max(80).optional().default(""),
   name: z.string().trim().min(2).max(140),
   mrp: z.number().positive().optional(),
   price: z.number().positive(),
@@ -42,10 +43,18 @@ export async function POST(req: Request) {
   for (const d of parsed.data.rows) {
     const base = { line: d.line, name: d.name };
     try {
-      const designBase = d.designNo ? `SBCM-${d.designNo}`.toUpperCase().slice(0, 40) : null;
+      const isFabric = d.category === "fabrics";
+      const designBase = d.code ? variantSku(d.code, "", "") : null;
       const list = combos(d.colours, d.sizes);
-      const hasChoices = d.colours.length > 0 || d.sizes.length > 0;
-      if (designBase) {
+      const hasChoices = !isFabric && (d.colours.length > 0 || d.sizes.length > 0);
+      if (isFabric) {
+        // Fabric has no size or colour variants, so an existing one is found by its name.
+        const same = await prisma.product.findFirst({ where: { name: d.name, category: { slug: "fabrics" } }, select: { id: true } });
+        if (same) {
+          results.push({ ...base, status: "skipped", message: "Already in your store." });
+          continue;
+        }
+      } else if (designBase) {
         const found = await prisma.productVariant.findMany({
           where: { OR: [{ sku: designBase }, { sku: { startsWith: `${designBase}-` } }] },
           select: { id: true, sku: true, size: true, colorName: true, productId: true },
@@ -60,7 +69,7 @@ export async function POST(req: Request) {
               await tx.productVariant.update({
                 where: { id: found[0].id },
                 data: {
-                  sku: variantSku(d.designNo, first.colour, first.size),
+                  sku: variantSku(d.code, first.colour, first.size),
                   colorName: first.colour || null,
                   colorHex: first.colour ? colourHex(first.colour) ?? null : null,
                   size: first.size || null,
@@ -70,7 +79,7 @@ export async function POST(req: Request) {
                 await tx.productVariant.create({
                   data: {
                     productId: found[0].productId,
-                    sku: variantSku(d.designNo, c.colour, c.size),
+                    sku: variantSku(d.code, c.colour, c.size),
                     colorName: c.colour || null,
                     colorHex: c.colour ? colourHex(c.colour) ?? null : null,
                     size: c.size || null,
@@ -115,17 +124,20 @@ export async function POST(req: Request) {
           name: d.name,
           slug,
           description: d.description,
-          type: "STANDARD_PRODUCT",
+          type: isFabric ? "FABRIC_BY_METRE" : "STANDARD_PRODUCT",
           categoryId: category.id,
-          basePrice: hasDiscount ? d.mrp! : d.price,
-          salePrice: hasDiscount ? d.price : null,
+          basePrice: isFabric ? d.price : hasDiscount ? d.mrp! : d.price,
+          salePrice: !isFabric && hasDiscount ? d.price : null,
           images: stored,
           badge: d.badge || null,
           isActive: true,
+          ...(isFabric
+            ? { fabricDetail: { create: { widthInches: 44, pricePerMetre: d.price, totalMetresInStock: d.stock, cutMetresAvailable: d.stock } } }
+            : {
           variants: {
             create: hasChoices
               ? list.map((c) => ({
-                  sku: variantSku(d.designNo || slug, c.colour, c.size),
+                  sku: variantSku(d.code || slug, c.colour, c.size),
                   colorName: c.colour || null,
                   colorHex: c.colour ? colourHex(c.colour) ?? null : null,
                   size: c.size || null,
@@ -133,11 +145,12 @@ export async function POST(req: Request) {
                 }))
               : { sku: designBase ?? `SBCM-${slug}`.toUpperCase().slice(0, 40), stockQty: d.stock },
           },
+            }),
         },
       });
 
       if (d.stock > 0) {
-        const total = d.stock * (hasChoices ? list.length : 1);
+        const total = d.stock * (hasChoices ? list.length : 1); // fabric: stock is in metres
         await prisma.inventoryLog
           .create({
             data: {

@@ -6,8 +6,8 @@ export const DEFAULT_HERO = {
     "Quality cotton fabrics, kurta sets, kurtis, stretchy blouses and saree shapewear, made for comfort and sold at honest prices.",
   ctaText: "Shop Fabrics",
   ctaLink: "/category/fabrics",
-  desktopImg: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1920",
-  mobileImg: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800",
+  desktopImg: "",
+  mobileImg: "",
   imageOnly: false,
 };
 

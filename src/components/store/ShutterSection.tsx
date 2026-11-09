@@ -12,10 +12,9 @@ interface DepartmentData {
   headline: string;
   subheadline: string;
   accentQuote: string;
-  bgImage: string;
 }
 
-const departments: DepartmentData[] = [
+const allDepartments: DepartmentData[] = [
   {
     id: "d1",
     name: "Fabrics",
@@ -23,7 +22,6 @@ const departments: DepartmentData[] = [
     headline: "Quality Fabrics by the Metre",
     subheadline: "Cotton, silk and blended fabrics, cut to the length you need.",
     accentQuote: "Soft, breathable and made to be stitched your way.",
-    bgImage: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920",
   },
   {
     id: "d2",
@@ -32,7 +30,6 @@ const departments: DepartmentData[] = [
     headline: "Ready-to-Wear Kurta Sets",
     subheadline: "Kurta, bottoms and dupatta together, in designs for every day and every festival.",
     accentQuote: "Put it on and you are ready to go.",
-    bgImage: "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=1920",
   },
   {
     id: "d3",
@@ -41,7 +38,6 @@ const departments: DepartmentData[] = [
     headline: "Comfortable Everyday Kurtis",
     subheadline: "Easy cuts in soft cottons, from office days to weekend plans.",
     accentQuote: "Simple, comfortable and easy to style.",
-    bgImage: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1920",
   },
   {
     id: "d4",
@@ -50,7 +46,6 @@ const departments: DepartmentData[] = [
     headline: "Stretchy Ready-Made Blouses",
     subheadline: "A comfortable, flexible fit that goes with all your sarees.",
     accentQuote: "No tailor visits, no fitting trouble.",
-    bgImage: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1920",
   },
   {
     id: "d5",
@@ -59,7 +54,6 @@ const departments: DepartmentData[] = [
     headline: "Saree Shapewear",
     subheadline: "Smooth shaping that keeps your saree in place all day.",
     accentQuote: "Drape with confidence.",
-    bgImage: "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=1920",
   },
   {
     id: "d6",
@@ -68,11 +62,17 @@ const departments: DepartmentData[] = [
     headline: "Men's T-Shirts & Shirts",
     subheadline: "Soft cotton T-shirts and shirts for work, weekends and everything between.",
     accentQuote: "Simple, comfortable and made to last.",
-    bgImage: "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=1920",
   },
 ];
 
-export function ShutterSection() {
+/** `images` holds one real product photo per category slug. Categories without a photo are skipped. */
+export function ShutterSection({ images }: { images: Record<string, string> }) {
+  const departments = allDepartments.filter((d) => images[d.slug]);
+  if (!departments.length) return null;
+  return <Shutter departments={departments} images={images} />;
+}
+
+function Shutter({ departments, images }: { departments: DepartmentData[]; images: Record<string, string> }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState<"up" | "down">("up");
   const prefersReduced = useReducedMotion();
@@ -144,7 +144,7 @@ export function ShutterSection() {
                 }
           }
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${activeDept.bgImage})` }}
+          style={{ backgroundImage: `url(${images[activeDept.slug]})` }}
         >
           {/* Architectural Dark Scrim Overlay */}
           <div className="absolute inset-0 bg-black/40" />

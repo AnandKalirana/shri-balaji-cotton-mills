@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/Badge";
 import { useCartStore } from "@/store";
 import { ShoppingBag, ChevronLeft, ChevronRight, Truck, ShieldCheck, RotateCcw, ChevronDown } from "lucide-react";
 
-const FALLBACK_IMG = "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800";
+const FALLBACK_IMG = "/placeholder.png";
 
 export function ProductDetailView({ product, initialColour }: { product: Product; initialColour?: string }) {
   const options = product.options;

@@ -73,7 +73,7 @@ export function CartDrawer() {
                     src={
                       item.image ||
                       item.product.images?.[0] ||
-                      "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800"
+                      "/placeholder.png"
                     }
                     alt={item.product.name}
                     fill

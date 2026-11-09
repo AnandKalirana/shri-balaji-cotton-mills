@@ -165,6 +165,26 @@ export async function getProductsByIds(ids: string[]): Promise<Product[]> {
   return products.filter((p) => ids.includes(p.id));
 }
 
+/** The newest real product photo in each category, keyed by category slug. Categories with no products are left out. */
+export async function getCategoryImages(): Promise<Record<string, string>> {
+  try {
+    const rows = await prisma.product.findMany({
+      where: { isActive: true },
+      select: { images: true, category: { select: { slug: true } } },
+      orderBy: { createdAt: "desc" },
+      take: 300,
+    });
+    const out: Record<string, string> = {};
+    for (const r of rows as { images: string[]; category?: { slug: string } | null }[]) {
+      const slug = r.category?.slug;
+      if (slug && !out[slug] && r.images?.[0]) out[slug] = r.images[0];
+    }
+    return out;
+  } catch {
+    return {};
+  }
+}
+
 export async function getCategories(): Promise<Category[]> {
   return demoCategories;
 }
