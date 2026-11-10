@@ -29,6 +29,7 @@ export const useCartStore = create<CartStore>((set, get) => ({
   isOpen: false,
 
   addItem: (product, quantity = 1, metres, choice) => {
+    if (product.pricePerMetre) return; // fabric is ordered on WhatsApp, never through the bag
     const key = cartLineKey({ product, variantId: choice?.variantId });
     set((state) => {
       const existing = state.items.find((i) => cartLineKey(i) === key);

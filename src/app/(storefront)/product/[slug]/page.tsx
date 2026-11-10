@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getProductBySlug } from "@/lib/catalog";
+import { getProductBySlug, getStoreSettings } from "@/lib/catalog";
 import { ProductDetailView } from "@/components/store/ProductDetailView";
 
 export async function generateMetadata({
@@ -25,5 +25,6 @@ export default async function ProductPage({
   const { colour } = await searchParams;
   const { product } = await getProductBySlug(slug);
   if (!product) notFound();
-  return <ProductDetailView product={product} initialColour={colour} />;
+  const settings = await getStoreSettings();
+  return <ProductDetailView product={product} initialColour={colour} whatsappPhone={settings.supportPhone} />;
 }
