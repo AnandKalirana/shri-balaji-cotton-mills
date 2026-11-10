@@ -2,7 +2,15 @@
  * floor: 0 FAIL · fixed: 10a, 20, 48, 63, 67 · structural: none printed
  * waive 29 · the owner asked for a glass header that lets the page show through
  * built: the project · redesign: polish · v2.0.0 */
-@import "tailwindcss";
+/* Astryx design system. The layer order lets Tailwind utilities and our own styles win over it. */
+@layer reset, theme, base, astryx-base, astryx-theme, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "@astryxdesign/core/reset.css";
+@import "@astryxdesign/core/astryx.css";
+@import "../themes/balaji/balaji.css";
+@import "tailwindcss/utilities.css" layer(utilities);
 
 /* Storefront colour tokens. Components use these names, never raw hex values. */
 @theme {
@@ -184,3 +192,4 @@ a {
   border-radius: 4px;
   animation: ring-flash 500ms var(--ease-out);
 }
+
