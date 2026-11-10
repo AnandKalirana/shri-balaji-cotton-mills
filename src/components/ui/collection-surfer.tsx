@@ -74,7 +74,7 @@ export function CollectionSurfer({ items, variant = "magnetic", heading = ["HERI
     };
 
     return (
-        <div className="relative bg-black min-h-screen text-white w-full">
+        <div className="relative bg-black min-h-dvh text-white w-full">
             {/* 3. Infinite Spacer: 
                 We make this huge so the user can scroll for a very long time.
                 (e.g., 50,000px) */}
@@ -82,7 +82,7 @@ export function CollectionSurfer({ items, variant = "magnetic", heading = ["HERI
 
             {/* Fixed viewport */}
             <div
-                className="fixed inset-0 w-full h-screen overflow-hidden flex items-center justify-center perspective-container"
+                className="fixed inset-0 w-full h-dvh overflow-hidden flex items-center justify-center perspective-container"
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
             >

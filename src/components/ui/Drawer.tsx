@@ -62,7 +62,7 @@ export function Drawer({
         aria-modal="true"
         aria-label={title || "Drawer panel"}
         className={cn(
-          "absolute top-0 bottom-0 flex flex-col bg-[#f7f7f5] w-full max-w-sm sm:max-w-md shadow-2xl transition-transform duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)]",
+          "absolute top-0 bottom-0 flex flex-col pb-[env(safe-area-inset-bottom)] bg-[#f7f7f5] w-full max-w-sm sm:max-w-md shadow-2xl transition-transform duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)]",
           side === "right" ? "right-0" : "left-0",
           side === "right"
             ? open

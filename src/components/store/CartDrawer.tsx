@@ -48,7 +48,7 @@ export function CartDrawer() {
         </div>
 
         {/* Item List */}
-        <div className="flex-1 overflow-y-auto divide-y divide-line -mx-6 px-6">
+        <div className="flex-1 overflow-y-auto overscroll-contain divide-y divide-line -mx-6 px-6">
           {items.length === 0 ? (
             <div className="py-16 text-center">
               <p className="font-[family-name:var(--font-playfair)] text-xl text-ink mb-2">

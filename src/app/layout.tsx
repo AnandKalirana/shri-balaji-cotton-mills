@@ -32,7 +32,9 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 5,
+  maximumScale: 5, // zoom stays allowed: pinch-zoom is an accessibility feature
+  viewportFit: "cover", // paint edge to edge; fixed bars add safe-area padding
+  interactiveWidget: "resizes-content", // the on-screen keyboard shrinks the page instead of covering the form
   themeColor: "#5c1d24",
 };
 
