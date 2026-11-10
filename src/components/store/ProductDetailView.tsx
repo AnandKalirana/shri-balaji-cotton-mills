@@ -261,7 +261,7 @@ export function ProductDetailView({ product, initialColour }: { product: Product
                         }}
                         aria-pressed={on}
                         className={cn(
-                          "min-w-[56px] h-11 px-4 text-sm border transition-colors",
+                          "press min-w-[56px] h-11 px-4 text-sm border",
                           on ? "bg-ink text-white border-ink" : "bg-white text-ink border-black/20 hover:border-ink",
                           stock === 0 && "opacity-40 line-through cursor-not-allowed hover:border-black/20"
                         )}
@@ -327,7 +327,7 @@ export function ProductDetailView({ product, initialColour }: { product: Product
             <button
               onClick={handleAddToCart}
               disabled={!available}
-              className="hidden sm:flex mt-8 w-full h-14 bg-ink hover:bg-wine text-white text-sm font-medium items-center justify-center gap-3 transition-colors disabled:opacity-50 disabled:hover:bg-ink"
+              className="hidden sm:flex mt-8 w-full h-14 bg-ink hover:bg-wine text-white text-sm font-medium items-center justify-center gap-3 press disabled:opacity-50 disabled:hover:bg-ink"
             >
               <ShoppingBag className="w-4 h-4" />
               {ctaLabel}
@@ -378,7 +378,7 @@ export function ProductDetailView({ product, initialColour }: { product: Product
       </div>
 
       {/* Mobile bar */}
-      <div className="sm:hidden fixed bottom-0 inset-x-0 z-30 bg-white border-t border-black/10 p-3 flex items-center gap-3">
+      <div className="sm:hidden fixed bottom-0 inset-x-0 z-30 bg-white border-t border-black/10 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] flex items-center gap-3">
         <div className="shrink-0">
           <span className="block text-base font-medium tabular-nums text-ink">{formatPrice(currentPrice)}</span>
           {showMrp && <span className="block text-xs text-muted line-through tabular-nums">{formatPrice(product.mrp!)}</span>}
@@ -386,7 +386,7 @@ export function ProductDetailView({ product, initialColour }: { product: Product
         <button
           onClick={handleAddToCart}
           disabled={!available}
-          className="flex-1 h-12 bg-ink text-white text-sm font-medium flex items-center justify-center gap-2 disabled:opacity-50"
+          className="press flex-1 h-12 bg-ink text-white text-sm font-medium flex items-center justify-center gap-2 disabled:opacity-50"
         >
           <ShoppingBag className="w-4 h-4" />
           {added ? "Added to bag" : !available ? "Out of stock" : missingSize ? "Select a size" : "Add to bag"}

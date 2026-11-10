@@ -69,6 +69,45 @@ h1, h2, h3, h4, h5, h6 {
   outline-offset: 3px;
 }
 
+/* ── Feels like an app on a phone ─────────────────────────────── */
+html {
+  -webkit-tap-highlight-color: transparent; /* no grey flash on tap; buttons give their own press feedback */
+  -webkit-text-size-adjust: 100%;
+}
+
+/* No 300ms tap delay, and a long-press on a button doesn't select its label. */
+button,
+[role="button"],
+summary {
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+a {
+  touch-action: manipulation;
+}
+
+/* iPhones zoom the page when a field under 16px gets focus (checkout!) and stay zoomed. */
+@media (pointer: coarse) {
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+/* Press feedback the moment a finger lands: quick, ease-out, small. */
+.press {
+  transition-property: background-color, color, border-color, opacity, transform;
+  transition-duration: 160ms;
+  transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+}
+.press:not(:disabled):active {
+  transform: scale(0.97);
+  transition-duration: 90ms;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
