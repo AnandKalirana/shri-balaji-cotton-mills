@@ -32,6 +32,7 @@ export function ProductDetailView({ product, initialColour }: { product: Product
   const [isFullThaan, setIsFullThaan] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+  const [nudge, setNudge] = useState(0); // bumps each time someone taps Add without a size
   const [showMissing, setShowMissing] = useState(false);
   const [touchX, setTouchX] = useState<number | null>(null);
 
@@ -86,6 +87,7 @@ export function ProductDetailView({ product, initialColour }: { product: Product
   const handleAddToCart = () => {
     if (missingSize) {
       setShowMissing(true);
+      setNudge((n) => n + 1);
       document.getElementById("size-picker")?.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
@@ -245,7 +247,7 @@ export function ProductDetailView({ product, initialColour }: { product: Product
                   </p>
                   {showMissing && missingSize && <p role="alert" className="text-xs text-danger">Choose a size to continue</p>}
                 </div>
-                <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="Choose a size">
+                <div key={nudge} className={cn("mt-3 flex flex-wrap gap-2", nudge > 0 && "ring-flash")} role="group" aria-label="Choose a size">
                   {sizes.map((s) => {
                     const stock = sizeStock(s);
                     const on = s === size;

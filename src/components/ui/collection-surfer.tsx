@@ -226,7 +226,7 @@ function Card({
     return (
         <motion.div
             ref={ref}
-            className="absolute w-[300px] h-[400px] bg-neutral-900 overflow-hidden shadow-2xl transition-colors duration-500 ease-out group"
+            className="absolute w-[300px] h-[400px] bg-neutral-900 overflow-hidden shadow-2xl group"
             style={{
                 transform,
                 transformStyle: "preserve-3d",
@@ -238,7 +238,7 @@ function Card({
             </div>
 
             {/* Image */}
-            <div className="relative w-full h-full brightness-75 group-hover:brightness-100 transition-all duration-300">
+            <div className="relative w-full h-full">
                 <img
                     src={item.image}
                     alt={item.title}
@@ -246,6 +246,8 @@ function Card({
                 />
             </div>
 
+            {/* Dims the photo until hovered: fades an overlay (cheap) instead of animating brightness. */}
+            <div className="absolute inset-0 bg-black/25 transition-opacity duration-200 ease-out group-hover:opacity-0 pointer-events-none" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
             <div className="absolute bottom-4 left-4 right-4 text-sm font-medium text-white pointer-events-none">
                 {item.title}

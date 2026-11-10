@@ -71,9 +71,9 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           }}
           aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
           aria-pressed={wishlisted}
-          className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-white flex items-center justify-center text-wine hover:bg-white active:scale-90 transition-[transform,background-color,color]"
+          className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-white flex items-center justify-center text-wine hover:bg-white press"
         >
-          <Heart className={wishlisted ? "w-4 h-4 fill-wine" : "w-4 h-4"} />
+          <Heart key={String(wishlisted)} className={wishlisted ? "w-4 h-4 fill-wine heart-pop" : "w-4 h-4"} />
         </button>
 
         {/* Out of Stock Overlay */}
