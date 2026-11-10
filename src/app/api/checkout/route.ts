@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
@@ -6,6 +6,7 @@ import { getStoreSettings } from "@/lib/catalog";
 import { CheckoutError, priceCart, releaseExpiredOrders, reserveStock } from "@/lib/checkout";
 import { createRazorpayOrder, razorpayConfigured, RazorpayKeyError } from "@/lib/razorpay";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
+import { notifyOrderPlaced } from "@/lib/order-emails";
 
 const schema = z.object({
   paymentMethod: z.enum(["RAZORPAY", "COD"]),
@@ -154,6 +155,9 @@ export async function POST(req: Request) {
         },
       });
     });
+
+    // Cash on Delivery is confirmed now; online orders send their emails once paid.
+    if (paymentMethod === "COD") after(() => notifyOrderPlaced(order.id).catch((e) => console.error("[notify]", e)));
 
     return NextResponse.json({
       success: true,

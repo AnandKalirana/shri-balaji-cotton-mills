@@ -1,5 +1,7 @@
 import type { Order, OrderItem } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { after } from "next/server";
+import { notifyOrderPlaced } from "@/lib/order-emails";
 import { CheckoutError, reserveStock, type PricedLine } from "@/lib/checkout";
 
 export type ConfirmResult =
@@ -25,6 +27,7 @@ export async function confirmOnlinePayment(
       where: { id: order.id },
       data: { orderStatus: "CONFIRMED", paymentStatus: "PAID", razorpayPaymentId: paymentId, razorpaySignature: signature },
     });
+    after(() => notifyOrderPlaced(order.id).catch((e) => console.error("[notify]", e)));
     return { kind: "paid", orderNumber: order.orderNumber };
   }
 
@@ -56,6 +59,7 @@ export async function confirmOnlinePayment(
         },
       });
     });
+    after(() => notifyOrderPlaced(order.id).catch((e) => console.error("[notify]", e)));
     return { kind: "paid", orderNumber: order.orderNumber };
   } catch (e) {
     if (!(e instanceof CheckoutError)) throw e;

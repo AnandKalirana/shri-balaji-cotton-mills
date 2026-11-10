@@ -8,8 +8,10 @@ import { formatPrice } from "@/lib/utils";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { whatsappUrl } from "@/lib/whatsapp";
 import {
   ArrowLeft,
+  MessageCircle,
   Phone,
   Mail,
   MapPin,
@@ -164,6 +166,18 @@ export default function AdminOrderDetailPage({
                   className="hover:text-[#5c1d24] font-medium"
                 >
                   {order.customer?.phone} (Tap to Call)
+                </a>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <MessageCircle className="w-4 h-4 text-[#6f6f6f]" />
+                <a
+                  href={whatsappUrl(order.customer?.phone ?? "", `Hi ${order.customer?.name?.split(" ")[0] ?? ""}, this is Shri Balaji Cotton Mills about your order ${order.orderNumber ?? ""}. `)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-[#5c1d24] font-medium"
+                >
+                  Message on WhatsApp
                 </a>
               </div>
 
