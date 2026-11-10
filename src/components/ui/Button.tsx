@@ -1,6 +1,8 @@
 "use client";
+import { Button as AstryxButton } from "@astryxdesign/core/Button";
+import { Spinner } from "@astryxdesign/core/Spinner";
+import { Children, forwardRef, isValidElement, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { forwardRef } from "react";
 
 type Variant = "primary" | "secondary" | "ghost" | "danger";
 type Size = "sm" | "md" | "lg";
@@ -12,39 +14,50 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   fullWidth?: boolean;
 }
 
-const variants: Record<Variant, string> = {
-  primary: "bg-[#5c1d24] text-white hover:bg-[#1a1a1a] border border-transparent focus-visible:ring-2 focus-visible:ring-[#5c1d24]",
-  secondary: "bg-transparent text-[#1a1a1a] border border-[#c5a880] hover:bg-[#f7f7f5] focus-visible:ring-2 focus-visible:ring-[#c5a880]",
-  ghost: "bg-transparent text-[#5c1d24] border border-transparent hover:bg-[#f5f5f3] focus-visible:ring-2 focus-visible:ring-[#5c1d24]",
-  danger: "bg-[#ba1a1a] text-white border border-transparent hover:bg-red-800 focus-visible:ring-2 focus-visible:ring-red-600",
-};
+/** The visible words of a button, used as its accessible name when it also holds an icon. */
+function textOf(node: ReactNode): string {
+  return Children.toArray(node)
+    .map((c) => {
+      if (typeof c === "string" || typeof c === "number") return String(c);
+      if (isValidElement<{ children?: ReactNode }>(c)) return textOf(c.props.children);
+      return "";
+    })
+    .join("")
+    .replace(/\s+/g, " ")
+    .trim();
+}
 
-const sizes: Record<Size, string> = {
-  sm: "px-4 py-2 text-sm font-medium min-h-[36px]",
-  md: "px-8 py-3 text-sm font-medium min-h-[48px]",
-  lg: "px-12 py-4 text-base font-medium min-h-[56px]",
-};
+// Touch-friendly heights (the old buttons were 36 / 48 / 56 px tall).
+const heights: Record<Size, string> = { sm: "min-h-9", md: "min-h-12", lg: "min-h-14" };
 
+const variantMap = { primary: "primary", secondary: "secondary", ghost: "ghost", danger: "destructive" } as const;
+
+/** Shop button, built on the Astryx Button. Same props as before, so pages don't change. */
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ variant = "primary", size = "md", loading, fullWidth, className, children, disabled, ...props }, ref) => {
+  ({ variant = "primary", size = "md", loading, fullWidth, disabled, children, className, ...props }, ref) => {
+    const label = props["aria-label"] || textOf(children) || "Button";
+    // Plain words go in as the label. An icon or spinner next to words needs its own row layout. The words stay
+    // visible while loading so progress text such as "Importing 3 of 10…" is still readable.
+    const hasIcon = Children.toArray(children).some((c) => typeof c !== "string" && typeof c !== "number");
     return (
-      <button
+      <AstryxButton
         ref={ref}
-        disabled={disabled || loading}
-        className={cn(
-          "press inline-flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none",
-          variants[variant],
-          sizes[size],
-          fullWidth && "w-full",
-          className
-        )}
+        label={label}
+        variant={variantMap[variant]}
+        size={size}
+        isDisabled={disabled || loading}
+        aria-busy={loading || undefined}
+        width={fullWidth ? "100%" : undefined}
+        className={cn(heights[size], className)}
         {...props}
       >
-        {loading && (
-          <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-        )}
-        {children}
-      </button>
+        {hasIcon || loading ? (
+          <span className="inline-flex items-center gap-2">
+            {loading && <Spinner size="sm" shade="inherit" aria-label="Working" />}
+            {children}
+          </span>
+        ) : undefined}
+      </AstryxButton>
     );
   }
 );
