@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
+import { notifyOrderStatus } from "@/lib/order-emails";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin, dbErrorResponse } from "@/lib/admin-guard";
@@ -51,7 +52,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   }
 
   try {
-    const existing = await prisma.order.findUnique({ where: { id }, select: { id: true } });
+    const existing = await prisma.order.findUnique({ where: { id }, select: { id: true, orderStatus: true } });
     if (!existing) {
       return NextResponse.json(
         { error: "This is a sample order, not a real one, so it can't be changed." },
@@ -66,6 +67,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
         ...(courierPartner !== undefined ? { courierPartner: courierPartner || null } : {}),
       },
     });
+    if (status && status !== existing.orderStatus) after(() => notifyOrderStatus(id).catch((e) => console.error("[notify]", e)));
     await logAdmin(guard.user, "order.update", `${updated.orderNumber} -> ${updated.orderStatus}${trackingNumber ? ", tracking added" : ""}`);
     return NextResponse.json({ success: true, status: updated.orderStatus });
   } catch (error) {
