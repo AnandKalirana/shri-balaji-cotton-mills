@@ -1,5 +1,4 @@
 import type { Prisma, PrismaClient } from "@prisma/client";
-import { calculateFabricPrice } from "@/lib/inventory";
 
 type Db = PrismaClient | Prisma.TransactionClient;
 
@@ -55,39 +54,10 @@ export async function priceCart(db: Db, lines: CartLineInput[], rules: ShopRules
     }
 
     if (product.fabricDetail) {
-      const f = product.fabricDetail;
-      const thaan = Boolean(line.isFullThaan);
-      const metres = thaan ? Number(f.standardThaanMetres) : Number(line.metres);
-      const min = Number(f.minMetreOrder);
-      const step = Number(f.metreIncrement) || 0.5;
-      if (!thaan) {
-        const onStep = Math.abs(metres / step - Math.round(metres / step)) < 1e-9;
-        if (!Number.isFinite(metres) || metres < min || metres > 200 || !onStep) {
-          throw new CheckoutError(`${product.name}: order at least ${min} metres, in steps of ${step}.`);
-        }
-      }
-      const calc = calculateFabricPrice({
-        pricePerMetre: Number(f.pricePerMetre),
-        metres,
-        isFullThaan: thaan,
-        standardThaanMetres: Number(f.standardThaanMetres),
-        thaanDiscountPct: Number(f.thaanDiscountPct),
-      });
-      if (Number(f.totalMetresInStock) < metres * qty) {
-        throw new CheckoutError(`${product.name}: only ${Number(f.totalMetresInStock)} metres left in stock.`, 409);
-      }
-      priced.push({
-        productId: product.id,
-        variantId: null,
-        productName: product.name,
-        sku: null,
-        unitPrice: calc.finalPrice,
-        quantity: qty,
-        metres,
-        isFullThaan: thaan,
-        lineTotal: calc.finalPrice * qty,
-      });
-    } else {
+      // Fabric is sold on WhatsApp only. This stays a hard stop here, so no stale page can slip an order through.
+      throw new CheckoutError(`${product.name} is a fabric. Fabric is ordered on WhatsApp, please remove it from your bag.`, 409);
+    }
+    {
       const hasChoices = product.variants.some((v) => v.size || v.colorName);
       let variant;
       if (line.variantId) {

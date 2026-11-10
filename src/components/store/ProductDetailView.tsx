@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/lib/types";
@@ -8,11 +8,12 @@ import { isLightHex } from "@/lib/colours";
 import { Stepper } from "@/components/ui/Stepper";
 import { Badge } from "@/components/ui/Badge";
 import { useCartStore } from "@/store";
-import { ShoppingBag, ChevronLeft, ChevronRight, Truck, ShieldCheck, RotateCcw, ChevronDown } from "lucide-react";
+import { whatsappUrl } from "@/lib/whatsapp";
+import { ShoppingBag, MessageCircle, ChevronLeft, ChevronRight, Truck, ShieldCheck, RotateCcw, ChevronDown } from "lucide-react";
 
 const FALLBACK_IMG = "/placeholder.png";
 
-export function ProductDetailView({ product, initialColour }: { product: Product; initialColour?: string }) {
+export function ProductDetailView({ product, initialColour, whatsappPhone }: { product: Product; initialColour?: string; whatsappPhone: string }) {
   const options = product.options;
   const colours = useMemo(() => options?.colours ?? [], [options]);
   const sizes = options?.sizes ?? [];
@@ -39,6 +40,12 @@ export function ProductDetailView({ product, initialColour }: { product: Product
   const { addItem, toggleCart } = useCartStore();
 
   const isFabric = Boolean(product.pricePerMetre);
+  // Fabric is sold on WhatsApp, not through the cart. The page link is added after load, once the address is known.
+  const pageUrl = useSyncExternalStore(
+    () => () => {},
+    () => window.location.origin + window.location.pathname,
+    () => ""
+  );
   const standardThaanMetres = 25.0;
   const thaanDiscountPct = 12;
 
@@ -71,6 +78,13 @@ export function ProductDetailView({ product, initialColour }: { product: Product
     }
   }
   const showMrp = product.mrp && !isFabric;
+  const lengthText = isFullThaan ? `full thaan (${standardThaanMetres} metres)` : `${metres} metres`;
+  const waHref = isFabric
+    ? whatsappUrl(
+        whatsappPhone,
+        [`Hi, I'd like to order this fabric:`, product.name, `Length: ${lengthText}`, `Price: ${formatPrice(currentPrice)} (${formatPrice(product.pricePerMetre ?? 0)}/metre)`, pageUrl].filter(Boolean).join("\n")
+      )
+    : "";
   const percentOff = showMrp ? Math.round(((product.mrp! - product.price) / product.mrp!) * 100) : 0;
 
   const chooseColour = (name: string) => {
@@ -326,14 +340,33 @@ export function ProductDetailView({ product, initialColour }: { product: Product
               </div>
             )}
 
-            <button
-              onClick={handleAddToCart}
-              disabled={!available}
-              className="hidden sm:flex mt-8 w-full h-14 bg-ink hover:bg-wine text-white text-sm font-medium items-center justify-center gap-3 press disabled:opacity-50 disabled:hover:bg-ink"
-            >
-              <ShoppingBag className="w-4 h-4" />
-              {ctaLabel}
-            </button>
+            {isFabric ? (
+              <>
+                {available ? (
+                  <a
+                    href={waHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hidden sm:flex mt-8 w-full h-14 bg-[#1f7a4d] hover:bg-[#186540] text-white text-sm font-medium items-center justify-center gap-3 press"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    Order on WhatsApp · {formatPrice(currentPrice)}
+                  </a>
+                ) : (
+                  <p className="hidden sm:block mt-8 text-sm text-muted">Out of stock right now. Message us on WhatsApp to ask when it is back.</p>
+                )}
+                <p className="mt-3 text-xs text-muted">Fabric orders are taken on WhatsApp. We confirm the cut length, colour and delivery with you there.</p>
+              </>
+            ) : (
+              <button
+                onClick={handleAddToCart}
+                disabled={!available}
+                className="hidden sm:flex mt-8 w-full h-14 bg-ink hover:bg-wine text-white text-sm font-medium items-center justify-center gap-3 press disabled:opacity-50 disabled:hover:bg-ink"
+              >
+                <ShoppingBag className="w-4 h-4" />
+                {ctaLabel}
+              </button>
+            )}
 
             {/* Information */}
             <div className="mt-8 border-t border-black/10">
@@ -385,14 +418,27 @@ export function ProductDetailView({ product, initialColour }: { product: Product
           <span className="block text-base font-medium tabular-nums text-ink">{formatPrice(currentPrice)}</span>
           {showMrp && <span className="block text-xs text-muted line-through tabular-nums">{formatPrice(product.mrp!)}</span>}
         </div>
-        <button
-          onClick={handleAddToCart}
-          disabled={!available}
-          className="press flex-1 h-12 bg-ink text-white text-sm font-medium flex items-center justify-center gap-2 disabled:opacity-50"
-        >
-          <ShoppingBag className="w-4 h-4" />
-          {added ? "Added to bag" : !available ? "Out of stock" : missingSize ? "Select a size" : "Add to bag"}
-        </button>
+        {isFabric ? (
+          <a
+            href={available ? waHref : undefined}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-disabled={!available}
+            className={cn("press flex-1 h-12 text-white text-sm font-medium flex items-center justify-center gap-2", available ? "bg-[#1f7a4d]" : "bg-ink/40 pointer-events-none")}
+          >
+            <MessageCircle className="w-4 h-4" />
+            {available ? "Order on WhatsApp" : "Out of stock"}
+          </a>
+        ) : (
+          <button
+            onClick={handleAddToCart}
+            disabled={!available}
+            className="press flex-1 h-12 bg-ink text-white text-sm font-medium flex items-center justify-center gap-2 disabled:opacity-50"
+          >
+            <ShoppingBag className="w-4 h-4" />
+            {added ? "Added to bag" : !available ? "Out of stock" : missingSize ? "Select a size" : "Add to bag"}
+          </button>
+        )}
       </div>
     </div>
   );
