@@ -171,7 +171,7 @@ export default async function HomePage() {
         {/* Responsive Grid: 1 col (360-430px) -> 2 col (sm/md) -> 4 col (lg/xl) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
           {featuredProducts.map((product, index) => (
-            <Reveal key={product.id} delay={index * 0.1}>
+            <Reveal key={product.id} delay={(index % 4) * 0.06}>
               <ProductCard product={product} priority={index === 0} />
             </Reveal>
           ))}

@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { EASE_IN_OUT } from "@/lib/motion";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -132,7 +133,7 @@ function Shutter({ departments, images }: { departments: DepartmentData[]; image
           animate={{
             y: 0,
             opacity: 1,
-            transition: { duration: 0.65, ease: "easeInOut" },
+            transition: { duration: 0.45, ease: EASE_IN_OUT },
           }}
           exit={
             prefersReduced
@@ -140,7 +141,7 @@ function Shutter({ departments, images }: { departments: DepartmentData[]; image
               : {
                   y: direction === "up" ? "-100%" : "100%",
                   opacity: 0.5,
-                  transition: { duration: 0.65, ease: "easeInOut" },
+                  transition: { duration: 0.45, ease: EASE_IN_OUT },
                 }
           }
           className="absolute inset-0 bg-cover bg-center"

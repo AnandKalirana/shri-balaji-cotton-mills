@@ -318,7 +318,7 @@ export function StoreHeader({
 
       {/* Full-screen Search Overlay */}
       {searchOpen && (
-        <div className="fixed inset-0 z-50 bg-white backdrop-blur-xl flex flex-col" role="dialog" aria-label="Search">
+        <div className="fade-in-fast fixed inset-0 z-50 bg-white backdrop-blur-xl flex flex-col" role="dialog" aria-label="Search">
           <form
             onSubmit={(e) => e.preventDefault()}
             className="flex items-center gap-3 px-4 sm:px-6 py-4 border-b border-line"
