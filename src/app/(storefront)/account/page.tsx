@@ -17,9 +17,10 @@ export default function AccountPage() {
   const router = useRouter();
   const [user, setUser] = useState<SessionUser | null>(null);
   const [checking, setChecking] = useState(true);
-  const [mode, setMode] = useState<"login" | "register">("login");
+  const [mode, setMode] = useState<"login" | "register" | "forgot">("login");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
   const [form, setForm] = useState({ fullName: "", email: "", phone: "", password: "" });
 
   useEffect(() => {
@@ -36,8 +37,20 @@ export default function AccountPage() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    setNotice("");
     setLoading(true);
     try {
+      if (mode === "forgot") {
+        const r = await fetch("/api/auth/forgot", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: form.email }),
+        });
+        const d = await r.json();
+        if (!r.ok) setError(d.error || "Something went wrong. Please try again.");
+        else setNotice(d.message);
+        return;
+      }
       const body =
         mode === "login"
           ? { email: form.email, password: form.password }
@@ -116,7 +129,7 @@ export default function AccountPage() {
   return (
     <div className="max-w-md mx-auto px-4 py-16 sm:py-24">
       <h1 className="font-[family-name:var(--font-playfair)] text-3xl sm:text-4xl text-ink mb-8">
-        {mode === "login" ? "Sign in" : "Create account"}
+        {mode === "login" ? "Sign in" : mode === "forgot" ? "Reset password" : "Create account"}
       </h1>
       <form onSubmit={submit} className="flex flex-col gap-5">
         {mode === "register" && (
@@ -126,18 +139,24 @@ export default function AccountPage() {
           </>
         )}
         <Input label="Email" type="email" value={form.email} onChange={set("email")} required />
-        <Input label="Password" type="password" value={form.password} onChange={set("password")} required />
+        {mode !== "forgot" && <Input label="Password" type="password" value={form.password} onChange={set("password")} required />}
+        {mode === "login" && (
+          <button type="button" onClick={() => { setMode("forgot"); setError(""); setNotice(""); }} className="self-start -mt-2 text-xs font-medium text-wine underline">
+            Forgot password?
+          </button>
+        )}
+        {notice && <p role="status" className="text-sm text-ink">{notice}</p>}
         {error && <p role="alert" className="text-sm text-danger">{error}</p>}
         <Button type="submit" loading={loading} fullWidth className="rounded-full">
-          {mode === "login" ? "Sign in" : "Create account"}
+          {mode === "login" ? "Sign in" : mode === "forgot" ? "Send reset link" : "Create account"}
         </Button>
       </form>
       <button
         type="button"
-        onClick={() => { setMode(mode === "login" ? "register" : "login"); setError(""); }}
+        onClick={() => { setMode(mode === "login" ? "register" : "login"); setError(""); setNotice(""); }}
         className="mt-6 text-xs font-medium text-wine underline"
       >
-        {mode === "login" ? "New here? Create an account" : "Already have an account? Sign in"}
+        {mode === "login" ? "New here? Create an account" : mode === "forgot" ? "Back to sign in" : "Already have an account? Sign in"}
       </button>
     </div>
   );
