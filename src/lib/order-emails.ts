@@ -33,6 +33,7 @@ function itemsTable(order: LoadedOrder) {
   const rows = itemLines(order).map((l) => `<tr><td style="padding:6px 0">${esc(l.label)}</td><td style="padding:6px 0;text-align:right">${l.amount}</td></tr>`).join("");
   const shipping = Number(order.shippingFee);
   return `<table style="width:100%;border-collapse:collapse;font-size:14px;border-top:1px solid #ddd;border-bottom:1px solid #ddd">${rows}
+${Number(order.discountTotal) > 0 ? `<tr><td style="padding:6px 0;color:#555">Coupon ${esc(order.couponCode ?? "")}</td><td style="padding:6px 0;text-align:right">-${formatPrice(Number(order.discountTotal))}</td></tr>` : ""}
 <tr><td style="padding:6px 0;color:#555">Shipping</td><td style="padding:6px 0;text-align:right">${shipping ? formatPrice(shipping) : "Free"}</td></tr>
 <tr><td style="padding:8px 0;font-weight:bold">Total</td><td style="padding:8px 0;text-align:right;font-weight:bold">${formatPrice(Number(order.total))}</td></tr></table>`;
 }

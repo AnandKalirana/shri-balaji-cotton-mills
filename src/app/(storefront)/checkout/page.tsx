@@ -52,7 +52,46 @@ export default function CheckoutPage() {
   const { freeShippingThreshold, standardShippingFee, codMaxOrderLimit, enableCod } = useStoreSettings();
   const shippingFee = cartTotal >= freeShippingThreshold ? 0 : standardShippingFee;
   const gstAmount = Math.round(cartTotal * 0.05); // 5% GST on textiles
-  const finalPayable = cartTotal + shippingFee;
+  // Coupon: the server checks the code and works out the discount; the page only shows it.
+  const [couponInput, setCouponInput] = useState("");
+  const [coupon, setCoupon] = useState<{ code: string; discount: number } | null>(null);
+  const [couponMsg, setCouponMsg] = useState("");
+  const [couponBusy, setCouponBusy] = useState(false);
+  const discount = coupon?.discount ?? 0;
+  const finalPayable = cartTotal - discount + shippingFee;
+
+  const cartLines = () =>
+    items.map((i) => ({
+      productId: i.product.id,
+      variantId: i.variantId ?? null,
+      quantity: i.quantity,
+      metres: i.metres ?? null,
+      isFullThaan: i.isFullThaan ?? false,
+    }));
+
+  async function applyCoupon() {
+    if (!couponInput.trim()) return;
+    setCouponBusy(true);
+    setCouponMsg("");
+    try {
+      const r = await fetch("/api/checkout/coupon", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: couponInput, items: cartLines() }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) {
+        setCoupon(null);
+        setCouponMsg(d.error || "Couldn't check that coupon.");
+      } else {
+        setCoupon({ code: d.code, discount: d.discount });
+      }
+    } catch {
+      setCouponMsg("Could not reach the server. Please try again.");
+    } finally {
+      setCouponBusy(false);
+    }
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -74,6 +113,7 @@ export default function CheckoutPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           paymentMethod,
+          couponCode: coupon?.code ?? null,
           customer: { fullName: formData.fullName, email: formData.email, phone: formData.phone },
           address: { street: formData.street, city: formData.city, state: formData.state, pincode: formData.pincode },
           items: items.map((i) => ({
@@ -394,12 +434,42 @@ export default function CheckoutPage() {
                 ))}
               </div>
 
+              {/* Coupon */}
+              <div className="border-t border-line pt-4 mb-4">
+                {coupon ? (
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-emerald-700">Coupon {coupon.code} applied</span>
+                    <button type="button" onClick={() => { setCoupon(null); setCouponInput(""); setCouponMsg(""); }} className="font-medium text-wine underline">Remove</button>
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex gap-2">
+                      <input
+                        value={couponInput}
+                        onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                        placeholder="Coupon code"
+                        aria-label="Coupon code"
+                        className="flex-1 min-w-0 h-11 px-3 border border-line text-sm bg-white"
+                      />
+                      <Button type="button" variant="secondary" loading={couponBusy} onClick={applyCoupon} className="min-h-[44px]">Apply</Button>
+                    </div>
+                    {couponMsg && <p role="alert" className="mt-2 text-xs text-danger">{couponMsg}</p>}
+                  </>
+                )}
+              </div>
+
               {/* Cost Breakdown */}
               <div className="space-y-2 border-t border-line pt-4 text-xs text-graphite">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
                   <span>{formatPrice(cartTotal)}</span>
                 </div>
+                {discount > 0 && (
+                  <div className="flex justify-between text-emerald-700">
+                    <span>Coupon {coupon?.code}</span>
+                    <span>-{formatPrice(discount)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between">
                   <span>GST (5%)</span>
                   <span className="text-emerald-700">Included ({formatPrice(gstAmount)})</span>

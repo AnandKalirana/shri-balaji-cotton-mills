@@ -21,6 +21,7 @@ const schema = z.object({
     state: z.string().trim().min(2).max(60),
     pincode: z.string().trim().regex(/^\d{6}$/, "Enter a valid 6-digit pincode"),
   }),
+  couponCode: z.string().trim().max(30).nullish(),
   items: z
     .array(
       z.object({
@@ -50,7 +51,7 @@ export async function POST(req: Request) {
     const issue = parsed.error.issues[0];
     return NextResponse.json({ error: issue?.message || "Please check your details and try again." }, { status: 400 });
   }
-  const { paymentMethod, customer, address, items } = parsed.data;
+  const { paymentMethod, customer, address, items, couponCode } = parsed.data;
 
   // Stops bots and pranksters from flooding orders (each order holds stock).
   const limited = await rateLimit(`checkout:ip:${clientIp(req)}`, 15, 60 * 60);
@@ -102,7 +103,7 @@ export async function POST(req: Request) {
     const user = await getCurrentUser();
     const userId = user ? (await prisma.user.findUnique({ where: { id: user.id }, select: { id: true } }))?.id ?? null : null;
 
-    const priced = await priceCart(prisma, items, settings);
+    const priced = await priceCart(prisma, items, settings, couponCode);
     if (paymentMethod === "COD" && priced.total > settings.codMaxOrderLimit) {
       return NextResponse.json(
         { error: `Cash on Delivery is available up to ₹${settings.codMaxOrderLimit.toLocaleString("en-IN")}. Please pay online.` },
@@ -123,6 +124,11 @@ export async function POST(req: Request) {
 
     const order = await prisma.$transaction(async (tx) => {
       await reserveStock(tx, priced.lines, orderNumber, userId);
+      if (priced.coupon) {
+        // Counts the use now, and refuses if someone else just took the last one.
+        const taken = await tx.$executeRaw`UPDATE "Coupon" SET "usageCount" = "usageCount" + 1 WHERE "id" = ${priced.coupon.id} AND ("usageLimit" IS NULL OR "usageCount" < "usageLimit")`;
+        if (!taken) throw new CheckoutError("That coupon has been fully used.", 409);
+      }
       return tx.order.create({
         data: {
           orderNumber,
@@ -131,6 +137,8 @@ export async function POST(req: Request) {
           customerEmail: customer.email.toLowerCase(),
           customerPhone: customer.phone,
           subtotal: priced.subtotal,
+          discountTotal: priced.discount,
+          couponCode: priced.coupon?.code ?? null,
           gstTotal: priced.gstIncluded,
           shippingFee: priced.shippingFee,
           total: priced.total,
