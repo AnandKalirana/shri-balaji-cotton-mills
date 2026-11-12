@@ -1,5 +1,5 @@
 import { categories } from "@/lib/data";
-import { getProducts } from "@/lib/catalog";
+import { getCategoryImages, getProducts } from "@/lib/catalog";
 import { ProductCard } from "@/components/store/ProductCard";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -14,9 +14,12 @@ export async function generateMetadata({
   const category = categories.find((c) => c.slug === slug);
   if (!category) return { title: "Category Not Found" };
 
+  const image = (await getCategoryImages().catch(() => ({} as Record<string, string>)))[slug];
   return {
     title: `${category.name} — Handcrafted Textiles`,
     description: category.description,
+    alternates: { canonical: `/category/${slug}` },
+    openGraph: { type: "website", title: category.name, description: category.description, url: `/category/${slug}`, ...(image ? { images: [{ url: image }] } : {}) },
   };
 }
 

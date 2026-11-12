@@ -5,7 +5,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { formatPrice } from "@/lib/utils";
 import { trackingLabel, trackingLink } from "@/lib/tracking";
 
-export const metadata: Metadata = { title: "My Orders" };
+export const metadata: Metadata = { title: "My Orders", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
 
 const LABEL: Record<string, string> = {
