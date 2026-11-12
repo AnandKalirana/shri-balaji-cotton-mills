@@ -1,3 +1,4 @@
+import { siteBase } from "@/lib/site";
 import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
@@ -16,6 +17,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteBase()),
   title: {
     default: "Shri Balaji Cotton Mills — Fabrics, Kurtis & Everyday Wear",
     template: "%s | Shri Balaji Cotton Mills",
