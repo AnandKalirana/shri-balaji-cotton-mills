@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { getStoreSettings } from "@/lib/catalog";
 import { sendMail } from "@/lib/mailer";
 import { whatsappUrl } from "@/lib/whatsapp";
+import { invoiceUrl } from "@/lib/invoice-link";
 import { formatPrice } from "@/lib/utils";
 
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c] as string);
@@ -50,6 +51,7 @@ export async function notifyOrderPlaced(orderId: string) {
     `Thank you, ${order.customerName.split(" ")[0]}. We have your order.`,
     `<p style="font-size:14px">Order <b>${esc(order.orderNumber)}</b> · ${pay}</p>${itemsTable(order)}
 <p style="font-size:14px"><b>Delivering to</b><br>${esc(order.customerName)}<br>${esc(addressText(order))}</p>
+${invoiceUrl(order.orderNumber) ? `<p style="font-size:14px"><a href="${invoiceUrl(order.orderNumber)}">View your invoice</a></p>` : ""}
 <p style="font-size:14px">We will email you again when it ships. Questions? Reply to this email or call ${esc(settings.supportPhone)}.</p>`
   );
   await sendMail({

@@ -170,6 +170,13 @@ export default function AdminOrderDetailPage({
               </div>
 
               <div className="flex items-center gap-2">
+                <Package className="w-4 h-4 text-[#6f6f6f]" />
+                <a href={`/invoice/${encodeURIComponent(order.orderNumber ?? "")}`} target="_blank" rel="noopener noreferrer" className="hover:text-[#5c1d24] font-medium">
+                  View invoice
+                </a>
+              </div>
+
+              <div className="flex items-center gap-2">
                 <MessageCircle className="w-4 h-4 text-[#6f6f6f]" />
                 <a
                   href={whatsappUrl(order.customer?.phone ?? "", `Hi ${order.customer?.name?.split(" ")[0] ?? ""}, this is Shri Balaji Cotton Mills about your order ${order.orderNumber ?? ""}. `)}
