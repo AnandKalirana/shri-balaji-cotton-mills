@@ -2,16 +2,13 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import Image from "next/image";
 import { Logo } from "@/components/ui/Logo";
 import { useLiveStoreInfo } from "@/lib/use-live-store-info";
 import { Search, Heart, ShoppingBag, Menu, X, User } from "lucide-react";
+import { SearchPanel } from "@/components/store/SearchPanel";
 import { useCartStore, useUIStore } from "@/store";
 import { categories } from "@/lib/data";
-import { cn, formatPrice } from "@/lib/utils";
-import type { Product } from "@/lib/types";
-
-const POPULAR_SEARCHES = ["Cotton Fabric", "Kurta Set", "Kurti", "Stretchy Blouse", "Shapewear", "Men's T-Shirt", "Men's Shirt"];
+import { cn } from "@/lib/utils";
 
 export function StoreHeader({
   announcement: initialAnnouncement,
@@ -39,11 +36,6 @@ export function StoreHeader({
   const [scrolled, setScrolled] = useState(false);
   const isHome = usePathname() === "/";
   const [searchOpen, setSearchOpen] = useState(false);
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState<{ q: string; items: Product[] } | null>(null);
-  const trimmed = query.trim();
-  const searchActive = trimmed.length >= 2;
-  const searching = searchActive && results?.q !== trimmed;
   const { itemCount, toggleCart } = useCartStore();
   const { mobileMenuOpen, toggleMobileMenu, closeMobileMenu } = useUIStore();
 
@@ -52,29 +44,6 @@ export function StoreHeader({
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  // Debounced live search: waits for a pause in typing, then asks the server.
-  useEffect(() => {
-    if (trimmed.length < 2) return;
-    let cancelled = false;
-    const timer = setTimeout(() => {
-      fetch(`/api/products?search=${encodeURIComponent(trimmed)}&limit=8`)
-        .then((r) => r.json())
-        .then((d) => !cancelled && setResults({ q: trimmed, items: d.products ?? [] }))
-        .catch(() => !cancelled && setResults({ q: trimmed, items: [] }));
-    }, 250);
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
-  }, [trimmed]);
-
-  useEffect(() => {
-    if (!searchOpen) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setSearchOpen(false);
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [searchOpen]);
 
   // Close menu on route change equivalent
   useEffect(() => {
@@ -130,54 +99,38 @@ export function StoreHeader({
               {/* Logo */}
               <Link
                 href="/"
-                className="absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0 lg:flex-1"
+                className="absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0 lg:mr-8"
               >
                 <Logo tone={whiteInk ? "light" : "dark"} alt={storeName} priority className="h-7 sm:h-8 md:h-9" />
               </Link>
 
-              {/* Desktop: Category Nav */}
-              <nav className="hidden lg:flex items-center gap-0 flex-1 justify-center" aria-label="Main navigation">
-                {categories.slice(0, 4).map((cat) => (
+              {/* Desktop: category links sit on the left, next to the logo */}
+              <nav className="hidden lg:flex items-center gap-1 flex-1" aria-label="Main navigation">
+                {categories.map((cat) => (
                   <Link
                     key={cat.id}
                     href={`/category/${cat.slug}`}
-                    className="px-3.5 py-2 text-[13px] font-medium text-ink group-data-[overlay=true]/hdr:text-white underline-offset-[10px] hover:underline whitespace-nowrap"
+                    className="px-2.5 xl:px-3 py-2 text-[13px] xl:text-sm font-semibold text-ink group-data-[overlay=true]/hdr:text-white underline-offset-[10px] hover:underline whitespace-nowrap"
                   >
                     {cat.name}
                   </Link>
                 ))}
-                {categories.length > 4 && (
-                  <div className="relative group">
-                    <button
-                      type="button"
-                      className="px-3.5 py-2 text-[13px] font-medium text-ink group-data-[overlay=true]/hdr:text-white underline-offset-[10px] group-hover:underline"
-                      aria-haspopup="true"
-                    >
-                      More
-                    </button>
-                    <div className="invisible opacity-0 translate-y-1 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:visible group-focus-within:opacity-100 group-focus-within:translate-y-0 transition-[opacity,transform,visibility] duration-200 absolute left-1/2 -translate-x-1/2 top-full pt-2 z-40">
-                      <div className="min-w-[220px] rounded-lg bg-white border border-line shadow-menu p-2">
-                        {categories.slice(4).map((cat) => (
-                          <Link
-                            key={cat.id}
-                            href={`/category/${cat.slug}`}
-                            className="block px-4 py-2.5 rounded-md text-sm text-ink hover:bg-ink/5 transition-colors"
-                          >
-                            {cat.name}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
               </nav>
 
               {/* Icons */}
               <div className="flex items-center gap-0">
-                {/* Search */}
+                {/* Search: a pill on wide screens, an icon on small ones */}
                 <button
                   onClick={() => setSearchOpen(true)}
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-ink group-data-[overlay=true]/hdr:text-white group-data-[overlay=true]/hdr:hover:bg-white/15 hover:bg-ink/5 active:scale-95 transition-[transform,background-color]"
+                  className="hidden xl:flex items-center gap-3 h-11 w-64 mr-3 px-4 rounded-full bg-ink/[0.06] text-graphite group-data-[overlay=true]/hdr:bg-white/25 group-data-[overlay=true]/hdr:text-white group-data-[overlay=true]/hdr:backdrop-blur-md hover:bg-ink/10 group-data-[overlay=true]/hdr:hover:bg-white/35 transition-colors text-sm"
+                  aria-label="Search"
+                >
+                  <Search className="w-5 h-5 shrink-0" />
+                  <span>Search</span>
+                </button>
+                <button
+                  onClick={() => setSearchOpen(true)}
+                  className="xl:hidden w-10 h-10 rounded-full flex items-center justify-center text-ink group-data-[overlay=true]/hdr:text-white group-data-[overlay=true]/hdr:hover:bg-white/15 hover:bg-ink/5 active:scale-95 transition-[transform,background-color]"
                   aria-label="Search"
                 >
                   <Search className="w-5 h-5" />
@@ -316,104 +269,7 @@ export function StoreHeader({
         </nav>
       </div>
 
-      {/* Full-screen Search Overlay */}
-      {searchOpen && (
-        <div className="fade-in-fast fixed inset-0 z-50 bg-white backdrop-blur-xl flex flex-col" role="dialog" aria-label="Search">
-          <form
-            onSubmit={(e) => e.preventDefault()}
-            className="flex items-center gap-3 px-4 sm:px-6 py-4 border-b border-line"
-          >
-            <Search className="w-5 h-5 text-graphite shrink-0" />
-            <input
-              autoFocus
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search sarees, fabrics, brocades…"
-              aria-label="Search products"
-              className="flex-1 bg-transparent text-base text-ink placeholder:text-muted focus:outline-none"
-            />
-            <button
-              type="button"
-              onClick={() => setSearchOpen(false)}
-              className="w-10 h-10 rounded-full flex items-center justify-center text-graphite hover:bg-ink/5"
-              aria-label="Close search"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </form>
-
-          <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 max-w-3xl w-full mx-auto">
-            {!searchActive && (
-              <>
-                <p className="text-xs font-medium text-muted mb-4">
-                  Popular searches
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {POPULAR_SEARCHES.map((term) => (
-                    <button
-                      key={term}
-                      onClick={() => setQuery(term)}
-                      className="px-4 py-2 text-xs rounded-full border border-sand text-ink hover:bg-black/5 transition-colors"
-                    >
-                      {term}
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-
-            {searching && <p className="text-sm text-muted">Searching…</p>}
-
-            {searchActive && !searching && results && results.items.length > 0 && (
-              <ul className="divide-y divide-line">
-                {results.items.map((p) => (
-                  <li key={p.id}>
-                    <Link
-                      href={`/product/${p.slug}`}
-                      onClick={() => {
-                        setSearchOpen(false);
-                        setQuery("");
-                      }}
-                      className="flex items-center gap-4 py-3 hover:bg-ink/[0.03] rounded-2xl px-2 -mx-2 transition-colors"
-                    >
-                      <span className="relative w-14 h-16 shrink-0 rounded-xl overflow-hidden bg-mist">
-                        {p.images?.[0] && (
-                          <Image src={p.images[0]} alt="" fill sizes="56px" className="object-cover" />
-                        )}
-                      </span>
-                      <span className="flex-1 min-w-0">
-                        <span className="block text-[11px] text-muted">{p.fabricType || p.department}</span>
-                        <span className="block text-sm font-medium text-ink truncate">{p.name}</span>
-                      </span>
-                      <span className="text-sm font-semibold text-ink shrink-0">{formatPrice(p.price)}</span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            {searchActive && !searching && results && results.items.length === 0 && (
-              <div className="py-10 text-center">
-                <p className="text-ink font-medium mb-1">No results for “{trimmed}”</p>
-                <p className="text-sm text-muted mb-6">Try a different word, or browse a collection.</p>
-                <div className="flex flex-wrap justify-center gap-2">
-                  {categories.slice(0, 4).map((c) => (
-                    <Link
-                      key={c.id}
-                      href={`/category/${c.slug}`}
-                      onClick={() => setSearchOpen(false)}
-                      className="px-4 py-2 text-xs rounded-full border border-sand text-ink hover:bg-mist"
-                    >
-                      {c.name}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      <SearchPanel open={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
   );
 }
