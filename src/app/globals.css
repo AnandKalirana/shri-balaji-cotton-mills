@@ -193,3 +193,12 @@ a {
   animation: ring-flash 500ms var(--ease-out);
 }
 
+
+/* Search panel slides in from the right edge. */
+@keyframes slide-in-right {
+  from { transform: translateX(32px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+.slide-in-right {
+  animation: slide-in-right 240ms var(--ease-drawer);
+}

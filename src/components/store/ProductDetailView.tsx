@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/lib/types";
 import { cn, formatPrice } from "@/lib/utils";
-import { isLightHex } from "@/lib/colours";
+import { isLightHex, mainHex, readableOn } from "@/lib/colours";
 import { Stepper } from "@/components/ui/Stepper";
 import { Badge } from "@/components/ui/Badge";
 import { useCartStore } from "@/store";
@@ -78,6 +78,10 @@ export function ProductDetailView({ product, initialColour, whatsappPhone }: { p
     }
   }
   const showMrp = product.mrp && !isFabric;
+  // The Add to bag button wears the chosen colour, like the swatch, so the page feels like one product.
+  const ctaColour = !isFabric && colour?.hex ? colour.hex : null;
+  const ctaStyle = ctaColour ? { backgroundColor: mainHex(ctaColour), color: readableOn(ctaColour) } : undefined;
+  const ctaTone = ctaColour ? cn("transition-[background-color,color,filter] duration-300 hover:brightness-95", isLightHex(mainHex(ctaColour)) && "border border-ink/25") : "bg-ink hover:bg-wine text-white";
   const lengthText = isFullThaan ? `full thaan (${standardThaanMetres} metres)` : `${metres} metres`;
   const waHref = isFabric
     ? whatsappUrl(
@@ -242,7 +246,7 @@ export function ProductDetailView({ product, initialColour, whatsappPhone }: { p
                           isLightHex(c.hex) && "border border-black/15",
                           out && "opacity-40"
                         )}
-                        style={{ backgroundColor: c.hex }}
+                        style={{ background: c.hex }}
                       >
                         {out && <span aria-hidden className="absolute inset-0 flex items-center justify-center"><span className="block w-full h-px bg-ink rotate-45" /></span>}
                       </button>
@@ -361,7 +365,8 @@ export function ProductDetailView({ product, initialColour, whatsappPhone }: { p
               <button
                 onClick={handleAddToCart}
                 disabled={!available}
-                className="hidden sm:flex mt-8 w-full h-14 bg-ink hover:bg-wine text-white text-sm font-medium items-center justify-center gap-3 press disabled:opacity-50 disabled:hover:bg-ink"
+                style={ctaStyle}
+                className={cn("hidden sm:flex mt-8 w-full h-14 text-sm font-medium items-center justify-center gap-3 press disabled:opacity-50", ctaTone)}
               >
                 <ShoppingBag className="w-4 h-4" />
                 {ctaLabel}
@@ -433,7 +438,8 @@ export function ProductDetailView({ product, initialColour, whatsappPhone }: { p
           <button
             onClick={handleAddToCart}
             disabled={!available}
-            className="press flex-1 h-12 bg-ink text-white text-sm font-medium flex items-center justify-center gap-2 disabled:opacity-50"
+            style={ctaStyle}
+            className={cn("press flex-1 h-12 text-sm font-medium flex items-center justify-center gap-2 disabled:opacity-50", ctaColour ? ctaTone : "bg-ink text-white")}
           >
             <ShoppingBag className="w-4 h-4" />
             {added ? "Added to bag" : !available ? "Out of stock" : missingSize ? "Select a size" : "Add to bag"}

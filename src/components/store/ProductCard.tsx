@@ -120,7 +120,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
                 key={c.name}
                 title={c.name}
                 className={"w-3.5 h-3.5 rounded-full " + (isLightHex(c.hex) ? "border border-black/20" : "")}
-                style={{ backgroundColor: c.hex }}
+                style={{ background: c.hex }}
               />
             ))}
             {colours.length > 5 && <span className="text-[11px] text-muted">+{colours.length - 5}</span>}
