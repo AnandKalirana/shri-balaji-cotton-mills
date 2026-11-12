@@ -1,6 +1,7 @@
 import type { Prisma, PrismaClient } from "@prisma/client";
+import { couponDiscount, findUsableCoupon } from "@/lib/coupons";
 
-type Db = PrismaClient | Prisma.TransactionClient;
+export type Db = PrismaClient | Prisma.TransactionClient;
 
 export interface CartLineInput {
   productId: string;
@@ -37,7 +38,7 @@ export class CheckoutError extends Error {
 }
 
 /** Prices the cart from the database. The browser's prices are never trusted. */
-export async function priceCart(db: Db, lines: CartLineInput[], rules: ShopRules) {
+export async function priceCart(db: Db, lines: CartLineInput[], rules: ShopRules, couponCode?: string | null) {
   if (!lines.length) throw new CheckoutError("Your cart is empty.");
   const priced: PricedLine[] = [];
 
@@ -98,9 +99,17 @@ export async function priceCart(db: Db, lines: CartLineInput[], rules: ShopRules
 
   const subtotal = priced.reduce((s, l) => s + l.lineTotal, 0);
   const shippingFee = subtotal >= rules.freeShippingThreshold ? 0 : rules.standardShippingFee;
-  const total = subtotal + shippingFee;
-  const gstIncluded = Math.round(subtotal - subtotal / 1.05); // prices include 5% GST
-  return { lines: priced, subtotal, shippingFee, total, gstIncluded };
+  let discount = 0;
+  let coupon: { id: string; code: string } | null = null;
+  if (couponCode && couponCode.trim()) {
+    const c = await findUsableCoupon(db, couponCode, subtotal);
+    discount = couponDiscount(c, subtotal);
+    coupon = { id: c.id, code: c.code };
+  }
+  const payable = subtotal - discount;
+  const total = payable + shippingFee;
+  const gstIncluded = Math.round(payable - payable / 1.05); // prices include 5% GST
+  return { lines: priced, subtotal, discount, coupon, shippingFee, total, gstIncluded };
 }
 
 /** Takes stock for each line. Fails (and the surrounding transaction rolls back) if any item has run out. */
@@ -159,6 +168,8 @@ export async function reserveStock(tx: Prisma.TransactionClient, lines: PricedLi
 
 /** Gives stock back for an order's items (cancelled or never-paid orders). */
 export async function restockOrder(tx: Prisma.TransactionClient, orderId: string, orderNumber: string) {
+  const o = await tx.order.findUnique({ where: { id: orderId }, select: { couponCode: true } });
+  if (o?.couponCode) await tx.coupon.updateMany({ where: { code: o.couponCode, usageCount: { gt: 0 } }, data: { usageCount: { decrement: 1 } } });
   const items = await tx.orderItem.findMany({ where: { orderId } });
   for (const it of items) {
     if (it.metres != null) {
