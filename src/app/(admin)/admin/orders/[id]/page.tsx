@@ -247,7 +247,7 @@ export default function AdminOrderDetailPage({
               label="Waybill / Tracking No."
               value={tracking}
               onChange={(e) => setTracking(e.target.value)}
-              placeholder="e.g. BLUEDART-12345"
+              placeholder="Number, or paste the courier tracking link"
             />
 
             {error && <Notice tone="error">{error}</Notice>}

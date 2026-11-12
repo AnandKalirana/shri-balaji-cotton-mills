@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { formatPrice } from "@/lib/utils";
+import { trackingLabel, trackingLink } from "@/lib/tracking";
 
 export const metadata: Metadata = { title: "My Orders" };
 export const dynamic = "force-dynamic";
@@ -56,7 +57,18 @@ export default async function OrdersPage() {
                 ))}
               </ul>
               {o.trackingNumber && (
-                <p className="mt-3 text-xs text-graphite">Courier: {o.courierPartner || "-"} · Tracking no. {o.trackingNumber}</p>
+                <p className="mt-3 text-xs text-graphite">
+                  Courier: {o.courierPartner || "-"}
+                  {!/^https?:\/\//i.test(o.trackingNumber) && <> · Tracking no. {trackingLabel(o.trackingNumber)}</>}
+                  {trackingLink(o.courierPartner, o.trackingNumber) && (
+                    <>
+                      {" · "}
+                      <a href={trackingLink(o.courierPartner, o.trackingNumber)!} target="_blank" rel="noopener noreferrer" className="font-medium text-wine underline">
+                        Track parcel
+                      </a>
+                    </>
+                  )}
+                </p>
               )}
               {o.orderStatus !== "PENDING_PAYMENT" && o.orderStatus !== "CANCELLED" && (
                 <Link href={`/invoice/${encodeURIComponent(o.orderNumber)}`} className="inline-block mt-3 text-xs font-medium text-wine underline">
