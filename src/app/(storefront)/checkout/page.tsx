@@ -3,9 +3,10 @@ import { useStoreSettings } from "@/lib/use-store-settings";
 import { useState } from "react";
 import { useCartStore } from "@/store";
 import { formatPrice } from "@/lib/utils";
+import { OrderSuccess, type OrderSummary } from "@/components/store/OrderSuccess";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { ShieldCheck, ArrowRight, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 declare global {
@@ -32,10 +33,7 @@ export default function CheckoutPage() {
 
   const [paymentMethod, setPaymentMethod] = useState<"RAZORPAY" | "COD">("RAZORPAY");
   const [loading, setLoading] = useState(false);
-  const [orderComplete, setOrderComplete] = useState<{
-    orderNumber: string;
-    paymentId?: string;
-  } | null>(null);
+  const [orderComplete, setOrderComplete] = useState<OrderSummary | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   // Form State
@@ -97,6 +95,19 @@ export default function CheckoutPage() {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  // Copied from the bag before it is emptied, so the receipt can list what was ordered.
+  const buildSummary = (orderNumber: string, total: number, paid: boolean): OrderSummary => ({
+    orderNumber,
+    email: formData.email,
+    total,
+    paymentLabel: paid ? "Paid online" : "Pay on delivery (Cash on Delivery)",
+    placedAt: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
+    lines: items.map((i) => ({
+      name: i.product.name,
+      detail: i.metres ? `${i.isFullThaan ? "full thaan" : `${i.metres} m`}` : `x ${i.quantity}`,
+    })),
+  });
+
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -130,8 +141,8 @@ export default function CheckoutPage() {
 
       // Cash on Delivery: the order is already confirmed.
       if (!json.razorpay) {
+        setOrderComplete(buildSummary(json.orderNumber, Number(json.total ?? finalPayable), false));
         clearCart();
-        setOrderComplete({ orderNumber: json.orderNumber });
         return;
       }
 
@@ -157,8 +168,8 @@ export default function CheckoutPage() {
               });
               const vj = await v.json().catch(() => ({}));
               if (!v.ok) throw new Error(vj.error || "Payment could not be verified.");
+              setOrderComplete(buildSummary(vj.orderNumber, finalPayable, true));
               clearCart();
-              setOrderComplete({ orderNumber: vj.orderNumber, paymentId: response.razorpay_payment_id });
               resolve();
             } catch (err) {
               reject(err);
@@ -178,42 +189,7 @@ export default function CheckoutPage() {
     }
   };
 
-  if (orderComplete) {
-    return (
-      <div className="min-h-[70vh] flex items-center justify-center bg-white px-4 py-16">
-        <div className="max-w-md w-full bg-white border border-sand p-8 text-center shadow-lg">
-          <CheckCircle2 className="w-14 h-14 text-emerald-700 mx-auto mb-4" />
-          <span className="text-xs font-medium text-muted">
-            Order Confirmed
-          </span>
-          <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-medium text-ink mt-1 mb-2">
-            Thank you for your order
-          </h2>
-          <p className="text-xs text-graphite mb-6">
-            We are getting your order ready and will update you when it ships.
-          </p>
-
-          <div className="bg-mist p-4 border border-line mb-6 text-left">
-            <div className="flex justify-between text-xs mb-1">
-              <span className="text-muted">Order Reference:</span>
-              <span className="font-semibold text-wine">{orderComplete.orderNumber}</span>
-            </div>
-            <div className="flex justify-between text-xs">
-              <span className="text-muted">Order details for:</span>
-              <span className="font-medium text-ink">{formData.email}</span>
-            </div>
-          </div>
-
-          <Link
-            href="/"
-            className="inline-flex w-full py-3.5 bg-wine text-white text-xs font-medium justify-center hover:bg-ink"
-          >
-            Back to Home
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  if (orderComplete) return <OrderSuccess order={orderComplete} />;
 
   if (items.length === 0) {
     return (
