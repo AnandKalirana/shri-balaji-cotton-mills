@@ -3,6 +3,7 @@ import { getStoreSettings } from "@/lib/catalog";
 import { sendMail } from "@/lib/mailer";
 import { whatsappUrl } from "@/lib/whatsapp";
 import { invoiceUrl } from "@/lib/invoice-link";
+import { trackingLabel, trackingLink } from "@/lib/tracking";
 import { formatPrice } from "@/lib/utils";
 
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c] as string);
@@ -91,7 +92,11 @@ export async function notifyOrderStatus(orderId: string) {
     subject = `Order ${order.orderNumber} has shipped`;
     heading = "Your order is on its way";
     extra = order.trackingNumber
-      ? `<p style="font-size:14px">Courier: <b>${esc(order.courierPartner || "")}</b><br>Tracking number: <b>${esc(order.trackingNumber)}</b></p>`
+      ? `<p style="font-size:14px">Courier: <b>${esc(order.courierPartner || "-")}</b>${/^https?:\/\//i.test(order.trackingNumber) ? "" : `<br>Tracking number: <b>${esc(trackingLabel(order.trackingNumber))}</b>`}</p>${
+          trackingLink(order.courierPartner, order.trackingNumber)
+            ? `<p><a href="${esc(trackingLink(order.courierPartner, order.trackingNumber)!)}" style="display:inline-block;background:#5c1d24;color:#fff;padding:10px 16px;text-decoration:none;font-size:14px">Track your parcel</a></p>`
+            : ""
+        }`
       : "";
   } else if (order.orderStatus === "DELIVERED") {
     subject = `Order ${order.orderNumber} delivered`;
