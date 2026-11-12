@@ -187,7 +187,7 @@ export async function restockOrder(tx: Prisma.TransactionClient, orderId: string
           action: "ORDER_CANCEL_RESTOCK",
           quantityChanged: back,
           balanceAfter: Number(row.totalMetresInStock),
-          reason: `Order ${orderNumber} was not completed`,
+          reason: `Order ${orderNumber} was cancelled`,
           referenceOrderId: orderNumber,
         },
       });
@@ -203,7 +203,7 @@ export async function restockOrder(tx: Prisma.TransactionClient, orderId: string
           action: "ORDER_CANCEL_RESTOCK",
           quantityChanged: it.quantity,
           balanceAfter: row.stockQty,
-          reason: `Order ${orderNumber} was not completed`,
+          reason: `Order ${orderNumber} was cancelled`,
           referenceOrderId: orderNumber,
         },
       });

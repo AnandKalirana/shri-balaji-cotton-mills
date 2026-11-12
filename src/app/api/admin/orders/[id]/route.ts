@@ -1,4 +1,5 @@
 import { NextResponse, after } from "next/server";
+import { restockOrder } from "@/lib/checkout";
 import { notifyOrderStatus } from "@/lib/order-emails";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
@@ -59,13 +60,24 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
         { status: 404 }
       );
     }
-    const updated = await prisma.order.update({
-      where: { id },
-      data: {
-        ...(status ? { orderStatus: status } : {}),
-        ...(trackingNumber !== undefined ? { trackingNumber: trackingNumber || null } : {}),
-        ...(courierPartner !== undefined ? { courierPartner: courierPartner || null } : {}),
-      },
+    // A cancelled order stays cancelled: its stock has gone back on the shelf, so reopening it would sell that stock twice.
+    if (existing.orderStatus === "CANCELLED" && status && status !== "CANCELLED") {
+      return NextResponse.json({ error: "A cancelled order can't be reopened. Ask the customer to place a new order." }, { status: 409 });
+    }
+    const cancelling = status === "CANCELLED" && existing.orderStatus !== "CANCELLED";
+    const updated = await prisma.$transaction(async (tx) => {
+      const row = await tx.order.update({
+        where: { id },
+        data: {
+          ...(status ? { orderStatus: status } : {}),
+          ...(cancelling ? { cancelledReason: "Cancelled by the store" } : {}),
+          ...(trackingNumber !== undefined ? { trackingNumber: trackingNumber || null } : {}),
+          ...(courierPartner !== undefined ? { courierPartner: courierPartner || null } : {}),
+        },
+      });
+      // Put the items (and the coupon use) back, once.
+      if (cancelling) await restockOrder(tx, id, row.orderNumber);
+      return row;
     });
     if (status && status !== existing.orderStatus) after(() => notifyOrderStatus(id).catch((e) => console.error("[notify]", e)));
     await logAdmin(guard.user, "order.update", `${updated.orderNumber} -> ${updated.orderStatus}${trackingNumber ? ", tracking added" : ""}`);
